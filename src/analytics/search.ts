@@ -108,11 +108,14 @@ export function parseSearch(query: string, vocab: SearchVocabulary): ParsedSearc
     if (period) {
       result.period = period;
     } else if (token in ITEM_TYPE_WORDS) {
-      result.itemTypes.push(ITEM_TYPE_WORDS[token]);
+      const itemType = ITEM_TYPE_WORDS[token];
+      if (!result.itemTypes.includes(itemType)) result.itemTypes.push(itemType);
     } else if (token in PHASE_WORDS) {
-      result.phases.push(PHASE_WORDS[token]);
+      const phase = PHASE_WORDS[token];
+      if (!result.phases.includes(phase)) result.phases.push(phase);
     } else if (token in MILESTONE_WORDS) {
-      result.milestones.push(MILESTONE_WORDS[token]);
+      const milestone = MILESTONE_WORDS[token];
+      if (!result.milestones.includes(milestone)) result.milestones.push(milestone);
     } else {
       result.text.push(token);
     }

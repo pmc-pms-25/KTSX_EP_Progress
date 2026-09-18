@@ -37,6 +37,12 @@ describe('parseSearch', () => {
     expect(r.phases).toEqual(['manufacturing', 'delivered']);
   });
 
+  it('does not duplicate repeated item types, phases or milestones', () => {
+    const r = parseSearch('bulk bulk loa loa', VOCAB);
+    expect(r.itemTypes).toEqual(['Bulk']);
+    expect(r.milestones).toEqual(['loa']);
+  });
+
   it('describes what was understood', () => {
     expect(describeSearch(parseSearch('PS2R LOA Q2-2027 pump', VOCAB))).toEqual(['PS2R', 'LOA', 'Q2-2027', '"pump"']);
   });
