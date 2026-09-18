@@ -54,7 +54,7 @@ describe('ErrorBoundary', () => {
         <Boom />
       </ErrorBoundary>,
     );
-    expect(screen.getByRole('alert')).toHaveTextContent('Không hiển thị được "Biểu đồ"');
+    expect(screen.getByRole('alert')).toHaveTextContent('Không hiển thị được “Biểu đồ”');
     expect(screen.getByRole('alert')).toHaveTextContent('kaboom');
     spy.mockRestore();
   });

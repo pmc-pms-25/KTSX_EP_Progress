@@ -4,7 +4,7 @@ const HINTS: Record<string, string> = {
   NETWORK: 'Máy của bạn cần truy cập được docs.google.com và *.googleusercontent.com.',
   ACCESS_DENIED: 'Nhờ chủ sheet bật chia sẻ "Anyone with the link" (hoặc Publish to web) rồi thử lại.',
   NOT_FOUND: 'Kiểm tra lại dataSource.url trong config.json trên server.',
-  CONFIG: 'Sửa file config.json cạnh index.html trên server rồi tải lại trang.',
+  CONFIG: 'Sửa file config.json cạnh server.cjs trên server (hoặc public/config.json khi chạy dev) rồi tải lại trang.',
   MISSING_COLUMNS: 'Có thể tiêu đề cột trong sheet đã bị đổi tên. So sánh với cấu trúc chuẩn trong tài liệu.',
 };
 

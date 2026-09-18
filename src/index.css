@@ -134,7 +134,8 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .ai-border,
   .scan::after,
-  .pulse-risk {
+  .pulse-risk,
+  .animate-spin {
     animation: none;
   }
 }

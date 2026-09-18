@@ -25,7 +25,7 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.error) {
       return (
         <div role="alert" className="rounded-2xl border border-serious/40 bg-surface p-4 text-sm text-ink-2">
-          <p className="font-semibold text-serious">Không hiển thị được "{this.props.label}".</p>
+          <p className="font-semibold text-serious">Không hiển thị được “{this.props.label}”.</p>
           <p className="mt-1 text-xs text-ink-3">{this.state.error.message}</p>
           <button className="mt-2 text-xs text-ai-1 underline" onClick={() => this.setState({ error: undefined })}>
             Thử lại

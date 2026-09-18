@@ -44,7 +44,7 @@ export function InsightsPanel({ insights, metrics, onApply, onOpenPackage }: Ins
   const byId = new Map(metrics.map((m) => [m.line.id, m]));
 
   return (
-    <Card ai title="AI Insights" subtitle={'Tự động phát hiện từ dữ liệu hiện tại · bấm "Why?" để xem bằng chứng'}>
+    <Card ai title="AI Insights" subtitle="Tự động phát hiện từ dữ liệu hiện tại · bấm “Why?” để xem bằng chứng">
       {insights.length === 0 ? (
         <p className="text-sm text-ink-3">Không phát hiện điểm bất thường nào với bộ lọc hiện tại.</p>
       ) : (

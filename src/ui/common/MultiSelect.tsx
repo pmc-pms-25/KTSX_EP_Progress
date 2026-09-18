@@ -62,7 +62,7 @@ export function MultiSelect<T extends string>({ label, options, selected, onChan
           {options.map((o) => (
             <li key={o.value}>
               <label className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-ink hover:bg-surface">
-                <input type="checkbox" className="accent-cyan-500" checked={selected.includes(o.value)} onChange={() => toggle(o.value)} />
+                <input type="checkbox" className="accent-ai-1" checked={selected.includes(o.value)} onChange={() => toggle(o.value)} />
                 {o.label}
               </label>
             </li>
