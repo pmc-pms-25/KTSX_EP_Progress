@@ -75,4 +75,10 @@ describe('PackageDrawer', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Đóng' }));
     expect(router.state.location.search).not.toContain('pkg=');
   });
+
+  it('marks overdue Gantt dots with an icon, not color alone', () => {
+    renderAt('/discipline/MECHANICAL?pkg=MEC-002');
+    const dots = within(screen.getByRole('dialog')).getAllByTitle(/^RFQ Issue/);
+    expect(dots.some((el) => el.textContent === '!')).toBe(true);
+  });
 });

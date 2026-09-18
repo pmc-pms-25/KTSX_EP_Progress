@@ -25,7 +25,7 @@ const STATUS_LABEL: Record<MilestoneStatus, string> = {
   noDate: 'Không có ngày',
 };
 
-const STATUS_ICON: Record<MilestoneStatus, string> = { done: '✓', overdue: '!', dueSoon: '◷', future: '·', noDate: '–' };
+export const STATUS_ICON: Record<MilestoneStatus, string> = { done: '✓', overdue: '!', dueSoon: '◷', future: '·', noDate: '–' };
 
 export function StatusBadge({ status }: { status: MilestoneStatus }) {
   const theme = useApp((s) => s.theme);

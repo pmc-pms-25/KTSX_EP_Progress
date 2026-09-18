@@ -3,6 +3,7 @@ import { effectiveDay, type LineMetrics } from '../../analytics/lineMetrics';
 import { MILESTONES } from '../../data/milestones';
 import { formatDay, formatMonth, monthKey, monthRange, monthBounds, type Day } from '../../lib/day';
 import { useApp } from '../../store/useApp';
+import { STATUS_ICON } from '../common/Chip';
 import { milestoneStatusColor, phaseColor } from '../theme/palette';
 
 /**
@@ -75,7 +76,7 @@ export function MiniGantt({ lines, cutOff }: { lines: LineMetrics[]; cutOff: Day
                         style={{ left: pos(shown), background: status === 'future' ? phaseColor(def.phase, theme) : milestoneStatusColor(status, theme) }}
                         title={tip}
                       >
-                        {d.actual !== undefined ? '✓' : ''}
+                        {status === 'future' ? '' : STATUS_ICON[status]}
                       </span>
                     )}
                   </div>
