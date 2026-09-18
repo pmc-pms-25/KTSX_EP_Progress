@@ -5,3 +5,4 @@ release/
 *.log
 # Du lieu du an (nhay cam) - khong commit
 *.xlsx
+*.tsbuildinfo

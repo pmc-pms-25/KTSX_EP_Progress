@@ -304,3 +304,21 @@ Rule không đủ dữ liệu → không sinh thẻ (không hiển thị thẻ r
 | v3 | LLM hỏi đáp qua `/api/ask`, dùng tool calling trên analytics (không để LLM tự tính số) | server + component chat |
 
 Khi dữ liệu > 10k dòng: chuyển parser/analytics sang Web Worker, giữ nguyên interface.
+
+## 15. Điều chỉnh sau kiểm chứng kỹ thuật (18-Sep-2026)
+
+Khi lập kế hoạch, toàn bộ phần lõi đã được dựng thử và chạy trên file export thật. Các điều chỉnh dưới đây **thay thế** mô tả tương ứng ở các mục trên:
+
+1. **Ngày dạng số nguyên (`Day`)**, không dùng `Date` (mục 5). Đọc với `cellDates: true` làm lệch 1 ngày ở múi giờ UTC+7 (14-Mar-2027 thành 13-Mar-2027). Parser đọc serial Excel thô và quy đổi thành số ngày kể từ 1970-01-01; serial nằm ngoài khoảng 2000–2100 bị coi là không hợp lệ.
+2. **Định danh dòng FORECAST/ACTUAL:** hai dòng này là công thức tham chiếu dòng PLANNED, nên code/facility trống ở PLANNED hiện thành `0`. Parser coi trống, `0` và `None` là như nhau khi gom bộ 3 dòng. Kết quả trên dữ liệu thật: 0 dòng mồ côi, 0 bộ 3 dòng thiếu.
+3. **Hai loại phase** (mục 6):
+   - `currentPhase`: theo mốc đã có Actual (đúng như mục 6).
+   - `scheduledPhase` (mới): phase của mốc mở đầu tiên có ngày mục tiêu ≥ cut-off, tức là theo kế hoạch dòng *đáng lẽ* đang ở đâu.
+
+   Sheet hiện chưa có Actual nên mọi dòng đều ở TR theo `currentPhase`. Vì vậy **phase funnel mặc định dùng "Kế hoạch" và có nút chuyển sang "Actual"**; filter Phase và từ khóa phase trong ô tìm kiếm dùng `scheduledPhase`; bảng package hiển thị cả hai khi chúng khác nhau.
+4. **`Line.hasValidCode`:** dòng có code trống/`0` được gom vào package `UNCODED-<row>` và không tính vào KPI Packages.
+5. **Ngữ nghĩa tìm kiếm thông minh** (mục 7.1): từ khóa mốc (`loa`, `tbe`, `site`…) đi kèm khoảng thời gian (`2027`, `Q2-2027`, `Mar-2027`) nghĩa là "mốc đó rơi vào khoảng"; khoảng thời gian đứng một mình nghĩa là "mốc mở kế tiếp rơi vào khoảng".
+6. **Ngôn ngữ giao diện:** tiếng Việt, giữ nguyên thuật ngữ chuyên ngành tiếng Anh (Package, Discipline, TR, RFQ, LOA, ROS, Forecast, Actual), thống nhất với các dashboard Excel hiện có.
+7. **Mốc quá hạn** vẫn được tính (`overdue`) và thể hiện qua insight cùng cờ lọc, nhưng không có ô KPI riêng. Dải KPI giữ 5 ô như mục 7.2.
+8. **config.json** chấp nhận cả link edit Google Sheet (tự đổi sang `export?format=xlsx`). Server đọc lại `config.json` ở mỗi request và có thêm `/healthz`. Trong gói release, `config.json` nằm cạnh `server.cjs`.
+9. **Số liệu đối chiếu** (mục 1, cut-off 18-Sep-2026): 4 dòng ROS at risk (đều thuộc PIPELINE), 34 dòng có ô ngày không hợp lệ (`#####`).
