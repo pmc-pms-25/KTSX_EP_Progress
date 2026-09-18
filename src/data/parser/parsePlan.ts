@@ -225,6 +225,13 @@ export function parsePlan(buf: ArrayBuffer, options: ParseOptions): ParseResult 
       if (isDisciplineRow(row, map)) {
         discipline = text(row[map.packageCode]);
         current = undefined;
+      } else if (row.some((cell) => !isBlank(cell))) {
+        warnings.push({
+          level: 'warn',
+          code: 'UNKNOWN_ROW_TYPE',
+          row: sheetRow,
+          message: 'Dòng có dữ liệu nhưng thiếu giá trị cột Date (PLANNED/FORECAST/ACTUAL)',
+        });
       }
       return;
     }

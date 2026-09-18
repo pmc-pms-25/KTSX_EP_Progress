@@ -87,6 +87,17 @@ describe('parsePlan', () => {
     expect(result.plan.warnings.map((w) => w.code)).toContain('ORPHAN_ROW');
   });
 
+  it('warns about a row with content but a blank Date cell, and stays silent on blank separator rows', () => {
+    const rows = sheetRows([{ discipline: 'SAFETY', lines: [{ code: 'SAF-001', facility: 'BF', plan: { loa: '2027-01-01' } }] }]);
+    rows[2][SHEET_HEADERS.indexOf('Date')] = null; // the PLANNED row, code/facility/dates still present
+    const result = parsePlan(workbookBuffer(rows), OPTIONS);
+    if (!result.ok) throw new Error('expected ok');
+    const warning = result.plan.warnings.find((w) => w.code === 'UNKNOWN_ROW_TYPE');
+    expect(warning).toMatchObject({ row: 3, level: 'warn' });
+    // The fully blank separator row after each line must not trigger a warning.
+    expect(result.plan.warnings.filter((w) => w.code === 'UNKNOWN_ROW_TYPE')).toHaveLength(1);
+  });
+
   it('warns about lines before the first discipline title', () => {
     const rows: unknown[][] = [SHEET_HEADERS, SHEET_HEADERS.map(() => null)];
     rows[1][0] = 'X-1';
