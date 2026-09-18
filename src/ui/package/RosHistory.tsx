@@ -1,12 +1,11 @@
 import { useMemo } from 'react';
 import type { EChartsOption } from 'echarts';
 import type { Line } from '../../data/types';
-import { dayToISO, formatDay } from '../../lib/day';
+import { formatDay, formatMonth, monthKey } from '../../lib/day';
+import { escapeHtml } from '../../lib/escapeHtml';
 import { useApp } from '../../store/useApp';
 import { EChart } from '../charts/EChart';
 import { CATEGORICAL, CHART_INK } from '../theme/palette';
-
-const MS_PER_DAY = 86_400_000;
 
 /** Step line of ROS across the ED revisions (Old ED → latest ED). */
 export function RosHistory({ line }: { line: Line }) {
@@ -20,7 +19,7 @@ export function RosHistory({ line }: { line: Line }) {
         formatter: (p) => {
           const item = (p as { dataIndex: number }[])[0];
           const point = line.rosHistory[item.dataIndex];
-          return `${point.label}<br/><b>${formatDay(point.day)}</b>`;
+          return `${escapeHtml(point.label)}<br/><b>${escapeHtml(formatDay(point.day))}</b>`;
         },
       },
       xAxis: {
@@ -29,9 +28,10 @@ export function RosHistory({ line }: { line: Line }) {
         axisLabel: { color: ink.muted, fontSize: 10, interval: 0, rotate: 20 },
       },
       yAxis: {
-        type: 'time',
+        type: 'value',
         scale: true,
-        axisLabel: { color: ink.muted, formatter: (v: number) => dayToISO(Math.floor(v / MS_PER_DAY)).slice(0, 7) },
+        minInterval: 1,
+        axisLabel: { color: ink.muted, formatter: (v: number) => formatMonth(monthKey(Math.round(v))) },
         splitLine: { lineStyle: { color: ink.grid } },
       },
       series: [
@@ -41,7 +41,7 @@ export function RosHistory({ line }: { line: Line }) {
           symbolSize: 8,
           lineStyle: { width: 2, color: CATEGORICAL[theme][0] },
           itemStyle: { color: CATEGORICAL[theme][0], borderColor: ink.surface, borderWidth: 2 },
-          data: line.rosHistory.map((p) => p.day * MS_PER_DAY),
+          data: line.rosHistory.map((p) => p.day),
         },
       ],
     }),

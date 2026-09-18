@@ -5,6 +5,7 @@ import type { LineMetrics } from '../../analytics/lineMetrics';
 import { MILESTONES } from '../../data/milestones';
 import type { MilestoneKey } from '../../data/types';
 import { formatMonth } from '../../lib/day';
+import { escapeHtml } from '../../lib/escapeHtml';
 import { useApp } from '../../store/useApp';
 import { EChart } from '../charts/EChart';
 import { Card } from '../common/Card';
@@ -23,7 +24,7 @@ export function FacilityHeatmap({ metrics }: { metrics: readonly LineMetrics[] }
       tooltip: {
         formatter: (p) => {
           const [mi, fi, n] = (p as unknown as { value: [number, number, number] }).value;
-          return `${data.facilities[fi]} · ${formatMonth(data.months[mi])}<br/><b>${n}</b> mốc`;
+          return `${escapeHtml(data.facilities[fi])} · ${escapeHtml(formatMonth(data.months[mi]))}<br/><b>${n}</b> mốc`;
         },
       },
       xAxis: { type: 'category', data: data.months.map(formatMonth), axisLabel: { color: ink.muted }, splitArea: { show: false } },
