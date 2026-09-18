@@ -1,3 +1,4 @@
+import { MotionConfig } from 'motion/react';
 import { createHashRouter, RouterProvider } from 'react-router-dom';
 import { DisciplinePage } from './ui/discipline/DisciplinePage';
 import { OverviewPage } from './ui/overview/OverviewPage';
@@ -18,5 +19,10 @@ export const routes = [
 const router = createHashRouter(routes);
 
 export function App() {
-  return <RouterProvider router={router} />;
+  return (
+    // Motion follows the OS "reduce motion" setting for every animated component.
+    <MotionConfig reducedMotion="user">
+      <RouterProvider router={router} />
+    </MotionConfig>
+  );
 }
