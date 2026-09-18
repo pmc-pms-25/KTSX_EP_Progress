@@ -35,12 +35,22 @@ const FLAG_TEST: Record<Flag, (m: LineMetrics) => boolean> = {
 
 const inList = <T,>(list: readonly T[], value: T) => list.length === 0 || list.includes(value);
 
+/** The four facets shared by the filter bar and the parsed search query. */
+type Facets = Pick<Filters, 'disciplines' | 'facilities' | 'itemTypes' | 'phases'>;
+
+function matchesFacets(m: LineMetrics, f: Facets): boolean {
+  const { line } = m;
+  return (
+    inList(f.disciplines, line.discipline) &&
+    inList(f.facilities, line.facility) &&
+    inList(f.itemTypes, line.itemType) &&
+    inList(f.phases, m.scheduledPhase)
+  );
+}
+
 function matchesSearch(m: LineMetrics, s: ParsedSearch): boolean {
   const { line } = m;
-  if (!inList(s.disciplines, line.discipline)) return false;
-  if (!inList(s.facilities, line.facility)) return false;
-  if (!inList(s.itemTypes, line.itemType)) return false;
-  if (!inList(s.phases, m.scheduledPhase)) return false;
+  if (!matchesFacets(m, s)) return false;
   if (s.milestones.length > 0) {
     const hit = s.milestones.some((key) => {
       const day = effectiveDay(line.milestones[key]);
@@ -63,11 +73,7 @@ function matchesSearch(m: LineMetrics, s: ParsedSearch): boolean {
 export function applyFilters(metrics: readonly LineMetrics[], f: Filters, vocab: SearchVocabulary): LineMetrics[] {
   const search = f.q.trim() ? parseSearch(f.q, vocab) : undefined;
   return metrics.filter((m) => {
-    const { line } = m;
-    if (!inList(f.disciplines, line.discipline)) return false;
-    if (!inList(f.facilities, line.facility)) return false;
-    if (!inList(f.itemTypes, line.itemType)) return false;
-    if (!inList(f.phases, m.scheduledPhase)) return false;
+    if (!matchesFacets(m, f)) return false;
     if (!f.flags.every((flag) => FLAG_TEST[flag](m))) return false;
     return !search || matchesSearch(m, search);
   });
