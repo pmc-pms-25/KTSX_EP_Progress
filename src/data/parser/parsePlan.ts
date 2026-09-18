@@ -181,7 +181,12 @@ export function parsePlan(buf: ArrayBuffer, options: ParseOptions): ParseResult 
   if (!isZip(buf)) {
     return { ok: false, error: { code: 'NOT_XLSX', message: 'Dữ liệu tải về không phải file Excel (XLSX).' } };
   }
-  const workbook = XLSX.read(new Uint8Array(buf), { type: 'array' });
+  let workbook: XLSX.WorkBook;
+  try {
+    workbook = XLSX.read(new Uint8Array(buf), { type: 'array' });
+  } catch {
+    return { ok: false, error: { code: 'NOT_XLSX', message: 'File Excel bị hỏng hoặc không đọc được (có thể tải về chưa trọn vẹn).' } };
+  }
   const sheetName = options.sheetName ?? workbook.SheetNames[0];
   const sheet = sheetName ? workbook.Sheets[sheetName] : undefined;
   if (!sheet) {

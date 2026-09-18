@@ -102,6 +102,8 @@ describe('parsePlan', () => {
   it('fails clearly on non-XLSX data, unknown sheets, empty sheets and missing columns', () => {
     const html = new TextEncoder().encode('<!doctype html><html>').buffer as ArrayBuffer;
     expect(parsePlan(html, OPTIONS)).toMatchObject({ ok: false, error: { code: 'NOT_XLSX' } });
+    const corrupt = new Uint8Array([0x50, 0x4b, 0x03, 0x04, 0xde, 0xad, 0xbe, 0xef, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05]).buffer as ArrayBuffer;
+    expect(parsePlan(corrupt, OPTIONS)).toMatchObject({ ok: false, error: { code: 'NOT_XLSX', message: expect.stringContaining('bị hỏng') } });
     expect(parsePlan(sampleWorkbook(), { ...OPTIONS, sheetName: 'Nope' })).toMatchObject({
       ok: false,
       error: { code: 'SHEET_NOT_FOUND' },
