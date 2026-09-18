@@ -56,6 +56,14 @@ describe('DisciplinePage', () => {
     renderAt('/discipline/NOPE');
     expect(screen.getByText(/Không tìm thấy discipline/)).toBeInTheDocument();
   });
+
+  it('shows risk tags on mobile cards too, not just a colored border', () => {
+    renderAt('/discipline/MECHANICAL');
+    const lists = screen.getAllByRole('list');
+    const mobileList = lists.find((l) => within(l).queryByRole('button', { name: /MEC-001/ }));
+    expect(mobileList).toBeDefined();
+    expect(within(mobileList!).getByText('▲ ROS')).toBeInTheDocument();
+  });
 });
 
 describe('PackageDrawer', () => {

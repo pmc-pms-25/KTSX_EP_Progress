@@ -29,6 +29,17 @@ function riskClass(p: PackageSummary): string {
   return 'border-l-2 border-l-transparent';
 }
 
+function RiskTags({ p }: { p: PackageSummary }) {
+  return (
+    <>
+      {p.rosAtRisk && <span className="mr-1 text-critical">▲ ROS</span>}
+      {p.overdueCount > 0 && <span className="mr-1 text-serious">! {p.overdueCount} quá hạn</span>}
+      {p.slipped && !p.rosAtRisk && <span className="text-warning">● trượt</span>}
+      {p.riskRank === 0 && <span className="text-good">✓</span>}
+    </>
+  );
+}
+
 function NextCell({ p }: { p: PackageSummary }) {
   if (!p.next) return <span className="text-ink-3">—</span>;
   return (
@@ -93,10 +104,7 @@ export function PackageTable({ packages, onOpen }: { packages: PackageSummary[];
                   <FloatBadge days={p.minRosFloat} />
                 </td>
                 <td className="px-3 py-2 text-xs">
-                  {p.rosAtRisk && <span className="mr-1 text-critical">▲ ROS</span>}
-                  {p.overdueCount > 0 && <span className="mr-1 text-serious">! {p.overdueCount} quá hạn</span>}
-                  {p.slipped && !p.rosAtRisk && <span className="text-warning">● trượt</span>}
-                  {p.riskRank === 0 && <span className="text-good">✓</span>}
+                  <RiskTags p={p} />
                 </td>
               </tr>
             ))}
@@ -118,6 +126,9 @@ export function PackageTable({ packages, onOpen }: { packages: PackageSummary[];
               <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
                 <PhaseChip phase={p.scheduledPhase} />
                 <NextCell p={p} />
+              </div>
+              <div className="mt-2 text-xs">
+                <RiskTags p={p} />
               </div>
             </button>
           </li>
