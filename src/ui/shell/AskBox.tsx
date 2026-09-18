@@ -11,9 +11,11 @@ interface AskBoxProps {
 export function AskBox({ value, vocab, onChange }: AskBoxProps) {
   const [draft, setDraft] = useState(value);
 
-  useEffect(() => setDraft(value), [value]);
   useEffect(() => {
-    if (draft === value) return;
+    setDraft((d) => (d.trim() === value.trim() ? d : value));
+  }, [value]);
+  useEffect(() => {
+    if (draft.trim() === value.trim()) return;
     const t = setTimeout(() => onChange(draft), 250);
     return () => clearTimeout(t);
   }, [draft, value, onChange]);
