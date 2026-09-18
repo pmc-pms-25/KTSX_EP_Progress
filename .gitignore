@@ -1,0 +1,7 @@
+node_modules/
+dist/
+release/
+.env
+*.log
+# Du lieu du an (nhay cam) - khong commit
+*.xlsx
