@@ -70,7 +70,14 @@ export function createHttpXlsxSource({ label, url, fetchImpl = fetch, timeoutMs 
         if (contentType.includes('text/html')) {
           throw new SourceError('ACCESS_DENIED', 'Nguồn dữ liệu trả về trang web thay vì file Excel. Sheet có thể yêu cầu đăng nhập.');
         }
-        const buf = await response.arrayBuffer();
+        let buf: ArrayBuffer;
+        try {
+          buf = await response.arrayBuffer();
+        } catch {
+          if (timedOut) throw new SourceError('TIMEOUT', `Hết thời gian chờ (${timeoutMs / 1000}s) khi tải dữ liệu.`);
+          if (signal?.aborted) throw new SourceError('ABORTED', 'Đã hủy tải dữ liệu.');
+          throw new SourceError('NETWORK', 'Mất kết nối khi đang tải dữ liệu.');
+        }
         const head = new Uint8Array(buf, 0, Math.min(2, buf.byteLength));
         if (head.length < 2 || head[0] !== 0x50 || head[1] !== 0x4b) {
           throw new SourceError('NOT_XLSX', 'Dữ liệu tải về không phải file Excel (XLSX).');

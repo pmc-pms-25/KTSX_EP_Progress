@@ -66,6 +66,22 @@ describe('createHttpXlsxSource', () => {
     controller.abort();
     expect(await codeOf(pending)).toBe('ABORTED');
   });
+
+  it('classifies a timeout while still reading the response body', async () => {
+    // The response headers resolve fine, but arrayBuffer() hangs until the caller's signal aborts —
+    // a ReadableStream that never enqueues would do the same but is awkward to build in jsdom.
+    const fetchImpl: typeof fetch = async (_url, init) =>
+      ({
+        ok: true,
+        status: 200,
+        headers: new Headers({ 'content-type': 'application/octet-stream' }),
+        arrayBuffer: () =>
+          new Promise((_resolve, reject) => {
+            init?.signal?.addEventListener('abort', () => reject(new DOMException('aborted', 'AbortError')));
+          }),
+      }) as unknown as Response;
+    expect(await codeOf(createHttpXlsxSource({ label: 'T', url: 'u', fetchImpl, timeoutMs: 10 }).load())).toBe('TIMEOUT');
+  });
 });
 
 describe('createDataSource', () => {
