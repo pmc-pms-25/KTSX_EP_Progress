@@ -48,7 +48,11 @@ export function PhaseFunnel({ metrics, onSelectPhase }: PhaseFunnelProps) {
   return (
     <Card
       title="Phase funnel"
-      subtitle={basis === 'schedule' ? 'Theo kế hoạch: dòng đáng lẽ đang ở phase nào tại cut-off' : 'Theo Actual: phase dựa trên mốc đã ghi nhận thực tế'}
+      subtitle={
+        basis === 'schedule'
+          ? 'Theo kế hoạch: dòng đáng lẽ đang ở phase nào tại cut-off'
+          : 'Theo Actual: phase dựa trên mốc đã ghi nhận thực tế · bấm cột chỉ lọc được ở chế độ Kế hoạch'
+      }
       actions={
         <div role="group" aria-label="Cơ sở tính phase" className="flex rounded-lg border border-line p-0.5 text-xs">
           {(['schedule', 'actual'] as const).map((b) => (
@@ -69,7 +73,7 @@ export function PhaseFunnel({ metrics, onSelectPhase }: PhaseFunnelProps) {
         ariaLabel="Số dòng theo phase"
         height={260}
         option={option}
-        onEvents={{ click: (p) => onSelectPhase(data[(p as { dataIndex: number }).dataIndex].phase) }}
+        onEvents={basis === 'schedule' ? { click: (p) => onSelectPhase(data[(p as { dataIndex: number }).dataIndex].phase) } : undefined}
       />
     </Card>
   );
