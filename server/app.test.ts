@@ -26,6 +26,11 @@ describe('server', () => {
     expect(res.headers['cache-control']).toBe('no-cache');
   });
 
+  it('sets X-Content-Type-Options: nosniff on every response', async () => {
+    const res = await make().inject({ method: 'GET', url: '/' });
+    expect(res.headers['x-content-type-options']).toBe('nosniff');
+  });
+
   it('serves hashed assets with immutable caching', async () => {
     const res = await make().inject({ method: 'GET', url: '/assets/app-abc123.js' });
     expect(res.statusCode).toBe(200);

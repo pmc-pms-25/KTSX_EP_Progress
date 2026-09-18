@@ -15,6 +15,11 @@ export interface ServerOptions {
 export function buildServer({ publicDir, configPath, logger = false }: ServerOptions): FastifyInstance {
   const app = Fastify({ logger });
 
+  app.addHook('onSend', async (_request, reply, payload) => {
+    reply.header('X-Content-Type-Options', 'nosniff');
+    return payload;
+  });
+
   // Read on every request so admins can edit config.json without a restart.
   app.get('/config.json', async (_request, reply) => {
     reply.header('Cache-Control', 'no-store');
