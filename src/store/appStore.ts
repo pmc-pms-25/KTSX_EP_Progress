@@ -91,6 +91,7 @@ export function createAppStore(deps: StoreDeps) {
       set({ status: hadPlan ? 'ready' : 'loading', refreshing: hadPlan, step: 'config', stepDetail: undefined, refreshError: undefined });
       try {
         const config = get().config ?? (await deps.loadConfig());
+        if (controller.signal.aborted) return;
         set({ config, step: 'fetch', stepDetail: undefined });
         const buf = await deps.createDataSource(config.dataSource).load(controller.signal);
         if (controller.signal.aborted) return;
