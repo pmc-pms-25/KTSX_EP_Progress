@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import type { EChartsOption } from 'echarts';
 import type { Line } from '../../data/types';
+import { useT } from '../../i18n/useT';
 import { formatDay, formatMonth, monthKey } from '../../lib/day';
 import { escapeHtml } from '../../lib/escapeHtml';
 import { useApp } from '../../store/useApp';
@@ -9,6 +10,7 @@ import { CATEGORICAL, CHART_INK } from '../theme/palette';
 
 /** Step line of ROS across the ED revisions (Old ED → latest ED). */
 export function RosHistory({ line }: { line: Line }) {
+  const { t } = useT();
   const theme = useApp((s) => s.theme);
   const ink = CHART_INK[theme];
   const option = useMemo<EChartsOption>(
@@ -47,6 +49,6 @@ export function RosHistory({ line }: { line: Line }) {
     }),
     [line, ink, theme],
   );
-  if (line.rosHistory.length < 2) return <p className="text-xs text-ink-3">Không có lịch sử ROS.</p>;
-  return <EChart ariaLabel="Lịch sử điều chỉnh ROS" height={180} option={option} />;
+  if (line.rosHistory.length < 2) return <p className="text-xs text-ink-3">{t('rosHistory.empty')}</p>;
+  return <EChart ariaLabel={t('rosHistory.ariaLabel')} height={180} option={option} />;
 }

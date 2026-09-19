@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import { useMemo } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { computeKpis, summarizePackages } from '../../analytics/aggregate';
+import { useT } from '../../i18n/useT';
 import { Card, Stagger } from '../common/Card';
 import { EmptyFilterState } from '../common/EmptyFilterState';
 import { ErrorBoundary } from '../common/ErrorBoundary';
@@ -11,6 +12,7 @@ import { KpiStrip } from '../overview/KpiStrip';
 import { PackageTable } from './PackageTable';
 
 export function DisciplinePage() {
+  const { t } = useT();
   const { name = '' } = useParams();
   const [params] = useSearchParams();
   const { filtered, filters, setFilters, clearFilters, ctx, disciplineOrder } = useDashboard();
@@ -23,9 +25,9 @@ export function DisciplinePage() {
   if (!disciplineOrder.includes(name)) {
     return (
       <div className="px-4 py-16 text-center text-sm text-ink-2">
-        Không tìm thấy discipline “{name}”.{' '}
+        {t('discipline.notFound', { name })}{' '}
         <Link to="/" className="text-ai-1 underline">
-          Về tổng quan
+          {t('discipline.backToOverview')}
         </Link>
       </div>
     );
@@ -35,10 +37,10 @@ export function DisciplinePage() {
     <Stagger className="mx-auto grid max-w-[1600px] gap-4 px-4 py-4">
       <motion.div layoutId={`discipline-${name}`} className="flex flex-wrap items-center gap-3">
         <Link to={{ pathname: '/', search: query ? `?${query}` : '' }} className="text-sm text-ink-3 hover:text-ink">
-          ← Tổng quan
+          ← {t('discipline.backToOverview')}
         </Link>
         <h1 className="text-xl font-semibold tracking-wide">{name}</h1>
-        <nav className="ml-auto flex flex-wrap gap-1 text-xs" aria-label="Discipline khác">
+        <nav className="ml-auto flex flex-wrap gap-1 text-xs" aria-label={t('discipline.otherDisciplines')}>
           {disciplineOrder
             .filter((d) => d !== name)
             .map((d) => (
@@ -53,8 +55,8 @@ export function DisciplinePage() {
       ) : (
         <>
           <KpiStrip kpis={kpis} dueSoonDays={ctx.dueSoonDays} activeFlags={filters.flags} onFilter={setFilters} />
-          <ErrorBoundary label="Danh sách package">
-            <Card title={`Packages (${packages.length})`} subtitle="Mặc định sắp theo rủi ro · bấm một dòng để xem chi tiết">
+          <ErrorBoundary label={t('errorBoundary.packageListLabel')}>
+            <Card title={`Packages (${packages.length})`} subtitle={t('discipline.packagesSubtitle')}>
               <PackageTable packages={packages} onOpen={open} />
             </Card>
           </ErrorBoundary>

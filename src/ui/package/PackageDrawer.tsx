@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { summarizePackages } from '../../analytics/aggregate';
+import { useT } from '../../i18n/useT';
 import { formatDay } from '../../lib/day';
 import { useApp } from '../../store/useApp';
 import { FloatBadge, PhaseChip } from '../common/Chip';
@@ -12,6 +13,7 @@ import { RosHistory } from './RosHistory';
 
 /** Package detail, opened with `?pkg=<code>` from any view. Shows all facilities regardless of filters. */
 export function PackageDrawer() {
+  const { t } = useT();
   const { code, close } = usePackageParam();
   const metrics = useApp((s) => s.metrics);
   const cutOff = useApp((s) => s.cutOff);
@@ -36,19 +38,19 @@ export function PackageDrawer() {
             <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
               <PhaseChip phase={pkg.scheduledPhase} />
               <span className="text-ink-3">{pkg.lines[0].line.itemType}</span>
-              <span className="text-ink-3">ROS float min</span>
+              <span className="text-ink-3">{t('packageTable.rosFloat')} min</span>
               <FloatBadge days={pkg.minRosFloat} />
             </div>
           </div>
         ) : (
-          <h2 className="text-base font-semibold">Không tìm thấy package “{code}”</h2>
+          <h2 className="text-base font-semibold">{t('packageDrawer.notFound', { code: code ?? '' })}</h2>
         )
       }
     >
       {pkg && selected && (
         <div className="space-y-5">
           <section>
-            <h3 className="mb-2 text-xs font-semibold tracking-wider text-ink-3 uppercase">Tiến độ theo facility</h3>
+            <h3 className="mb-2 text-xs font-semibold tracking-wider text-ink-3 uppercase">{t('packageDrawer.progressByFacility')}</h3>
             <ErrorBoundary label="Gantt">
               <MiniGantt lines={pkg.lines} cutOff={cutOff} />
             </ErrorBoundary>
@@ -56,7 +58,7 @@ export function PackageDrawer() {
 
           <section>
             <div className="mb-2 flex flex-wrap items-center gap-2">
-              <h3 className="text-xs font-semibold tracking-wider text-ink-3 uppercase">Chi tiết mốc</h3>
+              <h3 className="text-xs font-semibold tracking-wider text-ink-3 uppercase">{t('packageDrawer.milestoneDetails')}</h3>
               <div className="flex flex-wrap gap-1">
                 {pkg.lines.map((m) => (
                   <button
@@ -78,17 +80,17 @@ export function PackageDrawer() {
                 <dd className="font-mono">{formatDay(selected.line.ros)}</dd>
               </div>
               <div className="rounded-lg border border-line p-2">
-                <dt className="text-ink-3">ROS float</dt>
+                <dt className="text-ink-3">{t('packageTable.rosFloat')}</dt>
                 <dd>
                   <FloatBadge days={selected.rosFloat} />
                 </dd>
               </div>
               <div className="rounded-lg border border-line p-2">
                 <dt className="text-ink-3">Delivery</dt>
-                <dd className="font-mono">{selected.line.deliveryWeeks ?? '—'} tuần</dd>
+                <dd className="font-mono">{selected.line.deliveryWeeks ?? '—'} {t('unit.weeks')}</dd>
               </div>
               <div className="rounded-lg border border-line p-2">
-                <dt className="text-ink-3">Dòng trong sheet</dt>
+                <dt className="text-ink-3">{t('packageDrawer.sourceRowLabel')}</dt>
                 <dd className="font-mono">{selected.line.sourceRow}</dd>
               </div>
             </dl>
@@ -96,8 +98,8 @@ export function PackageDrawer() {
           </section>
 
           <section>
-            <h3 className="mb-2 text-xs font-semibold tracking-wider text-ink-3 uppercase">Lịch sử ROS ({selected.line.facility})</h3>
-            <ErrorBoundary label="Lịch sử ROS">
+            <h3 className="mb-2 text-xs font-semibold tracking-wider text-ink-3 uppercase">{t('packageDrawer.rosHistoryTitle', { facility: selected.line.facility })}</h3>
+            <ErrorBoundary label={t('errorBoundary.rosHistoryLabel')}>
               <RosHistory line={selected.line} />
             </ErrorBoundary>
           </section>

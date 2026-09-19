@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { effectiveDay, type LineMetrics } from '../../analytics/lineMetrics';
 import { MILESTONES } from '../../data/milestones';
+import { useT } from '../../i18n/useT';
 import { formatDay, formatMonth, monthKey, monthRange, monthBounds, type Day } from '../../lib/day';
 import { useApp } from '../../store/useApp';
 import { STATUS_ICON } from '../common/Chip';
@@ -11,6 +12,7 @@ import { milestoneStatusColor, phaseColor } from '../theme/palette';
  * Vertical lines mark the cut-off (cyan) and the line's ROS (red).
  */
 export function MiniGantt({ lines, cutOff }: { lines: LineMetrics[]; cutOff: Day }) {
+  const { t } = useT();
   const theme = useApp((s) => s.theme);
 
   const range = useMemo(() => {
@@ -87,7 +89,7 @@ export function MiniGantt({ lines, cutOff }: { lines: LineMetrics[]; cutOff: Day
         ))}
         <p className="mt-2 flex flex-wrap gap-3 text-[11px] text-ink-3">
           <span>○ Plan</span>
-          <span>● Forecast (màu phase / trạng thái)</span>
+          <span>{t('miniGantt.legendForecast')}</span>
           <span>✓ Actual</span>
           <span className="text-ai-1">│ Cut-off</span>
           <span className="text-critical">│ ROS</span>

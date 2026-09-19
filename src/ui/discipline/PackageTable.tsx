@@ -1,17 +1,19 @@
 import { useMemo, useState } from 'react';
 import type { PackageSummary } from '../../analytics/aggregate';
 import { MILESTONE_BY_KEY, phaseIndex } from '../../data/milestones';
+import type { MessageKey } from '../../i18n/en';
+import { useT } from '../../i18n/useT';
 import { formatDay } from '../../lib/day';
 import { FloatBadge, PhaseChip, StatusBadge } from '../common/Chip';
 
 type SortKey = 'risk' | 'code' | 'phase' | 'next' | 'slip' | 'float';
 
-const COLUMNS: { key: SortKey; label: string; className?: string }[] = [
-  { key: 'code', label: 'Package' },
-  { key: 'phase', label: 'Phase (kế hoạch)' },
-  { key: 'next', label: 'Mốc tiếp theo' },
-  { key: 'slip', label: 'Trượt max', className: 'text-right' },
-  { key: 'float', label: 'ROS float', className: 'text-right' },
+const COLUMNS: { key: SortKey; labelKey: MessageKey; className?: string }[] = [
+  { key: 'code', labelKey: 'packageTable.package' },
+  { key: 'phase', labelKey: 'filter.phaseLabel' },
+  { key: 'next', labelKey: 'packageTable.nextMilestone' },
+  { key: 'slip', labelKey: 'packageTable.maxSlip', className: 'text-right' },
+  { key: 'float', labelKey: 'packageTable.rosFloat', className: 'text-right' },
 ];
 
 const COMPARE: Record<SortKey, (a: PackageSummary, b: PackageSummary) => number> = {
@@ -30,11 +32,12 @@ function riskClass(p: PackageSummary): string {
 }
 
 function RiskTags({ p }: { p: PackageSummary }) {
+  const { t } = useT();
   return (
     <>
       {p.rosAtRisk && <span className="mr-1 text-critical">▲ ROS</span>}
-      {p.overdueCount > 0 && <span className="mr-1 text-serious">! {p.overdueCount} quá hạn</span>}
-      {p.slipped && !p.rosAtRisk && <span className="text-warning">● trượt</span>}
+      {p.overdueCount > 0 && <span className="mr-1 text-serious">{t('packageTable.overdueCount', { count: p.overdueCount })}</span>}
+      {p.slipped && !p.rosAtRisk && <span className="text-warning">{t('packageTable.slipped')}</span>}
       {p.riskRank === 0 && <span className="text-good">✓</span>}
     </>
   );
@@ -54,6 +57,7 @@ function NextCell({ p }: { p: PackageSummary }) {
 
 /** Package list: sortable table on desktop, cards on phones. Riskiest first by default. */
 export function PackageTable({ packages, onOpen }: { packages: PackageSummary[]; onOpen: (code: string) => void }) {
+  const { t } = useT();
   const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: 'risk', dir: 1 });
   const rows = useMemo(() => [...packages].sort((a, b) => COMPARE[sort.key](a, b) * sort.dir), [packages, sort]);
   const toggle = (key: SortKey) => setSort((s) => ({ key, dir: s.key === key ? ((-s.dir) as 1 | -1) : 1 }));
@@ -67,13 +71,13 @@ export function PackageTable({ packages, onOpen }: { packages: PackageSummary[];
               {COLUMNS.map((c) => (
                 <th key={c.key} className={`px-3 py-2 font-medium ${c.className ?? ''}`} aria-sort={sort.key === c.key ? (sort.dir === 1 ? 'ascending' : 'descending') : 'none'}>
                   <button type="button" onClick={() => toggle(c.key)} className="hover:text-ink">
-                    {c.label} {sort.key === c.key ? (sort.dir === 1 ? '↑' : '↓') : ''}
+                    {t(c.labelKey)} {sort.key === c.key ? (sort.dir === 1 ? '↑' : '↓') : ''}
                   </button>
                 </th>
               ))}
               <th className="px-3 py-2 font-medium">
                 <button type="button" onClick={() => setSort({ key: 'risk', dir: 1 })} className="hover:text-ink">
-                  Rủi ro {sort.key === 'risk' ? '●' : ''}
+                  {t('packageTable.risk')} {sort.key === 'risk' ? '●' : ''}
                 </button>
               </th>
             </tr>
@@ -91,7 +95,7 @@ export function PackageTable({ packages, onOpen }: { packages: PackageSummary[];
                 <td className="px-3 py-2">
                   <PhaseChip phase={p.scheduledPhase} />
                   {p.currentPhase !== p.scheduledPhase && (
-                    <p className="mt-1 text-[11px] text-ink-3" title="Phase theo mốc đã có Actual">
+                    <p className="mt-1 text-[11px] text-ink-3" title={t('packageTable.actualPhaseTitle')}>
                       Actual: {p.currentPhase === 'delivered' ? 'Delivered' : <PhaseChip phase={p.currentPhase} muted />}
                     </p>
                   )}
