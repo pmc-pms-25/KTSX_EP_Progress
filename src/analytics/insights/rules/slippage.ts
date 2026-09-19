@@ -1,4 +1,5 @@
-import { completeness, fmt, lineLabel, mostCommon } from '../helpers';
+import { msg } from '../../../i18n/message';
+import { completeness, lineLabel, mostCommon } from '../helpers';
 import type { InsightRule } from '../types';
 
 export const slippageRule: InsightRule = {
@@ -12,8 +13,14 @@ export const slippageRule: InsightRule = {
     return {
       id: 'slippage',
       severity: 'warning',
-      title: `${fmt(slipped.length)} dòng có Forecast trễ hơn Plan`,
-      detail: `${top.key} chiếm ${fmt(top.count)} dòng. Trượt trung bình ${fmt(avg)} ngày, lớn nhất ${fmt(worst.maxSlip ?? 0)} ngày (${lineLabel(worst)}).`,
+      title: msg('insight.slippage.title', { count: slipped.length }),
+      detail: msg('insight.slippage.detail', {
+        discipline: top.key,
+        count: top.count,
+        avg,
+        max: worst.maxSlip ?? 0,
+        line: lineLabel(worst),
+      }),
       confidence: completeness(metrics, (m) => m.maxSlip !== undefined),
       evidence: slipped.map((m) => m.line.id),
       filter: { flags: ['slipped'] },

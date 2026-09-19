@@ -1,3 +1,4 @@
+import { translate } from '../../i18n/translate';
 import { dayFromISO } from '../../lib/day';
 import { makeLine, sampleMetrics, TEST_CTX } from '../../test/planFixture';
 import { computeAllMetrics } from '../lineMetrics';
@@ -17,10 +18,12 @@ describe('insight rules on the sample plan', () => {
   it('reports ROS risk with the worst line', () => {
     const i = rosRiskRule.evaluate(ic)!;
     expect(i.severity).toBe('critical');
-    expect(i.title).toBe('1 dòng có nguy cơ trễ ROS');
-    expect(i.detail).toContain('MECHANICAL');
-    expect(i.detail).toContain('MEC-001 @ PS2R');
-    expect(i.detail).toContain('trễ 19 ngày');
+    expect(translate('vi', i.title)).toBe('1 dòng có nguy cơ trễ ROS');
+    expect(translate('en', i.title)).toBe('1 line at risk of missing ROS');
+    const detail = translate('vi', i.detail);
+    expect(detail).toContain('MECHANICAL');
+    expect(detail).toContain('MEC-001 @ PS2R');
+    expect(detail).toContain('trễ 19 ngày');
     expect(i.evidence).toEqual(['MEC-001|PS2R|7']);
     expect(i.filter).toEqual({ flags: ['rosRisk'] });
     expect(i.confidence).toBe(1);
@@ -28,26 +31,26 @@ describe('insight rules on the sample plan', () => {
 
   it('reports slippage', () => {
     const i = slippageRule.evaluate(ic)!;
-    expect(i.title).toBe('1 dòng có Forecast trễ hơn Plan');
-    expect(i.detail).toContain('lớn nhất 75 ngày');
+    expect(translate('vi', i.title)).toBe('1 dòng có Forecast trễ hơn Plan');
+    expect(translate('vi', i.detail)).toContain('lớn nhất 75 ngày');
   });
 
   it('reports overdue milestones without actuals', () => {
     const i = overdueRule.evaluate(ic)!;
-    expect(i.title).toBe('4 mốc đã qua hạn nhưng chưa có Actual');
+    expect(translate('vi', i.title)).toBe('4 mốc đã qua hạn nhưng chưa có Actual');
     expect(i.evidence).toEqual(['MEC-002|BF|11']);
   });
 
   it('reports milestones due soon', () => {
     const i = dueSoonRule.evaluate(ic)!;
-    expect(i.title).toBe('1 mốc đến hạn trong 30 ngày tới');
-    expect(i.detail).toContain('TBE (1)');
+    expect(translate('vi', i.title)).toBe('1 mốc đến hạn trong 30 ngày tới');
+    expect(translate('vi', i.detail)).toContain('TBE (1)');
   });
 
   it('reports ROS pushes', () => {
     const i = rosPushedRule.evaluate(ic)!;
-    expect(i.title).toBe('ROS đã bị dời trên 1 dòng');
-    expect(i.detail).toContain('152 ngày qua 3 lần');
+    expect(translate('vi', i.title)).toBe('ROS đã bị dời trên 1 dòng');
+    expect(translate('vi', i.detail)).toContain('152 ngày qua 3 lần');
   });
 });
 
@@ -57,9 +60,10 @@ describe('workloadPeakRule', () => {
   it('fires when a future month holds at least twice the average', () => {
     const lines = [at('2027-03-02'), at('2027-03-10'), at('2027-03-15'), at('2027-03-20'), at('2027-05-01'), at('2027-07-01')];
     const i = workloadPeakRule.evaluate({ metrics: computeAllMetrics(lines, TEST_CTX), ctx: TEST_CTX })!;
-    expect(i.title).toBe('Đỉnh khối lượng: Mar 2027 có 4 mốc đến hạn');
-    expect(i.detail).toContain('Gấp 2.0×');
-    expect(i.detail).toContain('LOA Effective (4)');
+    expect(translate('vi', i.title)).toBe('Đỉnh khối lượng: Mar 2027 có 4 mốc đến hạn');
+    const detail = translate('vi', i.detail);
+    expect(detail).toContain('Gấp 2.0×');
+    expect(detail).toContain('LOA Effective (4)');
     expect(i.evidence).toHaveLength(4);
   });
 

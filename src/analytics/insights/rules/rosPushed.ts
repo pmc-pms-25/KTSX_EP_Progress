@@ -1,4 +1,5 @@
-import { completeness, fmt, lineLabel } from '../helpers';
+import { msg } from '../../../i18n/message';
+import { completeness, lineLabel } from '../helpers';
 import type { InsightRule } from '../types';
 
 export const rosPushedRule: InsightRule = {
@@ -11,8 +12,13 @@ export const rosPushedRule: InsightRule = {
     return {
       id: 'ros-pushed',
       severity: 'info',
-      title: `ROS đã bị dời trên ${fmt(pushed.length)} dòng`,
-      detail: `Nhiều nhất ${fmt(maxCount)} lần điều chỉnh. Dời xa nhất: ${lineLabel(worst)}, tổng ${fmt(worst.rosPushDays)} ngày qua ${fmt(worst.rosPushCount)} lần.`,
+      title: msg('insight.rosPushed.title', { count: pushed.length }),
+      detail: msg('insight.rosPushed.detail', {
+        count: maxCount,
+        line: lineLabel(worst),
+        days: worst.rosPushDays,
+        times: worst.rosPushCount,
+      }),
       confidence: completeness(metrics, (m) => m.line.rosHistory.length > 1),
       evidence: pushed.map((m) => m.line.id),
     };

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import type { Filters } from '../../analytics/filters';
 import type { Insight, Severity } from '../../analytics/insights/types';
 import type { LineMetrics } from '../../analytics/lineMetrics';
+import { translate } from '../../i18n/translate';
 import { Card } from '../common/Card';
 
 const SEVERITY: Record<Severity, { label: string; icon: string; tone: string }> = {
@@ -69,9 +70,11 @@ export function InsightsPanel({ insights, metrics, onApply, onOpenPackage }: Ins
                     Confidence {Math.round(ins.confidence * 100)}%
                   </span>
                 </div>
-                <p className="mt-1.5 text-sm font-semibold text-ink">{ins.title}</p>
+                {/* i18n: Batch B */}
+                <p className="mt-1.5 text-sm font-semibold text-ink">{translate('vi', ins.title)}</p>
                 <p className="mt-1 min-h-10 text-xs leading-relaxed text-ink-2">
-                  <Typewriter text={ins.detail} />
+                  {/* i18n: Batch B */}
+                  <Typewriter text={translate('vi', ins.detail)} />
                 </p>
                 <div className="mt-2 flex gap-3 text-xs">
                   <button type="button" className="text-ai-1 underline" onClick={() => setWhy(open ? undefined : ins.id)}>

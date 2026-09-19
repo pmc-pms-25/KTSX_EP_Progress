@@ -1,6 +1,7 @@
 import { MILESTONE_BY_KEY } from '../../../data/milestones';
 import type { MilestoneKey } from '../../../data/types';
-import { fmt, mostCommon } from '../helpers';
+import { msg } from '../../../i18n/message';
+import { mostCommon } from '../helpers';
 import type { InsightRule } from '../types';
 
 export const overdueRule: InsightRule = {
@@ -13,8 +14,12 @@ export const overdueRule: InsightRule = {
     return {
       id: 'overdue',
       severity: 'warning',
-      title: `${fmt(keys.length)} mốc đã qua hạn nhưng chưa có Actual`,
-      detail: `Trên ${fmt(lines.length)} dòng; nhiều nhất là ${MILESTONE_BY_KEY[top.key as MilestoneKey].label} (${fmt(top.count)}). Kiểm tra việc cập nhật dòng ACTUAL trong sheet.`,
+      title: msg('insight.overdue.title', { count: keys.length }),
+      detail: msg('insight.overdue.detail', {
+        lines: lines.length,
+        milestone: MILESTONE_BY_KEY[top.key as MilestoneKey].label,
+        count: top.count,
+      }),
       confidence: 1,
       evidence: lines.map((m) => m.line.id),
       filter: { flags: ['overdue'] },

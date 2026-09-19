@@ -18,5 +18,3 @@ export function mostCommon<T>(items: readonly T[], key: (item: T) => string): { 
 export function lineLabel(m: LineMetrics): string {
   return `${m.line.packageCode} @ ${m.line.facility}`;
 }
-
-export const fmt = (n: number) => n.toLocaleString('vi-VN');

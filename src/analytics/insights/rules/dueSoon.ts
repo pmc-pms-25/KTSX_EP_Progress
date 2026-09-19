@@ -1,6 +1,6 @@
 import { MILESTONE_BY_KEY } from '../../../data/milestones';
 import type { MilestoneKey } from '../../../data/types';
-import { fmt } from '../helpers';
+import { msg } from '../../../i18n/message';
 import type { InsightRule } from '../types';
 
 export const dueSoonRule: InsightRule = {
@@ -15,16 +15,17 @@ export const dueSoonRule: InsightRule = {
       }
     }
     const total = [...counts.values()].reduce((a, b) => a + b, 0);
+    // Milestone short labels are domain terms (English in both languages); pre-join since translate() only interpolates flat params.
     const top = [...counts]
       .sort((a, b) => b[1] - a[1])
       .slice(0, 3)
-      .map(([key, n]) => `${MILESTONE_BY_KEY[key].short} (${fmt(n)})`)
+      .map(([key, n]) => `${MILESTONE_BY_KEY[key].short} (${n})`)
       .join(', ');
     return {
       id: 'due-soon',
       severity: 'info',
-      title: `${fmt(total)} mốc đến hạn trong ${ctx.dueSoonDays} ngày tới`,
-      detail: `Trên ${fmt(lines.length)} dòng. Nhiều nhất: ${top}.`,
+      title: msg('insight.dueSoon.title', { count: total, days: ctx.dueSoonDays }),
+      detail: msg('insight.dueSoon.detail', { lines: lines.length, top }),
       confidence: 1,
       evidence: lines.map((m) => m.line.id),
       filter: { flags: ['dueSoon'] },

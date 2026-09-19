@@ -1,4 +1,5 @@
-import { completeness, fmt, lineLabel, mostCommon } from '../helpers';
+import { msg } from '../../../i18n/message';
+import { completeness, lineLabel, mostCommon } from '../helpers';
 import type { InsightRule } from '../types';
 
 export const rosRiskRule: InsightRule = {
@@ -11,8 +12,13 @@ export const rosRiskRule: InsightRule = {
     return {
       id: 'ros-risk',
       severity: 'critical',
-      title: `${fmt(risky.length)} dòng có nguy cơ trễ ROS`,
-      detail: `Tập trung nhiều nhất ở ${top.key} (${fmt(top.count)} dòng). Nặng nhất: ${lineLabel(worst)}, hàng về công trường trễ ${fmt(-(worst.rosFloat ?? 0))} ngày so với ROS.`,
+      title: msg('insight.rosRisk.title', { count: risky.length }),
+      detail: msg('insight.rosRisk.detail', {
+        discipline: top.key,
+        count: top.count,
+        line: lineLabel(worst),
+        days: -(worst.rosFloat ?? 0),
+      }),
       confidence: completeness(metrics, (m) => m.rosFloat !== undefined),
       evidence: risky.map((m) => m.line.id),
       filter: { flags: ['rosRisk'] },

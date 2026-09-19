@@ -1,8 +1,9 @@
 import { MILESTONES, MILESTONE_BY_KEY } from '../../../data/milestones';
 import type { MilestoneKey } from '../../../data/types';
+import { msg } from '../../../i18n/message';
 import { formatMonth, monthKey } from '../../../lib/day';
 import { effectiveDay } from '../../lineMetrics';
-import { completeness, fmt, mostCommon } from '../helpers';
+import { completeness, mostCommon } from '../helpers';
 import type { InsightRule } from '../types';
 
 /** A month is a peak when it holds at least this multiple of the average active month. */
@@ -32,8 +33,13 @@ export const workloadPeakRule: InsightRule = {
     return {
       id: 'workload-peak',
       severity: ratio >= 3 ? 'warning' : 'info',
-      title: `Đỉnh khối lượng: ${formatMonth(peakMonth)} có ${fmt(peakCount)} mốc đến hạn`,
-      detail: `Gấp ${ratio.toFixed(1)}× trung bình (${avg.toFixed(1)} mốc/tháng). Nhiều nhất là ${MILESTONE_BY_KEY[topMilestone.key as MilestoneKey].label} (${fmt(topMilestone.count)}).`,
+      title: msg('insight.workloadPeak.title', { month: formatMonth(peakMonth), count: peakCount }),
+      detail: msg('insight.workloadPeak.detail', {
+        ratio: ratio.toFixed(1),
+        avg: avg.toFixed(1),
+        milestone: MILESTONE_BY_KEY[topMilestone.key as MilestoneKey].label,
+        count: topMilestone.count,
+      }),
       confidence: completeness(metrics, (m) => Object.keys(m.line.milestones).length > 0),
       evidence: [...new Set(inPeak.map((h) => h.lineId))],
     };
