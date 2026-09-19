@@ -9,7 +9,8 @@ import {
 } from 'echarts/components';
 import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
-import ReactEChartsCore from 'echarts-for-react/lib/core';
+// ESM entry on purpose: `lib/core` is CommonJS and bundles to the module object instead of the component.
+import ReactEChartsCore from 'echarts-for-react/esm/core';
 import { useReducedMotion } from 'motion/react';
 import { useMemo } from 'react';
 import type { EChartsOption } from 'echarts';
