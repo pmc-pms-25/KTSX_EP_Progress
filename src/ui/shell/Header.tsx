@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { LANGS, type Lang } from '../../i18n/message';
+import { locale } from '../../i18n/translate';
 import { useT } from '../../i18n/useT';
 import { dayFromISO, dayToISO, todayDay } from '../../lib/day';
 import { appStore } from '../../store/appStore';
@@ -11,7 +12,7 @@ function timeAgo(t: ReturnType<typeof useT>['t'], lang: Lang, date: Date, now = 
   const minutes = Math.round((now.getTime() - date.getTime()) / 60_000);
   if (minutes < 1) return t('header.syncedJustNow');
   if (minutes < 60) return t('header.syncedMinutesAgo', { minutes });
-  return date.toLocaleTimeString(lang === 'vi' ? 'vi-VN' : 'en-US', { hour: '2-digit', minute: '2-digit' });
+  return date.toLocaleTimeString(locale(lang), { hour: '2-digit', minute: '2-digit' });
 }
 
 export function Header({ onOpenHealth }: { onOpenHealth: () => void }) {
