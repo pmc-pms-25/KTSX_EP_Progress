@@ -1,18 +1,21 @@
 import { useMemo } from 'react';
 import { computeKpis, disciplineHealth } from '../../analytics/aggregate';
 import { generateInsights } from '../../analytics/insights/registry';
+import { phaseProgress } from '../../analytics/phaseProgress';
 import { useT } from '../../i18n/useT';
 import { useApp } from '../../store/useApp';
 import { Stagger } from '../common/Card';
 import { ErrorBoundary } from '../common/ErrorBoundary';
 import { EmptyFilterState } from '../common/EmptyFilterState';
 import { useDashboard } from '../hooks/useDashboard';
-import { usePackageParam } from '../hooks/useFilters';
+import { usePackageParam, usePhaseParam } from '../hooks/useFilters';
 import { DisciplineGrid } from './DisciplineGrid';
 import { FacilityHeatmap } from './FacilityHeatmap';
 import { InsightsPanel } from './InsightsPanel';
 import { KpiStrip } from './KpiStrip';
 import { PhaseFunnel } from './PhaseFunnel';
+import { PhaseProgressDrawer } from './PhaseProgressDrawer';
+import { PhaseTimeline } from './PhaseTimeline';
 import { WorkloadChart } from './WorkloadChart';
 
 export function OverviewPage() {
@@ -20,8 +23,10 @@ export function OverviewPage() {
   const { filtered, filters, setFilters, clearFilters, ctx, disciplineOrder } = useDashboard();
   const cutOff = useApp((s) => s.cutOff);
   const { open } = usePackageParam();
+  const { open: openPhase } = usePhaseParam();
   const kpis = useMemo(() => computeKpis(filtered), [filtered]);
   const health = useMemo(() => disciplineHealth(filtered, disciplineOrder), [filtered, disciplineOrder]);
+  const progress = useMemo(() => phaseProgress(filtered, cutOff), [filtered, cutOff]);
   const insights = useMemo(() => generateInsights({ metrics: filtered, ctx }), [filtered, ctx]);
 
   if (filtered.length === 0) return <EmptyFilterState onClear={clearFilters} />;
@@ -30,6 +35,10 @@ export function OverviewPage() {
     <Stagger className="mx-auto grid max-w-[1600px] gap-4 px-4 py-4">
       <ErrorBoundary label="KPI">
         <KpiStrip kpis={kpis} dueSoonDays={ctx.dueSoonDays} activeFlags={filters.flags} onFilter={setFilters} />
+      </ErrorBoundary>
+      <ErrorBoundary label={t('phaseTimeline.title')}>
+        <PhaseTimeline progress={progress} onSelect={openPhase} />
+        <PhaseProgressDrawer progress={progress} />
       </ErrorBoundary>
       <ErrorBoundary label="AI Insights">
         <InsightsPanel insights={insights} metrics={filtered} onApply={setFilters} onOpenPackage={open} />

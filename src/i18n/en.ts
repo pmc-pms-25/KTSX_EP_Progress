@@ -148,6 +148,27 @@ export const en = {
   'phaseFunnel.basisSchedule': 'Schedule',
   'phaseFunnel.chartAriaLabel': 'Line count by phase',
 
+  // Overview — phase timeline (src/ui/overview/PhaseTimeline.tsx).
+  'phaseTimeline.title': 'Phase progress',
+  'phaseTimeline.subtitle': 'Actual / Plan completed as of cut-off · click a milestone for its lines',
+  'phaseTimeline.nodeLabel': '{phase}: {actual} of {plan} completed',
+  'phaseTimeline.late': '{count} late',
+  'phaseTimeline.nothingDue': 'Nothing due yet',
+
+  // Overview — phase progress drawer (src/ui/overview/PhaseProgressDrawer.tsx).
+  'phaseDrawer.summary': '{actual} / {plan} completed by cut-off · {total} {total|line|lines} planned in this phase',
+  'phaseDrawer.tabsLabel': 'Line status',
+  'phaseDrawer.tab.late': 'Late',
+  'phaseDrawer.tab.done': 'Completed',
+  'phaseDrawer.tab.all': 'All',
+  'phaseDrawer.gate': 'Milestone',
+  'phaseDrawer.delay': 'Δ days',
+  'phaseDrawer.state.late': 'Late',
+  'phaseDrawer.state.done': 'Done',
+  'phaseDrawer.state.ahead': 'Early',
+  'phaseDrawer.state.pending': 'Not due',
+  'phaseDrawer.empty': 'No lines in this list.',
+
   // Overview — facility heatmap (src/ui/overview/FacilityHeatmap.tsx).
   'facilityHeatmap.title': 'Facility × Month',
   'facilityHeatmap.subtitle': 'Milestones due by facility and month',

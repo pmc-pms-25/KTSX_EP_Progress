@@ -150,6 +150,27 @@ export const vi: Dictionary = {
   'phaseFunnel.basisSchedule': 'Kế hoạch',
   'phaseFunnel.chartAriaLabel': 'Số dòng theo phase',
 
+  // Overview — phase timeline (src/ui/overview/PhaseTimeline.tsx).
+  'phaseTimeline.title': 'Tiến độ theo phase',
+  'phaseTimeline.subtitle': 'Actual / Plan hoàn thành tính đến cut-off · bấm vào milestone để xem danh sách',
+  'phaseTimeline.nodeLabel': '{phase}: đã xong {actual} trên {plan}',
+  'phaseTimeline.late': '{count} trễ',
+  'phaseTimeline.nothingDue': 'Chưa có mốc đến hạn',
+
+  // Overview — phase progress drawer (src/ui/overview/PhaseProgressDrawer.tsx).
+  'phaseDrawer.summary': 'Đã xong {actual} / {plan} tính đến cut-off · {total} dòng có kế hoạch trong phase này',
+  'phaseDrawer.tabsLabel': 'Trạng thái dòng',
+  'phaseDrawer.tab.late': 'Trễ',
+  'phaseDrawer.tab.done': 'Đã xong',
+  'phaseDrawer.tab.all': 'Tất cả',
+  'phaseDrawer.gate': 'Mốc',
+  'phaseDrawer.delay': 'Δ ngày',
+  'phaseDrawer.state.late': 'Trễ',
+  'phaseDrawer.state.done': 'Đã xong',
+  'phaseDrawer.state.ahead': 'Xong sớm',
+  'phaseDrawer.state.pending': 'Chưa đến hạn',
+  'phaseDrawer.empty': 'Không có dòng nào trong danh sách này.',
+
   // Overview — facility heatmap (src/ui/overview/FacilityHeatmap.tsx).
   'facilityHeatmap.title': 'Facility × Tháng',
   'facilityHeatmap.subtitle': 'Số mốc đến hạn theo facility và tháng',
