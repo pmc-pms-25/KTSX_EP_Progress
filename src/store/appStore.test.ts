@@ -1,6 +1,9 @@
+import { ConfigError } from '../config/config';
 import type { AppConfig } from '../config/config';
 import { parsePlan } from '../data/parser/parsePlan';
 import { SourceError, type DataSource } from '../data/sources/sources';
+import { msg } from '../i18n/message';
+import { translate } from '../i18n/translate';
 import { dayFromISO } from '../lib/day';
 import { sampleWorkbook } from '../test/fixtures';
 import { createAppStore, type StoreDeps } from './appStore';
@@ -36,7 +39,8 @@ describe('appStore', () => {
     const s = store.getState();
     expect(s.status).toBe('ready');
     expect(s.step).toBe('done');
-    expect(s.stepDetail).toBe('6 dòng');
+    expect(s.stepDetail).toEqual(msg('status.linesLoaded', { count: 6 }));
+    expect(translate('vi', s.stepDetail!)).toBe('6 dòng');
     expect(s.plan?.lines).toHaveLength(6);
     expect(s.metrics).toHaveLength(6);
     expect(s.cutOff).toBe(dayFromISO('2026-09-18'));
@@ -45,21 +49,29 @@ describe('appStore', () => {
   it('reports source errors when nothing is loaded yet', async () => {
     const store = createAppStore(
       deps({}, async () => {
-        throw new SourceError('ACCESS_DENIED', 'denied', 403);
+        throw new SourceError('ACCESS_DENIED', msg('error.source.accessDenied'), 403);
       }),
     );
     await store.getState().load();
-    expect(store.getState()).toMatchObject({ status: 'error', error: { code: 'ACCESS_DENIED', message: 'denied' } });
+    const { error } = store.getState();
+    expect(store.getState().status).toBe('error');
+    expect(error).toMatchObject({ code: 'ACCESS_DENIED' });
+    expect(translate('vi', error!.title)).toBe('Không tải được dữ liệu');
+    expect(translate('vi', error!.detail)).toBe('Nguồn dữ liệu từ chối truy cập. Sheet có thể không còn được chia sẻ công khai.');
   });
 
   it('reports parse errors', async () => {
     const store = createAppStore(deps({}, async () => new TextEncoder().encode('nope').buffer as ArrayBuffer));
     await store.getState().load();
-    expect(store.getState()).toMatchObject({ status: 'error', error: { code: 'NOT_XLSX', title: 'Dữ liệu không đúng cấu trúc' } });
+    const { error } = store.getState();
+    expect(store.getState().status).toBe('error');
+    expect(error).toMatchObject({ code: 'NOT_XLSX' });
+    expect(translate('vi', error!.title)).toBe('Dữ liệu không đúng cấu trúc');
+    expect(translate('vi', error!.detail)).toBe('Dữ liệu tải về không phải file Excel (XLSX).');
   });
 
   it('reports config errors', async () => {
-    const configError = Object.assign(new Error('bad config'), { name: 'ConfigError' });
+    const configError = new ConfigError(msg('error.config.notObject'));
     const store = createAppStore(
       deps({
         loadConfig: async () => {
@@ -68,14 +80,17 @@ describe('appStore', () => {
       }),
     );
     await store.getState().load();
-    expect(store.getState().error).toEqual({ title: 'Lỗi cấu hình', message: 'bad config', code: 'CONFIG' });
+    const { error } = store.getState();
+    expect(error).toMatchObject({ code: 'CONFIG' });
+    expect(translate('vi', error!.title)).toBe('Lỗi cấu hình');
+    expect(translate('vi', error!.detail)).toBe('config.json phải là một object JSON.');
   });
 
   it('keeps the previous plan when a refresh fails', async () => {
     let fail = false;
     const store = createAppStore(
       deps({}, async () => {
-        if (fail) throw new SourceError('NETWORK', 'offline');
+        if (fail) throw new SourceError('NETWORK', msg('error.source.network'));
         return sampleWorkbook();
       }),
     );
@@ -122,5 +137,43 @@ describe('appStore', () => {
     const store = createAppStore(deps({ storage: blocked }));
     expect(store.getState().theme).toBe('dark');
     expect(() => store.getState().toggleTheme()).not.toThrow();
+  });
+
+  it('defaults the language to English', () => {
+    const store = createAppStore(deps({ storage: memoryStorage() }));
+    expect(store.getState().lang).toBe('en');
+  });
+
+  it('restores a persisted Vietnamese language choice', () => {
+    const storage = memoryStorage({ 'pms-peiw-lang': 'vi' });
+    expect(createAppStore(deps({ storage })).getState().lang).toBe('vi');
+  });
+
+  it('falls back to English for an unrecognized stored value', () => {
+    const storage = memoryStorage({ 'pms-peiw-lang': 'fr' });
+    expect(createAppStore(deps({ storage })).getState().lang).toBe('en');
+  });
+
+  it('sets and persists the language', () => {
+    const storage = memoryStorage();
+    const store = createAppStore(deps({ storage }));
+    store.getState().setLang('vi');
+    expect(store.getState().lang).toBe('vi');
+    expect(storage.data['pms-peiw-lang']).toBe('vi');
+    expect(createAppStore(deps({ storage })).getState().lang).toBe('vi');
+  });
+
+  it('survives blocked storage when reading or setting the language', () => {
+    const blocked = {
+      getItem: () => {
+        throw new Error('blocked');
+      },
+      setItem: () => {
+        throw new Error('blocked');
+      },
+    };
+    const store = createAppStore(deps({ storage: blocked }));
+    expect(store.getState().lang).toBe('en');
+    expect(() => store.getState().setLang('vi')).not.toThrow();
   });
 });

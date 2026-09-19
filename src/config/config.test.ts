@@ -1,3 +1,4 @@
+import { translate } from '../i18n/translate';
 import { ConfigError, loadConfig, parseConfig } from './config';
 
 const VALID = {
@@ -39,11 +40,22 @@ describe('loadConfig', () => {
 
   it('reports HTTP, network and JSON errors', async () => {
     await expect(loadConfig(async () => new Response('', { status: 404 }))).rejects.toThrow('HTTP 404');
-    await expect(
-      loadConfig(async () => {
-        throw new TypeError('offline');
-      }),
-    ).rejects.toThrow('Không tải được config.json');
-    await expect(loadConfig(async () => new Response('{oops'))).rejects.toThrow('JSON');
+
+    async function captureError(fetchImpl: typeof fetch): Promise<ConfigError> {
+      try {
+        await loadConfig(fetchImpl);
+        throw new Error('expected loadConfig to throw');
+      } catch (e) {
+        if (e instanceof ConfigError) return e;
+        throw e;
+      }
+    }
+
+    const networkError = await captureError(async () => {
+      throw new TypeError('offline');
+    });
+    expect(translate('vi', networkError.detail)).toBe('Không tải được config.json từ server.');
+    const jsonError = await captureError(async () => new Response('{oops'));
+    expect(translate('vi', jsonError.detail)).toBe('config.json không phải JSON hợp lệ.');
   });
 });

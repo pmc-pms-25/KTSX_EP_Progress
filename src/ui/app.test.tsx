@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { routes } from '../App';
+import { msg } from '../i18n/message';
 import { appStore } from '../store/appStore';
 import { seedStore } from '../test/seedStore';
 
@@ -63,7 +64,12 @@ describe('dashboard app', () => {
 
   it('shows the error screen when loading failed', () => {
     act(() => {
-      appStore.setState({ status: 'error', plan: undefined, metrics: [], error: { title: 'Không tải được dữ liệu', message: 'denied', code: 'ACCESS_DENIED' } });
+      appStore.setState({
+        status: 'error',
+        plan: undefined,
+        metrics: [],
+        error: { title: msg('error.title.source'), detail: msg('error.source.accessDenied'), code: 'ACCESS_DENIED' },
+      });
     });
     renderAt('/');
     expect(screen.getByText('Không tải được dữ liệu')).toBeInTheDocument();

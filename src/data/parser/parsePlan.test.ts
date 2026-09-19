@@ -1,3 +1,4 @@
+import { translate } from '../../i18n/translate';
 import { dayFromISO } from '../../lib/day';
 import { SHEET_HEADERS, sampleWorkbook, serial, sheetRows, workbookBuffer } from '../../test/fixtures';
 import type { Plan } from '../types';
@@ -73,8 +74,9 @@ describe('parsePlan', () => {
   it('ignores the FORECAST row ROS value (garbage such as 00/Jan/00)', () => {
     const plan = parseSample();
     const invalid = plan.warnings.find((w) => w.code === 'INVALID_DATE')!;
-    expect(invalid.message).toContain('MTO for Purchase');
-    expect(invalid.message).not.toContain('ROS');
+    const text = translate('vi', invalid.message);
+    expect(text).toContain('MTO for Purchase');
+    expect(text).not.toContain('ROS');
   });
 
   it('flags FORECAST/ACTUAL rows that do not follow their PLANNED row', () => {
@@ -114,16 +116,21 @@ describe('parsePlan', () => {
     const html = new TextEncoder().encode('<!doctype html><html>').buffer as ArrayBuffer;
     expect(parsePlan(html, OPTIONS)).toMatchObject({ ok: false, error: { code: 'NOT_XLSX' } });
     const corrupt = new Uint8Array([0x50, 0x4b, 0x03, 0x04, 0xde, 0xad, 0xbe, 0xef, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05]).buffer as ArrayBuffer;
-    expect(parsePlan(corrupt, OPTIONS)).toMatchObject({ ok: false, error: { code: 'NOT_XLSX', message: expect.stringContaining('bị hỏng') } });
+    const corruptResult = parsePlan(corrupt, OPTIONS);
+    expect(corruptResult).toMatchObject({ ok: false, error: { code: 'NOT_XLSX' } });
+    if (!corruptResult.ok) {
+      expect(translate('vi', corruptResult.error.detail)).toBe('File Excel bị hỏng hoặc không đọc được (có thể tải về chưa trọn vẹn).');
+    }
     expect(parsePlan(sampleWorkbook(), { ...OPTIONS, sheetName: 'Nope' })).toMatchObject({
       ok: false,
       error: { code: 'SHEET_NOT_FOUND' },
     });
     expect(parsePlan(workbookBuffer([SHEET_HEADERS]), OPTIONS)).toMatchObject({ ok: false, error: { code: 'EMPTY' } });
     const noCode = workbookBuffer([['Facility', 'Date', 'LOA Effective Date'], ['BF', 'PLANNED', 46460]]);
-    expect(parsePlan(noCode, OPTIONS)).toMatchObject({
-      ok: false,
-      error: { code: 'MISSING_COLUMNS', message: expect.stringContaining('package code') },
-    });
+    const missingColumnsResult = parsePlan(noCode, OPTIONS);
+    expect(missingColumnsResult).toMatchObject({ ok: false, error: { code: 'MISSING_COLUMNS' } });
+    if (!missingColumnsResult.ok) {
+      expect(translate('vi', missingColumnsResult.error.detail)).toContain('package code');
+    }
   });
 });

@@ -1,3 +1,6 @@
+import { msg, type Message } from '../i18n/message';
+import { translate } from '../i18n/translate';
+
 export type DataSourceType = 'google-sheet' | 'server';
 
 export interface DataSourceConfig {
@@ -14,9 +17,11 @@ export interface AppConfig {
 }
 
 export class ConfigError extends Error {
-  constructor(message: string) {
-    super(message);
+  readonly detail: Message;
+  constructor(detail: Message) {
+    super(translate('en', detail));
     this.name = 'ConfigError';
+    this.detail = detail;
   }
 }
 
@@ -28,18 +33,18 @@ function isRecord(v: unknown): v is Record<string, unknown> {
 
 /** Validate raw JSON and apply defaults. Throws ConfigError with a readable message. */
 export function parseConfig(raw: unknown): AppConfig {
-  if (!isRecord(raw)) throw new ConfigError('config.json phải là một object JSON.');
+  if (!isRecord(raw)) throw new ConfigError(msg('error.config.notObject'));
   const ds = raw.dataSource;
-  if (!isRecord(ds)) throw new ConfigError('Thiếu "dataSource" trong config.json.');
+  if (!isRecord(ds)) throw new ConfigError(msg('error.config.missingDataSource'));
   if (ds.type !== 'google-sheet' && ds.type !== 'server') {
-    throw new ConfigError('"dataSource.type" phải là "google-sheet" hoặc "server".');
+    throw new ConfigError(msg('error.config.badType'));
   }
   if (typeof ds.url !== 'string' || ds.url.trim() === '') {
-    throw new ConfigError('Thiếu "dataSource.url" trong config.json.');
+    throw new ConfigError(msg('error.config.missingUrl'));
   }
   const dueSoonDays = raw.dueSoonDays ?? DEFAULTS.dueSoonDays;
   if (typeof dueSoonDays !== 'number' || !Number.isInteger(dueSoonDays) || dueSoonDays < 1) {
-    throw new ConfigError('"dueSoonDays" phải là số nguyên dương.');
+    throw new ConfigError(msg('error.config.badDueSoon'));
   }
   const str = (v: unknown, fallback: string) => (typeof v === 'string' && v.trim() ? v.trim() : fallback);
   return {
@@ -60,14 +65,14 @@ export async function loadConfig(fetchImpl: typeof fetch = fetch): Promise<AppCo
   try {
     response = await fetchImpl('config.json', { cache: 'no-store' });
   } catch {
-    throw new ConfigError('Không tải được config.json từ server.');
+    throw new ConfigError(msg('error.config.fetchFailed'));
   }
-  if (!response.ok) throw new ConfigError(`Không tải được config.json (HTTP ${response.status}).`);
+  if (!response.ok) throw new ConfigError(msg('error.config.http', { status: response.status }));
   let raw: unknown;
   try {
     raw = await response.json();
   } catch {
-    throw new ConfigError('config.json không phải JSON hợp lệ.');
+    throw new ConfigError(msg('error.config.badJson'));
   }
   return parseConfig(raw);
 }

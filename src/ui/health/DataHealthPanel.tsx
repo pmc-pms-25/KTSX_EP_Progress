@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { DataWarning, WarningCode } from '../../data/types';
+import { translate } from '../../i18n/translate';
 import { useApp } from '../../store/useApp';
 import { Drawer } from '../common/Drawer';
 
@@ -50,7 +51,8 @@ export function DataHealthPanel({ open, onClose }: { open: boolean; onClose: () 
                 {items.map((w, i) => (
                   <li key={`${w.row ?? 'x'}-${i}`} className="flex gap-2">
                     {w.row !== undefined && <span className="w-14 shrink-0 font-mono text-ink-3">dòng {w.row}</span>}
-                    <span>{w.message}</span>
+                    {/* i18n: Batch B */}
+                    <span>{translate('vi', w.message)}</span>
                   </li>
                 ))}
               </ul>

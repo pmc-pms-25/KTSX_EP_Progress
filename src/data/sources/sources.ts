@@ -1,4 +1,6 @@
 import type { DataSourceConfig } from '../../config/config';
+import { msg, type Message } from '../../i18n/message';
+import { translate } from '../../i18n/translate';
 
 /** Anything that can hand back the workbook bytes. The rest of the app never knows where they came from. */
 export interface DataSource {
@@ -11,10 +13,12 @@ export type SourceErrorCode = 'NETWORK' | 'TIMEOUT' | 'ACCESS_DENIED' | 'NOT_FOU
 export class SourceError extends Error {
   readonly code: SourceErrorCode;
   readonly status?: number;
-  constructor(code: SourceErrorCode, message: string, status?: number) {
-    super(message);
+  readonly detail: Message;
+  constructor(code: SourceErrorCode, detail: Message, status?: number) {
+    super(translate('en', detail));
     this.name = 'SourceError';
     this.code = code;
+    this.detail = detail;
     this.status = status;
   }
 }
@@ -53,34 +57,34 @@ export function createHttpXlsxSource({ label, url, fetchImpl = fetch, timeoutMs 
         try {
           response = await fetchImpl(url, { signal: controller.signal, cache: 'no-store', credentials: 'omit' });
         } catch {
-          if (timedOut) throw new SourceError('TIMEOUT', `Hết thời gian chờ (${timeoutMs / 1000}s) khi tải dữ liệu.`);
-          if (signal?.aborted) throw new SourceError('ABORTED', 'Đã hủy tải dữ liệu.');
-          throw new SourceError('NETWORK', 'Không kết nối được tới nguồn dữ liệu. Kiểm tra kết nối internet của máy bạn.');
+          if (timedOut) throw new SourceError('TIMEOUT', msg('error.source.timeout', { seconds: timeoutMs / 1000 }));
+          if (signal?.aborted) throw new SourceError('ABORTED', msg('error.source.aborted'));
+          throw new SourceError('NETWORK', msg('error.source.network'));
         }
         if (response.status === 401 || response.status === 403) {
-          throw new SourceError('ACCESS_DENIED', 'Nguồn dữ liệu từ chối truy cập. Sheet có thể không còn được chia sẻ công khai.', response.status);
+          throw new SourceError('ACCESS_DENIED', msg('error.source.accessDenied'), response.status);
         }
         if (response.status === 404) {
-          throw new SourceError('NOT_FOUND', 'Không tìm thấy nguồn dữ liệu (HTTP 404). Kiểm tra lại URL trong config.json.', 404);
+          throw new SourceError('NOT_FOUND', msg('error.source.notFound'), 404);
         }
         if (!response.ok) {
-          throw new SourceError('HTTP', `Nguồn dữ liệu trả lỗi HTTP ${response.status}.`, response.status);
+          throw new SourceError('HTTP', msg('error.source.http', { status: response.status }), response.status);
         }
         const contentType = response.headers.get('content-type') ?? '';
         if (contentType.includes('text/html')) {
-          throw new SourceError('ACCESS_DENIED', 'Nguồn dữ liệu trả về trang web thay vì file Excel. Sheet có thể yêu cầu đăng nhập.');
+          throw new SourceError('ACCESS_DENIED', msg('error.source.accessDeniedHtml'));
         }
         let buf: ArrayBuffer;
         try {
           buf = await response.arrayBuffer();
         } catch {
-          if (timedOut) throw new SourceError('TIMEOUT', `Hết thời gian chờ (${timeoutMs / 1000}s) khi tải dữ liệu.`);
-          if (signal?.aborted) throw new SourceError('ABORTED', 'Đã hủy tải dữ liệu.');
-          throw new SourceError('NETWORK', 'Mất kết nối khi đang tải dữ liệu.');
+          if (timedOut) throw new SourceError('TIMEOUT', msg('error.source.timeout', { seconds: timeoutMs / 1000 }));
+          if (signal?.aborted) throw new SourceError('ABORTED', msg('error.source.aborted'));
+          throw new SourceError('NETWORK', msg('error.source.bodyNetwork'));
         }
         const head = new Uint8Array(buf, 0, Math.min(2, buf.byteLength));
         if (head.length < 2 || head[0] !== 0x50 || head[1] !== 0x4b) {
-          throw new SourceError('NOT_XLSX', 'Dữ liệu tải về không phải file Excel (XLSX).');
+          throw new SourceError('NOT_XLSX', msg('error.source.notXlsx'));
         }
         return buf;
       } finally {

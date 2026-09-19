@@ -1,3 +1,4 @@
+import type { Message } from '../i18n/message';
 import type { Day } from '../lib/day';
 
 export type MilestoneKey =
@@ -88,7 +89,7 @@ export type WarningCode =
 export interface DataWarning {
   level: 'info' | 'warn' | 'error';
   code: WarningCode;
-  message: string;
+  message: Message;
   row?: number;
 }
 

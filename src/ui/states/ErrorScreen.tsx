@@ -1,3 +1,4 @@
+import { translate } from '../../i18n/translate';
 import { appStore, type LoadError } from '../../store/appStore';
 
 const HINTS: Record<string, string> = {
@@ -14,8 +15,10 @@ export function ErrorScreen({ error }: { error: LoadError }) {
       <p className="text-4xl" aria-hidden>
         ⚠
       </p>
-      <h1 className="mt-3 text-lg font-semibold">{error.title}</h1>
-      <p className="mt-2 text-sm text-ink-2">{error.message}</p>
+      {/* i18n: Batch B */}
+      <h1 className="mt-3 text-lg font-semibold">{translate('vi', error.title)}</h1>
+      {/* i18n: Batch B */}
+      <p className="mt-2 text-sm text-ink-2">{translate('vi', error.detail)}</p>
       {HINTS[error.code] && <p className="mt-2 text-xs text-ink-3">{HINTS[error.code]}</p>}
       <p className="mt-1 font-mono text-[10px] text-ink-3">mã lỗi: {error.code}</p>
       <button type="button" onClick={() => void appStore.getState().load()} className="mt-5 rounded-lg bg-ai-1/20 px-4 py-2 text-sm text-ai-1 hover:bg-ai-1/30">

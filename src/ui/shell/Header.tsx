@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { translate } from '../../i18n/translate';
 import { dayFromISO, dayToISO, todayDay } from '../../lib/day';
 import { appStore } from '../../store/appStore';
 import { useApp } from '../../store/useApp';
@@ -65,7 +66,7 @@ export function Header({ onOpenHealth }: { onOpenHealth: () => void }) {
           <button
             type="button"
             onClick={() => void load()}
-            title={refreshError ? refreshError.message : 'Tải lại dữ liệu'}
+            title={refreshError ? translate('vi', refreshError.detail) /* i18n: Batch B */ : 'Tải lại dữ liệu'}
             className={`flex h-9 items-center gap-1.5 rounded-lg border px-2.5 text-xs ${
               refreshError ? 'border-serious/50 text-serious' : 'border-line text-ink-2 hover:text-ink'
             }`}

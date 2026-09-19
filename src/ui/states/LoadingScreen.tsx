@@ -1,4 +1,5 @@
 import { motion } from 'motion/react';
+import { translate } from '../../i18n/translate';
 import type { LoadStep } from '../../store/appStore';
 import { useApp } from '../../store/useApp';
 
@@ -29,7 +30,8 @@ export function LoadingScreen() {
               </span>
               <span className={i === current ? 'text-ink' : 'text-ink-2'}>
                 {s.label}
-                {i === current && detail ? ` (${detail})` : ''}
+                {/* i18n: Batch B */}
+                {i === current && detail ? ` (${translate('vi', detail)})` : ''}
                 {i === current && '…'}
               </span>
             </motion.li>

@@ -1,4 +1,6 @@
 import * as XLSX from 'xlsx';
+import { msg, type Message } from '../../i18n/message';
+import { translate } from '../../i18n/translate';
 import { dayFromExcelSerial, type Day } from '../../lib/day';
 import { MILESTONES } from '../milestones';
 import type { DataWarning, Discipline, ItemType, Line, MilestoneDates, Package, Plan } from '../types';
@@ -9,6 +11,11 @@ export type ParseErrorCode = 'NOT_XLSX' | 'SHEET_NOT_FOUND' | 'EMPTY' | 'MISSING
 export interface ParseError {
   code: ParseErrorCode;
   message: string;
+  detail: Message;
+}
+
+function parseError(code: ParseErrorCode, detail: Message): { ok: false; error: ParseError } {
+  return { ok: false, error: { code, message: translate('en', detail), detail } };
 }
 
 export type ParseResult = { ok: true; plan: Plan } | { ok: false; error: ParseError };
@@ -88,16 +95,21 @@ function buildLine(group: Group, map: ColumnMap, warnings: DataWarning[]): Line 
       level: 'warn',
       code: 'INVALID_PACKAGE_CODE',
       row: sheetRow,
-      message: `Package Code trống hoặc bằng 0 → gán ${packageCode}`,
+      message: msg('warning.invalidPackageCode', { code: packageCode }),
     });
   }
   const facility = group.rawFacility || UNASSIGNED;
   if (!group.rawFacility) {
-    warnings.push({ level: 'warn', code: 'MISSING_FACILITY', row: sheetRow, message: `${packageCode}: thiếu Facility` });
+    warnings.push({ level: 'warn', code: 'MISSING_FACILITY', row: sheetRow, message: msg('warning.missingFacility', { code: packageCode }) });
   }
   if (!forecast || !actual) {
     const missing = [!forecast && 'FORECAST', !actual && 'ACTUAL'].filter(Boolean).join(', ');
-    warnings.push({ level: 'warn', code: 'INCOMPLETE_TRIPLET', row: sheetRow, message: `${packageCode} @ ${facility}: thiếu dòng ${missing}` });
+    warnings.push({
+      level: 'warn',
+      code: 'INCOMPLETE_TRIPLET',
+      row: sheetRow,
+      message: msg('warning.incompleteTriplet', { code: packageCode, facility, missing }),
+    });
   }
 
   const invalidColumns = new Set<string>();
@@ -129,7 +141,7 @@ function buildLine(group: Group, map: ColumnMap, warnings: DataWarning[]): Line 
       level: 'info',
       code: 'INVALID_DATE',
       row: sheetRow,
-      message: `${packageCode} @ ${facility}: ngày không hợp lệ ở ${[...invalidColumns].join(', ')}`,
+      message: msg('warning.invalidDate', { code: packageCode, facility, columns: [...invalidColumns].join(', ') }),
     });
   }
 
@@ -179,38 +191,32 @@ function groupDisciplines(lines: Line[]): Discipline[] {
 /** Parse the procurement workbook into the normalized Plan. Pure: no I/O. */
 export function parsePlan(buf: ArrayBuffer, options: ParseOptions): ParseResult {
   if (!isZip(buf)) {
-    return { ok: false, error: { code: 'NOT_XLSX', message: 'Dữ liệu tải về không phải file Excel (XLSX).' } };
+    return parseError('NOT_XLSX', msg('error.parse.notXlsx'));
   }
   let workbook: XLSX.WorkBook;
   try {
     workbook = XLSX.read(new Uint8Array(buf), { type: 'array' });
   } catch {
-    return { ok: false, error: { code: 'NOT_XLSX', message: 'File Excel bị hỏng hoặc không đọc được (có thể tải về chưa trọn vẹn).' } };
+    return parseError('NOT_XLSX', msg('error.parse.corrupt'));
   }
   const sheetName = options.sheetName ?? workbook.SheetNames[0];
   const sheet = sheetName ? workbook.Sheets[sheetName] : undefined;
   if (!sheet) {
-    return {
-      ok: false,
-      error: { code: 'SHEET_NOT_FOUND', message: `Không tìm thấy sheet "${sheetName}". Các sheet hiện có: ${workbook.SheetNames.join(', ')}` },
-    };
+    return parseError('SHEET_NOT_FOUND', msg('error.parse.sheetNotFound', { sheet: sheetName ?? '', sheets: workbook.SheetNames.join(', ') }));
   }
   const rows = XLSX.utils.sheet_to_json<Row>(sheet, { header: 1, raw: true, defval: null, blankrows: true });
   if (rows.length < 2) {
-    return { ok: false, error: { code: 'EMPTY', message: `Sheet "${sheetName}" không có dữ liệu.` } };
+    return parseError('EMPTY', msg('error.parse.empty', { sheet: sheetName ?? '' }));
   }
   const header = mapHeaders(rows[0]);
   if (!header.ok) {
-    return {
-      ok: false,
-      error: { code: 'MISSING_COLUMNS', message: `Thiếu cột bắt buộc: ${header.missing.join(', ')}` },
-    };
+    return parseError('MISSING_COLUMNS', msg('error.parse.missingColumns', { columns: header.missing.join(', ') }));
   }
   const { map } = header;
   const warnings: DataWarning[] = header.unknownHeaders.map((h) => ({
     level: 'info' as const,
     code: 'UNKNOWN_COLUMN' as const,
-    message: `Bỏ qua cột không nhận diện: "${h}"`,
+    message: msg('warning.unknownColumn', { header: h }),
   }));
 
   const groups: Group[] = [];
@@ -230,7 +236,7 @@ export function parsePlan(buf: ArrayBuffer, options: ParseOptions): ParseResult 
           level: 'warn',
           code: 'UNKNOWN_ROW_TYPE',
           row: sheetRow,
-          message: 'Dòng có dữ liệu nhưng thiếu giá trị cột Date (PLANNED/FORECAST/ACTUAL)',
+          message: msg('warning.missingRowType'),
         });
       }
       return;
@@ -240,7 +246,7 @@ export function parsePlan(buf: ArrayBuffer, options: ParseOptions): ParseResult 
     if (rowType === 'PLANNED') {
       if (discipline === UNASSIGNED && !warnedNoDiscipline) {
         warnedNoDiscipline = true;
-        warnings.push({ level: 'warn', code: 'NO_DISCIPLINE', row: sheetRow, message: 'Có dòng dữ liệu nằm trước tiêu đề discipline đầu tiên' });
+        warnings.push({ level: 'warn', code: 'NO_DISCIPLINE', row: sheetRow, message: msg('warning.noDiscipline') });
       }
       current = { planned: row, sheetRow, discipline, rawCode, rawFacility };
       groups.push(current);
@@ -251,11 +257,16 @@ export function parsePlan(buf: ArrayBuffer, options: ParseOptions): ParseResult 
       if (current && !current[slot] && current.rawCode === rawCode && current.rawFacility === rawFacility) {
         current[slot] = row;
       } else {
-        warnings.push({ level: 'warn', code: 'ORPHAN_ROW', row: sheetRow, message: `Dòng ${rowType} không đi kèm dòng PLANNED tương ứng (${rawCode || 'trống'})` });
+        warnings.push({
+          level: 'warn',
+          code: 'ORPHAN_ROW',
+          row: sheetRow,
+          message: msg('warning.orphanRow', { rowType, code: rawCode || '—' }),
+        });
       }
       return;
     }
-    warnings.push({ level: 'warn', code: 'UNKNOWN_ROW_TYPE', row: sheetRow, message: `Giá trị cột Date không hợp lệ: "${rowType}"` });
+    warnings.push({ level: 'warn', code: 'UNKNOWN_ROW_TYPE', row: sheetRow, message: msg('warning.unknownRowType', { value: rowType }) });
   });
 
   const lines = groups.map((g) => buildLine(g, map, warnings));
