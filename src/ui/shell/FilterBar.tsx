@@ -50,7 +50,8 @@ export function FilterBar() {
     filters.disciplines.length + filters.facilities.length + filters.itemTypes.length + filters.phases.length + filters.flags.length;
 
   return (
-    <div className="border-b border-line bg-bg/60 backdrop-blur-md">
+    // No backdrop-filter here: it would create a stacking context that traps the dropdowns under the cards below.
+    <div className="border-b border-line bg-bg/60">
       <div className="mx-auto hidden max-w-[1600px] flex-wrap items-center gap-2 px-4 py-2 md:flex">
         <Controls />
       </div>
