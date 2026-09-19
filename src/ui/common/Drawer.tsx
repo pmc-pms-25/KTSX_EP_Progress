@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, type ReactNode } from 'react';
+import { useT } from '../../i18n/useT';
 
 interface DrawerProps {
   open: boolean;
@@ -12,6 +13,7 @@ interface DrawerProps {
 
 /** Right-side sheet (full screen on phones), closes on Escape or backdrop click. */
 export function Drawer({ open, onClose, title, children, width = 'sm:max-w-3xl' }: DrawerProps) {
+  const { t } = useT();
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
@@ -44,7 +46,7 @@ export function Drawer({ open, onClose, title, children, width = 'sm:max-w-3xl' 
               style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 0.75rem)' }}
             >
               <div className="min-w-0">{title}</div>
-              <button type="button" onClick={onClose} aria-label="Đóng" className="rounded-lg px-2 py-1 text-lg text-ink-2 hover:bg-surface hover:text-ink">
+              <button type="button" onClick={onClose} aria-label={t('common.close')} className="rounded-lg px-2 py-1 text-lg text-ink-2 hover:bg-surface hover:text-ink">
                 ✕
               </button>
             </header>

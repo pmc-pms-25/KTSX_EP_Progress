@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
+import { useT } from '../../i18n/useT';
 
 interface Option<T extends string> {
   value: T;
@@ -14,6 +15,7 @@ interface MultiSelectProps<T extends string> {
 
 /** Compact dropdown with checkboxes; closes on outside click or Escape. */
 export function MultiSelect<T extends string>({ label, options, selected, onChange }: MultiSelectProps<T>) {
+  const { t } = useT();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
@@ -70,7 +72,7 @@ export function MultiSelect<T extends string>({ label, options, selected, onChan
           {active && (
             <li>
               <button type="button" className="w-full rounded-lg px-2 py-1.5 text-left text-xs text-ai-1 hover:bg-surface" onClick={() => onChange([])}>
-                Bỏ chọn tất cả
+                {t('common.clearAll')}
               </button>
             </li>
           )}

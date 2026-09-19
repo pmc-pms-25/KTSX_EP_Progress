@@ -1,17 +1,19 @@
 import { motion } from 'motion/react';
-import { translate } from '../../i18n/translate';
 import type { LoadStep } from '../../store/appStore';
+import type { MessageKey } from '../../i18n/en';
+import { useT } from '../../i18n/useT';
 import { useApp } from '../../store/useApp';
 
-const STEPS: { key: Exclude<LoadStep, 'done'>; label: string }[] = [
-  { key: 'config', label: 'Đọc cấu hình' },
-  { key: 'fetch', label: 'Đồng bộ dữ liệu từ nguồn' },
-  { key: 'parse', label: 'Phân tích cấu trúc Procurement Plan' },
-  { key: 'analyze', label: 'Phát hiện rủi ro & tạo insight' },
+const STEPS: { key: Exclude<LoadStep, 'done'>; labelKey: MessageKey }[] = [
+  { key: 'config', labelKey: 'loading.step.config' },
+  { key: 'fetch', labelKey: 'loading.step.fetch' },
+  { key: 'parse', labelKey: 'loading.step.parse' },
+  { key: 'analyze', labelKey: 'loading.step.analyze' },
 ];
 
 /** Real pipeline progress (not a fake timer) over scanning skeletons. */
 export function LoadingScreen() {
+  const { t } = useT();
   const step = useApp((s) => s.step);
   const detail = useApp((s) => s.stepDetail);
   const current = STEPS.findIndex((s) => s.key === step);
@@ -20,7 +22,7 @@ export function LoadingScreen() {
     <div className="mx-auto max-w-[1600px] px-4 py-6">
       <div className="ai-border mx-auto mb-6 max-w-md rounded-2xl p-5">
         <p className="mb-3 flex items-center gap-2 text-sm font-semibold">
-          <span className="ai-text text-lg">✦</span> Đang chuẩn bị dashboard…
+          <span className="ai-text text-lg">✦</span> {t('loading.preparing')}
         </p>
         <ol className="space-y-2 text-sm">
           {STEPS.map((s, i) => (
@@ -29,9 +31,8 @@ export function LoadingScreen() {
                 {i < current ? '✓' : i === current ? '›' : '·'}
               </span>
               <span className={i === current ? 'text-ink' : 'text-ink-2'}>
-                {s.label}
-                {/* i18n: Batch B */}
-                {i === current && detail ? ` (${translate('vi', detail)})` : ''}
+                {t(s.labelKey)}
+                {i === current && detail ? ` (${t(detail)})` : ''}
                 {i === current && '…'}
               </span>
             </motion.li>

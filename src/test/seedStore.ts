@@ -13,5 +13,6 @@ export function seedStore(): void {
     cutOff: TEST_CTX.cutOff,
     error: undefined,
     refreshError: undefined,
+    lang: 'vi',
   });
 }

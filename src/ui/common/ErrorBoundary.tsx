@@ -1,4 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { translate } from '../../i18n/translate';
+import { appStore } from '../../store/appStore';
 
 interface Props {
   label: string;
@@ -23,12 +25,15 @@ export class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.error) {
+      // Not a hook (class component): reads the language at render time, so it won't
+      // live-update while an error is already shown and the user flips the language switch.
+      const lang = appStore.getState().lang;
       return (
         <div role="alert" className="rounded-2xl border border-serious/40 bg-surface p-4 text-sm text-ink-2">
-          <p className="font-semibold text-serious">Không hiển thị được “{this.props.label}”.</p>
+          <p className="font-semibold text-serious">{translate(lang, 'errorBoundary.failed', { label: this.props.label })}</p>
           <p className="mt-1 text-xs text-ink-3">{this.state.error.message}</p>
           <button className="mt-2 text-xs text-ai-1 underline" onClick={() => this.setState({ error: undefined })}>
-            Thử lại
+            {translate(lang, 'common.retry')}
           </button>
         </div>
       );

@@ -1,8 +1,12 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
+import { appStore } from '../../store/appStore';
 import { FloatBadge } from './Chip';
 import { ErrorBoundary } from './ErrorBoundary';
 import { MultiSelect } from './MultiSelect';
+
+// These components render Vietnamese text below; keep the store's default 'en' from masking it.
+beforeEach(() => appStore.setState({ lang: 'vi' }));
 
 function Harness() {
   const [selected, setSelected] = useState<string[]>([]);

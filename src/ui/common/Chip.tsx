@@ -1,6 +1,8 @@
 import type { MilestoneStatus } from '../../analytics/lineMetrics';
 import { LINE_PHASE_LABEL } from '../../data/milestones';
 import type { LinePhase } from '../../data/types';
+import type { MessageKey } from '../../i18n/en';
+import { useT } from '../../i18n/useT';
 import { useApp } from '../../store/useApp';
 import { milestoneStatusColor, phaseColor } from '../theme/palette';
 
@@ -17,17 +19,18 @@ export function PhaseChip({ phase, muted = false }: { phase: LinePhase; muted?: 
   );
 }
 
-const STATUS_LABEL: Record<MilestoneStatus, string> = {
-  done: 'Hoàn thành',
-  overdue: 'Quá hạn',
-  dueSoon: 'Sắp đến hạn',
-  future: 'Chưa đến',
-  noDate: 'Không có ngày',
+const STATUS_LABEL_KEY: Record<MilestoneStatus, MessageKey> = {
+  done: 'chip.status.done',
+  overdue: 'chip.status.overdue',
+  dueSoon: 'chip.status.dueSoon',
+  future: 'chip.status.future',
+  noDate: 'chip.status.noDate',
 };
 
 export const STATUS_ICON: Record<MilestoneStatus, string> = { done: '✓', overdue: '!', dueSoon: '◷', future: '·', noDate: '–' };
 
 export function StatusBadge({ status }: { status: MilestoneStatus }) {
+  const { t } = useT();
   const theme = useApp((s) => s.theme);
   const color = milestoneStatusColor(status, theme);
   return (
@@ -35,7 +38,7 @@ export function StatusBadge({ status }: { status: MilestoneStatus }) {
       <span aria-hidden className="grid h-4 w-4 place-items-center rounded-full text-[10px] font-bold text-white" style={{ background: color }}>
         {STATUS_ICON[status]}
       </span>
-      {STATUS_LABEL[status]}
+      {t(STATUS_LABEL_KEY[status])}
     </span>
   );
 }

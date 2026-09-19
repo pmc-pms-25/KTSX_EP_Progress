@@ -1,28 +1,28 @@
-import { translate } from '../../i18n/translate';
+import type { MessageKey } from '../../i18n/en';
+import { useT } from '../../i18n/useT';
 import { appStore, type LoadError } from '../../store/appStore';
 
-const HINTS: Record<string, string> = {
-  NETWORK: 'Máy của bạn cần truy cập được docs.google.com và *.googleusercontent.com.',
-  ACCESS_DENIED: 'Nhờ chủ sheet bật chia sẻ "Anyone with the link" (hoặc Publish to web) rồi thử lại.',
-  NOT_FOUND: 'Kiểm tra lại dataSource.url trong config.json trên server.',
-  CONFIG: 'Sửa file config.json cạnh server.cjs trên server (hoặc public/config.json khi chạy dev) rồi tải lại trang.',
-  MISSING_COLUMNS: 'Có thể tiêu đề cột trong sheet đã bị đổi tên. So sánh với cấu trúc chuẩn trong tài liệu.',
+const HINTS: Record<string, MessageKey> = {
+  NETWORK: 'error.hint.network',
+  ACCESS_DENIED: 'error.hint.accessDenied',
+  NOT_FOUND: 'error.hint.notFound',
+  CONFIG: 'error.hint.config',
+  MISSING_COLUMNS: 'error.hint.missingColumns',
 };
 
 export function ErrorScreen({ error }: { error: LoadError }) {
+  const { t } = useT();
   return (
     <div className="mx-auto max-w-lg px-4 py-16 text-center">
       <p className="text-4xl" aria-hidden>
         ⚠
       </p>
-      {/* i18n: Batch B */}
-      <h1 className="mt-3 text-lg font-semibold">{translate('vi', error.title)}</h1>
-      {/* i18n: Batch B */}
-      <p className="mt-2 text-sm text-ink-2">{translate('vi', error.detail)}</p>
-      {HINTS[error.code] && <p className="mt-2 text-xs text-ink-3">{HINTS[error.code]}</p>}
-      <p className="mt-1 font-mono text-[10px] text-ink-3">mã lỗi: {error.code}</p>
+      <h1 className="mt-3 text-lg font-semibold">{t(error.title)}</h1>
+      <p className="mt-2 text-sm text-ink-2">{t(error.detail)}</p>
+      {HINTS[error.code] && <p className="mt-2 text-xs text-ink-3">{t(HINTS[error.code])}</p>}
+      <p className="mt-1 font-mono text-[10px] text-ink-3">{t('error.codeLabel', { code: error.code })}</p>
       <button type="button" onClick={() => void appStore.getState().load()} className="mt-5 rounded-lg bg-ai-1/20 px-4 py-2 text-sm text-ai-1 hover:bg-ai-1/30">
-        Thử lại
+        {t('common.retry')}
       </button>
     </div>
   );
