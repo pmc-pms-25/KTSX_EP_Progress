@@ -81,4 +81,17 @@ describe('dashboard app', () => {
     fireEvent.click(screen.getByTitle('Data Health'));
     expect(screen.getByText('Package Code trống / bằng 0')).toBeInTheDocument();
   });
+
+  it('switches the whole UI to English and back to Vietnamese with the language switch', () => {
+    act(() => appStore.setState({ lang: 'en' }));
+    renderAt('/');
+    expect(screen.getByText('1 line at risk of missing ROS')).toBeInTheDocument();
+    expect(screen.getByText(/Automatically detected from the current data/)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/Ask PMS - PEIW/).getAttribute('placeholder')).toBe('Ask PMS - PEIW…  e.g. PS2R LOA Q2-2027');
+    expect(document.documentElement.lang).toBe('en');
+
+    fireEvent.click(screen.getByRole('button', { name: 'VI' }));
+    expect(screen.getByText('1 dòng có nguy cơ trễ ROS')).toBeInTheDocument();
+    expect(document.documentElement.lang).toBe('vi');
+  });
 });
