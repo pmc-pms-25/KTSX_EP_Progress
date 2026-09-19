@@ -50,20 +50,20 @@ export const en = {
   'warning.noDiscipline': 'Row appears before the first discipline heading',
 
   // Loading-step detail (src/store/appStore.ts).
-  'status.linesLoaded': '{count} lines',
+  'status.linesLoaded': '{count} {count|line|lines}',
 
   // Insights (src/analytics/insights/rules/*.ts).
-  'insight.rosRisk.title': '{count} line at risk of missing ROS',
-  'insight.rosRisk.detail': 'Concentrated mostly in {discipline} ({count} lines). Worst: {line}, cargo is {days} days late against ROS.',
-  'insight.slippage.title': '{count} line with Forecast later than Plan',
-  'insight.slippage.detail': '{discipline} accounts for {count} lines. Average slip {avg} days, worst {max} days ({line}).',
-  'insight.overdue.title': '{count} milestone overdue without an Actual',
-  'insight.overdue.detail': 'Across {lines} lines; most common is {milestone} ({count}). Check that ACTUAL rows are being updated in the sheet.',
-  'insight.dueSoon.title': '{count} milestone due within the next {days} days',
-  'insight.dueSoon.detail': 'Across {lines} lines. Most common: {top}.',
-  'insight.rosPushed.title': 'ROS has been pushed on {count} line',
-  'insight.rosPushed.detail': 'Up to {count} adjustments. Pushed furthest: {line}, {days} days total across {times} changes.',
-  'insight.workloadPeak.title': 'Workload peak: {month} has {count} milestones due',
+  'insight.rosRisk.title': '{count} {count|line|lines} at risk of missing ROS',
+  'insight.rosRisk.detail': 'Concentrated mostly in {discipline} ({count} {count|line|lines}). Worst: {line}, cargo is {days} {days|day|days} late against ROS.',
+  'insight.slippage.title': '{count} {count|line|lines} with Forecast later than Plan',
+  'insight.slippage.detail': '{discipline} accounts for {count} {count|line|lines}. Average slip {avg} {avg|day|days}, worst {max} {max|day|days} ({line}).',
+  'insight.overdue.title': '{count} {count|milestone|milestones} overdue without an Actual',
+  'insight.overdue.detail': 'Across {lines} {lines|line|lines}; most common is {milestone} ({count}). Check that ACTUAL rows are being updated in the sheet.',
+  'insight.dueSoon.title': '{count} {count|milestone|milestones} due within the next {days} {days|day|days}',
+  'insight.dueSoon.detail': 'Across {lines} {lines|line|lines}. Most common: {top}.',
+  'insight.rosPushed.title': 'ROS has been pushed on {count} {count|line|lines}',
+  'insight.rosPushed.detail': 'Up to {count} {count|adjustment|adjustments}. Pushed furthest: {line}, {days} {days|day|days} total across {times} {times|change|changes}.',
+  'insight.workloadPeak.title': 'Workload peak: {month} has {count} {count|milestone|milestones} due',
   'insight.workloadPeak.detail': '{ratio}× the average ({avg} milestones/month). Most common is {milestone} ({count}).',
 
   // Header (src/ui/shell/Header.tsx).
@@ -102,9 +102,9 @@ export const en = {
   'common.retry': 'Try again',
   'common.clearAll': 'Clear all',
   'common.row': 'row {row}',
-  'unit.lines': 'lines',
-  'unit.weeks': 'weeks',
-  'unit.milestones': 'milestones',
+  'unit.lines': '{n|line|lines}',
+  'unit.weeks': '{n|week|weeks}',
+  'unit.milestones': '{n|milestone|milestones}',
   'chip.status.done': 'Done',
   'chip.status.overdue': 'Overdue',
   'chip.status.dueSoon': 'Due soon',
@@ -122,7 +122,7 @@ export const en = {
   'kpi.hint.slipped': 'Lines with Forecast later than Plan',
   'kpi.hint.rosAtRisk': 'Cargo arriving on site after the ROS date',
   'kpi.hint.dueSoon': 'Milestones due within the upcoming window',
-  'kpi.daysSuffix': '{days} days',
+  'kpi.daysSuffix': '{days} {days|day|days}',
 
   // Overview — insights (src/ui/overview/InsightsPanel.tsx).
   'insightsPanel.subtitle': 'Automatically detected from the current data · click “Why?” to see the evidence',
@@ -133,7 +133,7 @@ export const en = {
   'insightsPanel.confidenceTitle': 'Share of lines with enough data for this analysis',
   'insightsPanel.hide': 'Hide',
   'insightsPanel.applyFilter': 'Apply insight filter',
-  'insightsPanel.andMore': '… and {count} more lines',
+  'insightsPanel.andMore': '… and {count} more {count|line|lines}',
 
   // Overview — discipline grid (src/ui/overview/DisciplineGrid.tsx).
   'disciplineGrid.subtitle': 'Score = (ROS×2 + overdue×1.5 + slip×1) / line count · click for details',

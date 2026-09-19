@@ -33,24 +33,33 @@ describe('insight rules on the sample plan', () => {
     const i = slippageRule.evaluate(ic)!;
     expect(translate('vi', i.title)).toBe('1 dòng có Forecast trễ hơn Plan');
     expect(translate('vi', i.detail)).toContain('lớn nhất 75 ngày');
+    expect(translate('en', i.title)).toBe('1 line with Forecast later than Plan');
   });
 
   it('reports overdue milestones without actuals', () => {
     const i = overdueRule.evaluate(ic)!;
     expect(translate('vi', i.title)).toBe('4 mốc đã qua hạn nhưng chưa có Actual');
     expect(i.evidence).toEqual(['MEC-002|BF|11']);
+    // count = 4 milestone occurrences (plural) on a single line (lines = 1, singular).
+    expect(translate('en', i.title)).toBe('4 milestones overdue without an Actual');
+    expect(translate('en', i.detail)).toContain('Across 1 line;');
   });
 
   it('reports milestones due soon', () => {
     const i = dueSoonRule.evaluate(ic)!;
     expect(translate('vi', i.title)).toBe('1 mốc đến hạn trong 30 ngày tới');
     expect(translate('vi', i.detail)).toContain('TBE (1)');
+    // count = 1 milestone (singular), days = 30 (plural).
+    expect(translate('en', i.title)).toBe('1 milestone due within the next 30 days');
+    expect(translate('en', i.detail)).toContain('Across 1 line.');
   });
 
   it('reports ROS pushes', () => {
     const i = rosPushedRule.evaluate(ic)!;
     expect(translate('vi', i.title)).toBe('ROS đã bị dời trên 1 dòng');
     expect(translate('vi', i.detail)).toContain('152 ngày qua 3 lần');
+    expect(translate('en', i.title)).toBe('ROS has been pushed on 1 line');
+    expect(translate('en', i.detail)).toContain('152 days total across 3 changes.');
   });
 });
 
@@ -65,6 +74,8 @@ describe('workloadPeakRule', () => {
     expect(detail).toContain('Gấp 2.0×');
     expect(detail).toContain('LOA Effective (4)');
     expect(i.evidence).toHaveLength(4);
+    // count = 4 milestones (plural).
+    expect(translate('en', i.title)).toBe('Workload peak: Mar 2027 has 4 milestones due');
   });
 
   it('stays quiet for an even workload or past-only dates', () => {

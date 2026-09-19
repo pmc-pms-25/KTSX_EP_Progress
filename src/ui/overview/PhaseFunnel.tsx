@@ -29,7 +29,7 @@ export function PhaseFunnel({ metrics, onSelectPhase }: PhaseFunnelProps) {
         trigger: 'item',
         formatter: (p) => {
           const { name, value } = p as unknown as { name: string; value: number };
-          return `${name}: ${value} ${t('unit.lines')}`;
+          return `${name}: ${value} ${t('unit.lines', { n: value })}`;
         },
       },
       xAxis: { type: 'value', show: false },

@@ -34,7 +34,7 @@ function Controls() {
       <MultiSelect label={t('filter.phaseLabel')} options={LINE_PHASE_ORDER.map((p) => ({ value: p, label: LINE_PHASE_LABEL[p] }))} selected={filters.phases} onChange={set('phases')} />
       <MultiSelect<Flag> label={t('filter.flagsLabel')} options={(Object.keys(FLAG_LABEL_KEY) as Flag[]).map((f) => ({ value: f, label: t(FLAG_LABEL_KEY[f]) }))} selected={filters.flags} onChange={set('flags')} />
       <span className="ml-auto text-xs text-ink-3">
-        <span className="font-mono text-ink">{filtered.length}</span> / {metrics.length} {t('unit.lines')}
+        <span className="font-mono text-ink">{filtered.length}</span> / {metrics.length} {t('unit.lines', { n: metrics.length })}
       </span>
       {!isEmptyFilters(filters) && (
         <button type="button" onClick={clearFilters} className="text-xs text-ai-1 underline">

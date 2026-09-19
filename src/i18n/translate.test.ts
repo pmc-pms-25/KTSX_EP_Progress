@@ -28,6 +28,20 @@ describe('translate', () => {
     expect(translate('en', msg('warning.missingFacility', {}))).toBe('{code}: missing Facility');
   });
 
+  it('picks singular or plural for a {name|singular|plural} placeholder', () => {
+    expect(translate('en', 'insight.rosRisk.title', { count: 1 })).toBe('1 line at risk of missing ROS');
+    expect(translate('en', 'insight.rosRisk.title', { count: 0 })).toBe('0 lines at risk of missing ROS');
+    expect(translate('en', 'insight.rosRisk.title', { count: 4 })).toBe('4 lines at risk of missing ROS');
+  });
+
+  it('leaves a plural placeholder literally when its param is missing', () => {
+    expect(translate('en', 'insight.rosRisk.title', {})).toBe('{count} {count|line|lines} at risk of missing ROS');
+  });
+
+  it('leaves a plural placeholder literally when its param is not a number', () => {
+    expect(translate('en', 'unit.lines', { n: 'many' })).toBe('{n|line|lines}');
+  });
+
   it('resolves the display locale for each language', () => {
     expect(locale('en')).toBe('en-US');
     expect(locale('vi')).toBe('vi-VN');

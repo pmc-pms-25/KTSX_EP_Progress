@@ -87,7 +87,7 @@ export function PackageDrawer() {
               </div>
               <div className="rounded-lg border border-line p-2">
                 <dt className="text-ink-3">Delivery</dt>
-                <dd className="font-mono">{selected.line.deliveryWeeks ?? '—'} {t('unit.weeks')}</dd>
+                <dd className="font-mono">{selected.line.deliveryWeeks ?? '—'} {t('unit.weeks', { n: selected.line.deliveryWeeks ?? 0 })}</dd>
               </div>
               <div className="rounded-lg border border-line p-2">
                 <dt className="text-ink-3">{t('packageDrawer.sourceRowLabel')}</dt>
