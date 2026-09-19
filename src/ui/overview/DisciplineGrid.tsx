@@ -1,19 +1,22 @@
 import { motion } from 'motion/react';
 import { Link, useSearchParams } from 'react-router-dom';
 import type { DisciplineHealth, RiskLevel } from '../../analytics/aggregate';
+import type { MessageKey } from '../../i18n/en';
+import { useT } from '../../i18n/useT';
 import { Card } from '../common/Card';
 
-const LEVEL: Record<RiskLevel, { label: string; icon: string; ring: string; tone: string }> = {
-  ok: { label: 'Ổn định', icon: '✓', ring: 'border-good/40', tone: 'text-good' },
-  watch: { label: 'Theo dõi', icon: '●', ring: 'border-warning/50', tone: 'text-warning' },
-  risk: { label: 'Rủi ro', icon: '▲', ring: 'border-critical/60', tone: 'text-critical' },
+const LEVEL: Record<RiskLevel, { labelKey: MessageKey; icon: string; ring: string; tone: string }> = {
+  ok: { labelKey: 'disciplineGrid.level.ok', icon: '✓', ring: 'border-good/40', tone: 'text-good' },
+  watch: { labelKey: 'disciplineGrid.level.watch', icon: '●', ring: 'border-warning/50', tone: 'text-warning' },
+  risk: { labelKey: 'disciplineGrid.level.risk', icon: '▲', ring: 'border-critical/60', tone: 'text-critical' },
 };
 
 export function DisciplineGrid({ health }: { health: DisciplineHealth[] }) {
+  const { t } = useT();
   const [params] = useSearchParams();
   const query = params.toString();
   return (
-    <Card title="Discipline health" subtitle="Điểm = (ROS×2 + quá hạn×1.5 + trượt×1) / số dòng · bấm để xem chi tiết">
+    <Card title="Discipline health" subtitle={t('disciplineGrid.subtitle')}>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {health.map((h) => {
           const lvl = LEVEL[h.level];
@@ -28,7 +31,7 @@ export function DisciplineGrid({ health }: { health: DisciplineHealth[] }) {
                 </p>
                 <p className={`mt-1 flex items-center gap-1 text-[11px] ${lvl.tone}`}>
                   <span aria-hidden>{lvl.icon}</span>
-                  {lvl.label}
+                  {t(lvl.labelKey)}
                 </p>
                 <dl className="mt-2 grid grid-cols-2 gap-x-2 text-[11px] text-ink-3">
                   <dt>Packages</dt>

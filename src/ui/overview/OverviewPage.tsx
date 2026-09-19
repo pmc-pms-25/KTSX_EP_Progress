@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { computeKpis, disciplineHealth } from '../../analytics/aggregate';
 import { generateInsights } from '../../analytics/insights/registry';
+import { useT } from '../../i18n/useT';
 import { useApp } from '../../store/useApp';
 import { Stagger } from '../common/Card';
 import { ErrorBoundary } from '../common/ErrorBoundary';
@@ -15,6 +16,7 @@ import { PhaseFunnel } from './PhaseFunnel';
 import { WorkloadChart } from './WorkloadChart';
 
 export function OverviewPage() {
+  const { t } = useT();
   const { filtered, filters, setFilters, clearFilters, ctx, disciplineOrder } = useDashboard();
   const cutOff = useApp((s) => s.cutOff);
   const { open } = usePackageParam();
@@ -40,10 +42,10 @@ export function OverviewPage() {
           <DisciplineGrid health={health.filter((h) => h.lines > 0)} />
         </ErrorBoundary>
       </div>
-      <ErrorBoundary label="Khối lượng theo tháng">
+      <ErrorBoundary label={t('errorBoundary.workloadLabel')}>
         <WorkloadChart metrics={filtered} cutOff={cutOff} />
       </ErrorBoundary>
-      <ErrorBoundary label="Facility × Tháng">
+      <ErrorBoundary label={t('facilityHeatmap.title')}>
         <FacilityHeatmap metrics={filtered} />
       </ErrorBoundary>
     </Stagger>

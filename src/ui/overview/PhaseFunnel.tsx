@@ -3,6 +3,7 @@ import type { EChartsOption } from 'echarts';
 import { phaseFunnel, type PhaseBasis } from '../../analytics/aggregate';
 import type { LineMetrics } from '../../analytics/lineMetrics';
 import type { LinePhase } from '../../data/types';
+import { useT } from '../../i18n/useT';
 import { useApp } from '../../store/useApp';
 import { EChart } from '../charts/EChart';
 import { Card } from '../common/Card';
@@ -15,6 +16,7 @@ interface PhaseFunnelProps {
 
 /** Lines per phase. Bars are direct-labeled; one series, so no legend box. */
 export function PhaseFunnel({ metrics, onSelectPhase }: PhaseFunnelProps) {
+  const { t, lang } = useT();
   const theme = useApp((s) => s.theme);
   const [basis, setBasis] = useState<PhaseBasis>('schedule');
   const data = useMemo(() => phaseFunnel(metrics, basis), [metrics, basis]);
@@ -23,7 +25,13 @@ export function PhaseFunnel({ metrics, onSelectPhase }: PhaseFunnelProps) {
   const option = useMemo<EChartsOption>(
     () => ({
       grid: { left: 8, right: 40, top: 8, bottom: 8, containLabel: true },
-      tooltip: { trigger: 'item', formatter: '{b}: {c} dòng' },
+      tooltip: {
+        trigger: 'item',
+        formatter: (p) => {
+          const { name, value } = p as unknown as { name: string; value: number };
+          return `${name}: ${value} ${t('unit.lines')}`;
+        },
+      },
       xAxis: { type: 'value', show: false },
       yAxis: {
         type: 'category',
@@ -42,19 +50,15 @@ export function PhaseFunnel({ metrics, onSelectPhase }: PhaseFunnelProps) {
         },
       ],
     }),
-    [data, ink, theme],
+    [data, ink, theme, lang],
   );
 
   return (
     <Card
       title="Phase funnel"
-      subtitle={
-        basis === 'schedule'
-          ? 'Theo kế hoạch: dòng đáng lẽ đang ở phase nào tại cut-off'
-          : 'Theo Actual: phase dựa trên mốc đã ghi nhận thực tế · bấm cột chỉ lọc được ở chế độ Kế hoạch'
-      }
+      subtitle={basis === 'schedule' ? t('phaseFunnel.subtitleSchedule') : t('phaseFunnel.subtitleActual')}
       actions={
-        <div role="group" aria-label="Cơ sở tính phase" className="flex rounded-lg border border-line p-0.5 text-xs">
+        <div role="group" aria-label={t('phaseFunnel.basisGroupLabel')} className="flex rounded-lg border border-line p-0.5 text-xs">
           {(['schedule', 'actual'] as const).map((b) => (
             <button
               key={b}
@@ -63,14 +67,14 @@ export function PhaseFunnel({ metrics, onSelectPhase }: PhaseFunnelProps) {
               onClick={() => setBasis(b)}
               className={`rounded-md px-2 py-1 ${basis === b ? 'bg-ai-1/20 text-ai-1' : 'text-ink-3'}`}
             >
-              {b === 'schedule' ? 'Kế hoạch' : 'Actual'}
+              {b === 'schedule' ? t('phaseFunnel.basisSchedule') : 'Actual'}
             </button>
           ))}
         </div>
       }
     >
       <EChart
-        ariaLabel="Số dòng theo phase"
+        ariaLabel={t('phaseFunnel.chartAriaLabel')}
         height={260}
         option={option}
         onEvents={basis === 'schedule' ? { click: (p) => onSelectPhase(data[(p as { dataIndex: number }).dataIndex].phase) } : undefined}

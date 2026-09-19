@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import type { EChartsOption } from 'echarts';
 import { monthlyWorkload } from '../../analytics/aggregate';
 import type { LineMetrics } from '../../analytics/lineMetrics';
+import { useT } from '../../i18n/useT';
 import { formatMonth, monthKey, type Day } from '../../lib/day';
 import { useApp } from '../../store/useApp';
 import { EChart } from '../charts/EChart';
@@ -10,6 +11,7 @@ import { CATEGORICAL, CHART_INK } from '../theme/palette';
 
 /** Stacked monthly count of the six headline milestones, with a cut-off marker. */
 export function WorkloadChart({ metrics, cutOff }: { metrics: readonly LineMetrics[]; cutOff: Day }) {
+  const { t } = useT();
   const theme = useApp((s) => s.theme);
   const data = useMemo(() => monthlyWorkload(metrics), [metrics]);
   const ink = CHART_INK[theme];
@@ -50,8 +52,8 @@ export function WorkloadChart({ metrics, cutOff }: { metrics: readonly LineMetri
   }, [data, ink, theme, cutOff]);
 
   return (
-    <Card title="Khối lượng mốc theo tháng" subtitle="TR · TBE · CBE · LOA · FAT/EXW · Site — theo ngày hiệu lực (Actual → Forecast → Plan)">
-      {data.months.length === 0 ? <p className="text-sm text-ink-3">Không có dữ liệu ngày.</p> : <EChart ariaLabel="Số mốc đến hạn theo tháng" height={320} option={option} />}
+    <Card title={t('workloadChart.title')} subtitle={t('workloadChart.subtitle')}>
+      {data.months.length === 0 ? <p className="text-sm text-ink-3">{t('workloadChart.noData')}</p> : <EChart ariaLabel={t('workloadChart.chartAriaLabel')} height={320} option={option} />}
     </Card>
   );
 }

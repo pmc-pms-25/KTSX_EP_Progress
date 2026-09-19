@@ -4,6 +4,7 @@ import { facilityHeatmap } from '../../analytics/aggregate';
 import type { LineMetrics } from '../../analytics/lineMetrics';
 import { MILESTONES } from '../../data/milestones';
 import type { MilestoneKey } from '../../data/types';
+import { useT } from '../../i18n/useT';
 import { formatMonth } from '../../lib/day';
 import { escapeHtml } from '../../lib/escapeHtml';
 import { useApp } from '../../store/useApp';
@@ -13,6 +14,7 @@ import { CHART_INK, SEQUENTIAL } from '../theme/palette';
 
 /** Milestones due per Facility × Month (sequential single-hue ramp). */
 export function FacilityHeatmap({ metrics }: { metrics: readonly LineMetrics[] }) {
+  const { t, lang } = useT();
   const theme = useApp((s) => s.theme);
   const [milestone, setMilestone] = useState<MilestoneKey | 'all'>('all');
   const data = useMemo(() => facilityHeatmap(metrics, milestone), [metrics, milestone]);
@@ -24,7 +26,7 @@ export function FacilityHeatmap({ metrics }: { metrics: readonly LineMetrics[] }
       tooltip: {
         formatter: (p) => {
           const [mi, fi, n] = (p as unknown as { value: [number, number, number] }).value;
-          return `${escapeHtml(data.facilities[fi])} · ${escapeHtml(formatMonth(data.months[mi]))}<br/><b>${n}</b> mốc`;
+          return `${escapeHtml(data.facilities[fi])} · ${escapeHtml(formatMonth(data.months[mi]))}<br/><b>${n}</b> ${t('unit.milestones')}`;
         },
       },
       xAxis: { type: 'category', data: data.months.map(formatMonth), axisLabel: { color: ink.muted }, splitArea: { show: false } },
@@ -50,21 +52,21 @@ export function FacilityHeatmap({ metrics }: { metrics: readonly LineMetrics[] }
         },
       ],
     }),
-    [data, ink, theme],
+    [data, ink, theme, lang],
   );
 
   return (
     <Card
-      title="Facility × Tháng"
-      subtitle="Số mốc đến hạn theo facility và tháng"
+      title={t('facilityHeatmap.title')}
+      subtitle={t('facilityHeatmap.subtitle')}
       actions={
         <select
-          aria-label="Chọn mốc"
+          aria-label={t('facilityHeatmap.selectAriaLabel')}
           value={milestone}
           onChange={(e) => setMilestone(e.target.value as MilestoneKey | 'all')}
           className="h-8 rounded-lg border border-line bg-surface px-2 text-xs text-ink"
         >
-          <option value="all">Tất cả mốc</option>
+          <option value="all">{t('facilityHeatmap.allMilestones')}</option>
           {MILESTONES.map((m) => (
             <option key={m.key} value={m.key}>
               {m.label}
@@ -74,11 +76,11 @@ export function FacilityHeatmap({ metrics }: { metrics: readonly LineMetrics[] }
       }
     >
       {data.cells.length === 0 ? (
-        <p className="text-sm text-ink-3">Không có dữ liệu.</p>
+        <p className="text-sm text-ink-3">{t('facilityHeatmap.noData')}</p>
       ) : (
         <div className="overflow-x-auto">
           <div style={{ minWidth: Math.max(480, data.months.length * 22) }}>
-            <EChart ariaLabel="Heatmap số mốc theo facility và tháng" height={Math.max(260, data.facilities.length * 28 + 110)} option={option} />
+            <EChart ariaLabel={t('facilityHeatmap.chartAriaLabel')} height={Math.max(260, data.facilities.length * 28 + 110)} option={option} />
           </div>
         </div>
       )}
