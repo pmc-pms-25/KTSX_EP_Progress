@@ -42,6 +42,17 @@ describe('dashboard app', () => {
     expect(within(screen.getByRole('dialog')).getByText('Chi tiết mốc')).toBeInTheDocument();
   });
 
+  it('scrolls to the top when moving to another page, but not when filters change', () => {
+    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    renderAt('/');
+    scrollTo.mockClear();
+    fireEvent.click(screen.getByRole('button', { name: /ROS at risk/ }));
+    expect(scrollTo).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('link', { name: /MECHANICAL/ }));
+    expect(scrollTo).toHaveBeenCalledWith(0, 0);
+    scrollTo.mockRestore();
+  });
+
   it('toggles the theme', () => {
     renderAt('/');
     const before = appStore.getState().theme;

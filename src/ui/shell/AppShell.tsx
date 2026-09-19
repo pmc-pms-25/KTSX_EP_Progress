@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { appStore } from '../../store/appStore';
 import { useApp } from '../../store/useApp';
 import { DataHealthPanel } from '../health/DataHealthPanel';
@@ -27,6 +27,12 @@ export function AppShell() {
   useEffect(() => {
     if (appName) document.title = appName;
   }, [appName]);
+
+  // A new page starts at the top; filter and drawer changes (query string only) keep the scroll position.
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   return (
     <div className="min-h-screen" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
