@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
 import { appStore } from '../../store/appStore';
 import { FloatBadge } from './Chip';
@@ -59,6 +59,22 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>,
     );
     expect(screen.getByRole('alert')).toHaveTextContent('Không hiển thị được “Biểu đồ”');
+    expect(screen.getByRole('alert')).toHaveTextContent('kaboom');
+    spy.mockRestore();
+  });
+
+  it('re-renders the fallback text when the language changes, keeping the error shown', () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    render(
+      <ErrorBoundary label="Biểu đồ">
+        <Boom />
+      </ErrorBoundary>,
+    );
+    expect(screen.getByRole('alert')).toHaveTextContent('Không hiển thị được “Biểu đồ”');
+
+    act(() => appStore.setState({ lang: 'en' }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Could not display “Biểu đồ”');
     expect(screen.getByRole('alert')).toHaveTextContent('kaboom');
     spy.mockRestore();
   });

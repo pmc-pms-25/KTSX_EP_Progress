@@ -1,9 +1,11 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import type { Lang } from '../../i18n/message';
 import { translate } from '../../i18n/translate';
-import { appStore } from '../../store/appStore';
+import { useT } from '../../i18n/useT';
 
-interface Props {
+interface ClassProps {
   label: string;
+  lang: Lang;
   children: ReactNode;
 }
 
@@ -11,8 +13,13 @@ interface State {
   error?: Error;
 }
 
-/** Contains a widget failure so the rest of the dashboard keeps working. */
-export class ErrorBoundary extends Component<Props, State> {
+/**
+ * Contains a widget failure so the rest of the dashboard keeps working.
+ * Class component (needs getDerivedStateFromError/componentDidCatch), so it can't use
+ * useT() itself; it takes `lang` as a prop instead — the wrapper below re-renders this
+ * same instance (not a new one, so caught-error state survives) whenever lang changes.
+ */
+class ErrorBoundaryClass extends Component<ClassProps, State> {
   state: State = {};
 
   static getDerivedStateFromError(error: Error): State {
@@ -25,12 +32,10 @@ export class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.error) {
-      // Not a hook (class component): reads the language at render time, so it won't
-      // live-update while an error is already shown and the user flips the language switch.
-      const lang = appStore.getState().lang;
+      const { lang, label } = this.props;
       return (
         <div role="alert" className="rounded-2xl border border-serious/40 bg-surface p-4 text-sm text-ink-2">
-          <p className="font-semibold text-serious">{translate(lang, 'errorBoundary.failed', { label: this.props.label })}</p>
+          <p className="font-semibold text-serious">{translate(lang, 'errorBoundary.failed', { label })}</p>
           <p className="mt-1 text-xs text-ink-3">{this.state.error.message}</p>
           <button className="mt-2 text-xs text-ai-1 underline" onClick={() => this.setState({ error: undefined })}>
             {translate(lang, 'common.retry')}
@@ -40,4 +45,18 @@ export class ErrorBoundary extends Component<Props, State> {
     }
     return this.props.children;
   }
+}
+
+interface Props {
+  label: string;
+  children: ReactNode;
+}
+
+export function ErrorBoundary({ label, children }: Props) {
+  const { lang } = useT();
+  return (
+    <ErrorBoundaryClass label={label} lang={lang}>
+      {children}
+    </ErrorBoundaryClass>
+  );
 }
