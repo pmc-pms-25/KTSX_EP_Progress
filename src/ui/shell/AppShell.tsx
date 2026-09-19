@@ -13,6 +13,7 @@ export function AppShell() {
   const status = useApp((s) => s.status);
   const error = useApp((s) => s.error);
   const theme = useApp((s) => s.theme);
+  const lang = useApp((s) => s.lang);
   const appName = useApp((s) => s.config?.appName);
   const [healthOpen, setHealthOpen] = useState(false);
 
@@ -23,6 +24,10 @@ export function AppShell() {
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   useEffect(() => {
     if (appName) document.title = appName;

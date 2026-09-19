@@ -65,6 +65,164 @@ export const en = {
   'insight.rosPushed.detail': 'Up to {count} adjustments. Pushed furthest: {line}, {days} days total across {times} changes.',
   'insight.workloadPeak.title': 'Workload peak: {month} has {count} milestones due',
   'insight.workloadPeak.detail': '{ratio}× the average ({avg} milestones/month). Most common is {milestone} ({count}).',
+
+  // Header (src/ui/shell/Header.tsx).
+  'header.language': 'Language',
+  'header.today': 'Today',
+  'header.syncedJustNow': 'just now',
+  'header.syncedMinutesAgo': '{minutes} min ago',
+  'header.synced': 'Synced {time}',
+  'header.syncing': 'Syncing…',
+  'header.staleData': 'Stale data',
+  'header.reloadData': 'Reload data',
+  'header.themeToLight': 'Switch to light theme',
+  'header.themeToDark': 'Switch to dark theme',
+
+  // Filter bar (src/ui/shell/FilterBar.tsx).
+  'filter.flag.rosRisk': 'ROS at risk',
+  'filter.flag.slipped': 'Forecast later than Plan',
+  'filter.flag.overdue': 'Has an overdue milestone',
+  'filter.flag.dueSoon': 'Has a milestone due soon',
+  'filter.phaseLabel': 'Phase (schedule)',
+  'filter.flagsLabel': 'Flags',
+  'filter.clear': 'Clear filters',
+  'filter.title': 'Filters',
+  'filter.done': 'Done',
+
+  // Ask box (src/ui/shell/AskBox.tsx).
+  'ask.srSearch': 'Smart search',
+  'ask.placeholder': 'Ask PMS - PEIW…  e.g. PS2R LOA Q2-2027',
+  'ask.clear': 'Clear search',
+  'ask.aiComingSoonTitle': 'AI Q&A coming in a future version',
+  'ask.aiComingSoon': 'AI chat · coming soon',
+  'ask.understoodAs': 'Understood as:',
+
+  // Common primitives (src/ui/common/*.tsx).
+  'common.close': 'Close',
+  'common.retry': 'Try again',
+  'common.clearAll': 'Clear all',
+  'common.row': 'row {row}',
+  'unit.lines': 'lines',
+  'unit.weeks': 'weeks',
+  'unit.milestones': 'milestones',
+  'chip.status.done': 'Done',
+  'chip.status.overdue': 'Overdue',
+  'chip.status.dueSoon': 'Due soon',
+  'chip.status.future': 'Upcoming',
+  'chip.status.noDate': 'No date',
+  'errorBoundary.failed': 'Could not display “{label}”.',
+  'errorBoundary.workloadLabel': 'Monthly workload',
+  'errorBoundary.packageListLabel': 'Package list',
+  'errorBoundary.rosHistoryLabel': 'ROS history',
+  'emptyState.message': 'No lines match the current filters.',
+
+  // Overview — KPI strip (src/ui/overview/KpiStrip.tsx).
+  'kpi.hint.packages': 'Packages with a valid code',
+  'kpi.hint.lines': 'Package × Facility line count',
+  'kpi.hint.slipped': 'Lines with Forecast later than Plan',
+  'kpi.hint.rosAtRisk': 'Cargo arriving on site after the ROS date',
+  'kpi.hint.dueSoon': 'Milestones due within the upcoming window',
+  'kpi.daysSuffix': '{days} days',
+
+  // Overview — insights (src/ui/overview/InsightsPanel.tsx).
+  'insightsPanel.subtitle': 'Automatically detected from the current data · click “Why?” to see the evidence',
+  'insightsPanel.empty': 'No anomalies detected with the current filters.',
+  'insightsPanel.severity.critical': 'Critical',
+  'insightsPanel.severity.warning': 'Needs attention',
+  'insightsPanel.severity.info': 'Info',
+  'insightsPanel.confidenceTitle': 'Share of lines with enough data for this analysis',
+  'insightsPanel.hide': 'Hide',
+  'insightsPanel.applyFilter': 'Apply insight filter',
+  'insightsPanel.andMore': '… and {count} more lines',
+
+  // Overview — discipline grid (src/ui/overview/DisciplineGrid.tsx).
+  'disciplineGrid.subtitle': 'Score = (ROS×2 + overdue×1.5 + slip×1) / line count · click for details',
+  'disciplineGrid.level.ok': 'Stable',
+  'disciplineGrid.level.watch': 'Watch',
+  'disciplineGrid.level.risk': 'At risk',
+
+  // Overview — phase funnel (src/ui/overview/PhaseFunnel.tsx).
+  'phaseFunnel.subtitleSchedule': 'By schedule: which phase a line should be in at cut-off',
+  'phaseFunnel.subtitleActual': 'By Actual: phase based on recorded actual milestones · clicking a bar only filters in Schedule mode',
+  'phaseFunnel.basisGroupLabel': 'Phase basis',
+  'phaseFunnel.basisSchedule': 'Schedule',
+  'phaseFunnel.chartAriaLabel': 'Line count by phase',
+
+  // Overview — facility heatmap (src/ui/overview/FacilityHeatmap.tsx).
+  'facilityHeatmap.title': 'Facility × Month',
+  'facilityHeatmap.subtitle': 'Milestones due by facility and month',
+  'facilityHeatmap.selectAriaLabel': 'Select milestone',
+  'facilityHeatmap.allMilestones': 'All milestones',
+  'facilityHeatmap.noData': 'No data.',
+  'facilityHeatmap.chartAriaLabel': 'Heatmap of milestones by facility and month',
+
+  // Overview — workload chart (src/ui/overview/WorkloadChart.tsx).
+  'workloadChart.title': 'Monthly milestone workload',
+  'workloadChart.subtitle': 'TR · TBE · CBE · LOA · FAT/EXW · Site — by effective date (Actual → Forecast → Plan)',
+  'workloadChart.noData': 'No date data.',
+  'workloadChart.chartAriaLabel': 'Milestones due by month',
+
+  // Discipline page (src/ui/discipline/DisciplinePage.tsx).
+  'discipline.notFound': 'Discipline “{name}” not found.',
+  'discipline.backToOverview': 'Back to overview',
+  'discipline.otherDisciplines': 'Other disciplines',
+  'discipline.packagesSubtitle': 'Sorted by risk by default · click a row for details',
+
+  // Package table (src/ui/discipline/PackageTable.tsx).
+  'packageTable.package': 'Package',
+  'packageTable.rosFloat': 'ROS float',
+  'packageTable.nextMilestone': 'Next milestone',
+  'packageTable.maxSlip': 'Max slip',
+  'packageTable.risk': 'Risk',
+  'packageTable.overdueCount': '! {count} overdue',
+  'packageTable.slipped': '● slipped',
+  'packageTable.actualPhaseTitle': 'Phase from milestones with an Actual date',
+
+  // Package drawer (src/ui/package/PackageDrawer.tsx).
+  'packageDrawer.notFound': 'Package “{code}” not found',
+  'packageDrawer.progressByFacility': 'Progress by facility',
+  'packageDrawer.milestoneDetails': 'Milestone details',
+  'packageDrawer.sourceRowLabel': 'Sheet row',
+  'packageDrawer.rosHistoryTitle': 'ROS history ({facility})',
+
+  // Milestone table (src/ui/package/MilestoneTable.tsx).
+  'milestoneTable.milestone': 'Milestone',
+  'milestoneTable.deltaDays': 'Δ days',
+  'milestoneTable.status': 'Status',
+
+  // Mini Gantt (src/ui/package/MiniGantt.tsx).
+  'miniGantt.legendForecast': '● Forecast (colored by phase / status)',
+
+  // ROS history (src/ui/package/RosHistory.tsx).
+  'rosHistory.empty': 'No ROS history.',
+  'rosHistory.ariaLabel': 'ROS adjustment history',
+
+  // Loading screen (src/ui/states/LoadingScreen.tsx).
+  'loading.preparing': 'Preparing dashboard…',
+  'loading.step.config': 'Reading configuration',
+  'loading.step.fetch': 'Syncing data from source',
+  'loading.step.parse': 'Parsing Procurement Plan structure',
+  'loading.step.analyze': 'Detecting risks & generating insights',
+
+  // Error screen hints (src/ui/states/ErrorScreen.tsx).
+  'error.hint.network': 'Your machine needs access to docs.google.com and *.googleusercontent.com.',
+  'error.hint.accessDenied': 'Ask the sheet owner to enable "Anyone with the link" sharing (or Publish to web), then try again.',
+  'error.hint.notFound': 'Check dataSource.url in config.json on the server.',
+  'error.hint.config': 'Fix config.json next to server.cjs on the server (or public/config.json in dev), then reload the page.',
+  'error.hint.missingColumns': "The sheet's column headers may have been renamed. Compare them with the standard structure in the documentation.",
+  'error.codeLabel': 'error code: {code}',
+
+  // Data Health panel (src/ui/health/DataHealthPanel.tsx).
+  'health.code.invalidPackageCode': 'Package Code empty / zero',
+  'health.code.missingFacility': 'Missing Facility',
+  'health.code.incompleteTriplet': 'Missing FORECAST/ACTUAL row',
+  'health.code.orphanRow': 'Stray FORECAST/ACTUAL row',
+  'health.code.unknownRowType': 'Unrecognized Date column value',
+  'health.code.invalidDate': 'Invalid date cell (#####, 00/Jan/00…)',
+  'health.code.unknownColumn': 'Unrecognized column',
+  'health.code.noDiscipline': 'Row outside any discipline',
+  'health.subtitle': 'Data-quality issues detected while reading the sheet. The app still shows these lines.',
+  'health.empty': '✓ No issues detected.',
 } as const;
 
 export type MessageKey = keyof typeof en;

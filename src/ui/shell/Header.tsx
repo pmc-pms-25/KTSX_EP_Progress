@@ -1,16 +1,17 @@
 import { Link } from 'react-router-dom';
-import { translate } from '../../i18n/translate';
+import { LANGS, type Lang } from '../../i18n/message';
+import { useT } from '../../i18n/useT';
 import { dayFromISO, dayToISO, todayDay } from '../../lib/day';
 import { appStore } from '../../store/appStore';
 import { useApp } from '../../store/useApp';
 import { useDashboard } from '../hooks/useDashboard';
 import { AskBox } from './AskBox';
 
-function timeAgo(date: Date, now = new Date()): string {
+function timeAgo(t: ReturnType<typeof useT>['t'], lang: Lang, date: Date, now = new Date()): string {
   const minutes = Math.round((now.getTime() - date.getTime()) / 60_000);
-  if (minutes < 1) return 'vừa xong';
-  if (minutes < 60) return `${minutes} phút trước`;
-  return date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+  if (minutes < 1) return t('header.syncedJustNow');
+  if (minutes < 60) return t('header.syncedMinutesAgo', { minutes });
+  return date.toLocaleTimeString(lang === 'vi' ? 'vi-VN' : 'en-US', { hour: '2-digit', minute: '2-digit' });
 }
 
 export function Header({ onOpenHealth }: { onOpenHealth: () => void }) {
@@ -22,7 +23,8 @@ export function Header({ onOpenHealth }: { onOpenHealth: () => void }) {
   const refreshing = useApp((s) => s.refreshing);
   const refreshError = useApp((s) => s.refreshError);
   const { filters, setFilters, vocab } = useDashboard();
-  const { load, setCutOff, toggleTheme } = appStore.getState();
+  const { load, setCutOff, toggleTheme, setLang } = appStore.getState();
+  const { t, lang } = useT();
   const warningCount = plan?.warnings.filter((w) => w.level !== 'info').length ?? 0;
 
   return (
@@ -60,20 +62,26 @@ export function Header({ onOpenHealth }: { onOpenHealth: () => void }) {
           </label>
           {cutOff !== todayDay() && (
             <button type="button" className="text-xs text-ai-1 underline" onClick={() => setCutOff(todayDay())}>
-              Hôm nay
+              {t('header.today')}
             </button>
           )}
           <button
             type="button"
             onClick={() => void load()}
-            title={refreshError ? translate('vi', refreshError.detail) /* i18n: Batch B */ : 'Tải lại dữ liệu'}
+            title={refreshError ? t(refreshError.detail) : t('header.reloadData')}
             className={`flex h-9 items-center gap-1.5 rounded-lg border px-2.5 text-xs ${
               refreshError ? 'border-serious/50 text-serious' : 'border-line text-ink-2 hover:text-ink'
             }`}
           >
             <span aria-hidden className={refreshing ? 'animate-spin' : ''}>⟳</span>
             <span className="hidden sm:inline">
-              {refreshing ? 'Đang đồng bộ…' : refreshError ? 'Dữ liệu cũ' : plan ? `Đồng bộ ${timeAgo(plan.loadedAt)}` : ''}
+              {refreshing
+                ? t('header.syncing')
+                : refreshError
+                  ? t('header.staleData')
+                  : plan
+                    ? t('header.synced', { time: timeAgo(t, lang, plan.loadedAt) })
+                    : ''}
             </span>
           </button>
           <button
@@ -88,10 +96,23 @@ export function Header({ onOpenHealth }: { onOpenHealth: () => void }) {
               <span className="absolute -top-1.5 -right-1.5 rounded-full bg-serious px-1.5 font-mono text-[10px] text-white">{warningCount}</span>
             )}
           </button>
+          <div role="group" aria-label={t('header.language')} className="flex rounded-lg border border-line p-0.5 text-xs">
+            {LANGS.map((l) => (
+              <button
+                key={l}
+                type="button"
+                aria-pressed={lang === l}
+                onClick={() => setLang(l)}
+                className={`rounded-md px-2 py-1 ${lang === l ? 'bg-ai-1/20 text-ai-1' : 'text-ink-3'}`}
+              >
+                {l.toUpperCase()}
+              </button>
+            ))}
+          </div>
           <button
             type="button"
             onClick={toggleTheme}
-            aria-label={theme === 'dark' ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'}
+            aria-label={theme === 'dark' ? t('header.themeToLight') : t('header.themeToDark')}
             className="grid h-9 w-9 place-items-center rounded-lg border border-line text-ink-2 hover:text-ink"
           >
             {theme === 'dark' ? '☀' : '☾'}
