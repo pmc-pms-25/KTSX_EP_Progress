@@ -32,7 +32,7 @@ export function DataHealthPanel({ open, onClose, warnings }: { open: boolean; on
       width="sm:max-w-xl"
       title={
         <div>
-          <h2 className="text-base font-semibold">Data Health</h2>
+          <h2 className="text-base font-semibold">{t('health.title')}</h2>
           <p className="text-xs text-ink-3">{t('health.subtitle')}</p>
         </div>
       }

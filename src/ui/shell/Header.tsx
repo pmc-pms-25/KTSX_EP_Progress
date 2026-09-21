@@ -56,11 +56,11 @@ function ModuleStatus({ module, onOpenHealth }: { module: AnyModule; onOpenHealt
       <button
         type="button"
         onClick={onOpenHealth}
-        title="Data Health"
+        title={t('health.title')}
         className="relative flex h-9 items-center rounded-lg border border-line px-2.5 text-xs text-ink-2 hover:text-ink"
       >
         <span aria-hidden>⚕</span>
-        <span className="ml-1 hidden sm:inline">Data Health</span>
+        <span className="ml-1 hidden sm:inline">{t('health.title')}</span>
         {warningCount > 0 && (
           <span className="absolute -top-1.5 -right-1.5 rounded-full bg-serious px-1.5 font-mono text-[10px] text-white">{warningCount}</span>
         )}

@@ -245,6 +245,7 @@ export const vi: Dictionary = {
   'health.code.invalidDate': 'Ô ngày không hợp lệ (#####, 00/Jan/00…)',
   'health.code.unknownColumn': 'Cột không nhận diện',
   'health.code.noDiscipline': 'Dòng nằm ngoài discipline',
+  'health.title': 'Data Health',
   'health.subtitle': 'Các vấn đề chất lượng dữ liệu phát hiện khi đọc sheet. App vẫn hiển thị các dòng này.',
   'health.empty': '✓ Không phát hiện vấn đề nào.',
 

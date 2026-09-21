@@ -243,6 +243,7 @@ export const en = {
   'health.code.invalidDate': 'Invalid date cell (#####, 00/Jan/00…)',
   'health.code.unknownColumn': 'Unrecognized column',
   'health.code.noDiscipline': 'Row outside any discipline',
+  'health.title': 'Data Health',
   'health.subtitle': 'Data-quality issues detected while reading the sheet. The app still shows these lines.',
   'health.empty': '✓ No issues detected.',
 
