@@ -1,4 +1,5 @@
 import type { MilestoneStatus } from '../../analytics/lineMetrics';
+import type { StageKey } from '../../data/engineering/types';
 import type { LinePhase } from '../../data/types';
 import type { Theme } from '../../store/appStore';
 
@@ -18,6 +19,13 @@ export function phaseColor(phase: LinePhase, theme: Theme): string {
   const order: LinePhase[] = ['tr', 'rfq', 'evaluation', 'award', 'manufacturing', 'logistics'];
   const i = order.indexOf(phase);
   return i === -1 ? NEUTRAL[theme] : CATEGORICAL[theme][i];
+}
+
+/** Phase E steps reuse categorical slots (blue, amber, green); Not issued is neutral. */
+export function stageColor(stage: StageKey, theme: Theme): string {
+  const slot: Partial<Record<StageKey, number>> = { review: 0, commented: 3, final: 2 };
+  const i = slot[stage];
+  return i === undefined ? NEUTRAL[theme] : CATEGORICAL[theme][i];
 }
 
 /** Reserved status colors — never reused for series. Always paired with an icon or label. */

@@ -315,4 +315,14 @@ export const vi: Dictionary = {
   'eng.kpi.hint.notIssued': 'Chưa phát hành lần nào (rev 0)',
   'eng.kpi.hint.overdue': 'Quá ngày kế hoạch mà chưa đạt bước',
   'eng.kpi.hint.rejected': 'Khách hàng trả Code 3 hoặc 4',
+
+  'eng.timeline.title': 'Tiến độ Phase E',
+  'eng.timeline.subtitle': 'Số tài liệu đã đạt từng bước · {notIssued} chưa phát hành · bấm một bước để xem tài liệu',
+  'eng.timeline.nodeLabel': '{stage}: {reached} / {total} tài liệu',
+  'eng.timeline.plan': 'Kế hoạch {done} / {due}',
+  'eng.timeline.late': '{count} trễ',
+  'eng.timeline.noPlan': 'Chưa có ngày kế hoạch',
+  'eng.stageDrawer.summary': '{reached} / {total} tài liệu đã đạt bước này · {late} trễ',
+  'eng.stageDrawer.empty': 'Không có tài liệu nào trong danh sách này.',
+  'eng.stageDrawer.plan': 'Kế hoạch',
 };

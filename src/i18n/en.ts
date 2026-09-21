@@ -313,6 +313,16 @@ export const en = {
   'eng.kpi.hint.notIssued': 'Never issued (rev 0)',
   'eng.kpi.hint.overdue': 'A planned date passed without the step',
   'eng.kpi.hint.rejected': 'Client Code 3 or 4',
+
+  'eng.timeline.title': 'Phase E progress',
+  'eng.timeline.subtitle': 'Documents that reached each step · {notIssued} not issued yet · click a step for its documents',
+  'eng.timeline.nodeLabel': '{stage}: {reached} of {total} documents',
+  'eng.timeline.plan': 'Plan {done} / {due}',
+  'eng.timeline.late': '{count} late',
+  'eng.timeline.noPlan': 'No planned dates',
+  'eng.stageDrawer.summary': '{reached} / {total} documents reached this step · {late} late',
+  'eng.stageDrawer.empty': 'No documents in this list.',
+  'eng.stageDrawer.plan': 'Plan',
 } as const;
 
 export type MessageKey = keyof typeof en;

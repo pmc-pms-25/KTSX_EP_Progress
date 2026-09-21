@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { engineeringStore } from '../../modules/engineering/store';
 import { doc } from '../../test/engFixture';
@@ -48,5 +48,23 @@ describe('EngOverviewPage', () => {
   it('shows the empty state when filters match nothing', () => {
     renderPage('/?q=zzzz');
     expect(screen.getByText('Không có dòng nào khớp bộ lọc hiện tại.')).toBeInTheDocument();
+  });
+
+  it('draws the Phase E timeline and opens a stage drawer, late documents first', async () => {
+    const router = renderPage();
+    expect(screen.getByText('Tiến độ Phase E')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Đang review (IFI/IFR): 4 / 6 tài liệu' }));
+    expect(router.state.location.search).toContain('stage=review');
+    const dialog = await screen.findByRole('dialog');
+    expect(dialog).toHaveTextContent('4 / 6 tài liệu đã đạt bước này · 1 trễ');
+    const rows = within(dialog).getAllByRole('button', { name: /^PQ-/ });
+    expect(rows[0]).toHaveAccessibleName('PQ-CPC0-STR-BOD-MPC-00006-00');
+    fireEvent.click(rows[0]);
+    expect(router.state.location.search).toContain('doc=PQ-CPC0-STR-BOD-MPC-00006-00');
+  });
+
+  it('opens the stage drawer from the URL', async () => {
+    renderPage('/?stage=final');
+    expect(await screen.findByRole('dialog')).toHaveTextContent('1 / 6 tài liệu đã đạt bước này · 0 trễ');
   });
 });
