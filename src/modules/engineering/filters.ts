@@ -78,7 +78,7 @@ export function applyEngFilters(metrics: readonly DocMetrics[], f: EngFilters): 
       return false;
     }
     if (!f.flags.every((flag) => FLAG_TEST[flag](m))) return false;
-    const haystack = `${doc.id} ${doc.title} ${doc.discipline} ${doc.facility} ${doc.docType}`.toLowerCase();
+    const haystack = `${doc.id} ${doc.title} ${doc.discipline} ${doc.facility} ${doc.docType} ${doc.docTypeLabel ?? ''}`.toLowerCase();
     return words.every((w) => haystack.includes(w));
   });
 }

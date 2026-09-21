@@ -54,7 +54,7 @@ export function StageProgressDrawer({ progress }: { progress: readonly StageProg
     >
       {current && (
         <>
-          <div role="tablist" aria-label={t('phaseDrawer.tabsLabel')} className="mb-3 flex w-fit rounded-lg border border-line p-0.5 text-xs">
+          <div role="tablist" aria-label={t('eng.stageDrawer.tabsLabel')} className="mb-3 flex w-fit rounded-lg border border-line p-0.5 text-xs">
             {TABS.map((x) => (
               <button
                 key={x.key}

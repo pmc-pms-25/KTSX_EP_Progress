@@ -43,7 +43,7 @@ export function DisciplineStatusGrid({ status }: { status: DisciplineStatus[] })
                     s.byStage[k] > 0 ? <span key={k} style={{ width: `${(s.byStage[k] / s.total) * 100}%`, background: stageColor(k, theme) }} /> : null,
                   )}
                 </div>
-                <dl className="mt-2 grid grid-cols-2 gap-x-2 text-[11px] text-ink-3">
+                <dl className="mt-2 grid grid-cols-[1fr_auto] gap-x-2 text-[11px] text-ink-3">
                   <dt>{t('eng.discipline.documents')}</dt>
                   <dd className="text-right font-mono text-ink-2">{s.total}</dd>
                   <dt>{t('eng.discipline.final')}</dt>

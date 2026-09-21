@@ -31,14 +31,17 @@ export function stageIndex(stage: StageKey): number {
 
 const FINAL_STATUS = /issued for (construction|use)/i;
 const REVIEW_STATUS = /issued for information/i;
+const FINAL_REV = /^[NV]\d/;
+const COMMENTED_REV = /^L\d/;
+const REVIEW_REV = /^[JKH]\d/;
 
 /** Where a document stands, first matching rule wins (see the spec, §4.4). */
 export function stageOf(doc: Pick<EngDocument, 'rev' | 'status' | 'code'>): StageKey {
   const rev = doc.rev.trim().toUpperCase();
   const status = doc.status?.trim() ?? '';
   if (FINAL_STATUS.test(status)) return 'final';
-  if (/^[NV]/.test(rev)) return 'final';
-  if (doc.code !== undefined || rev.startsWith('L')) return 'commented';
-  if (/^[JKH]/.test(rev) || REVIEW_STATUS.test(status)) return 'review';
+  if (FINAL_REV.test(rev)) return 'final';
+  if (doc.code !== undefined || COMMENTED_REV.test(rev)) return 'commented';
+  if (REVIEW_REV.test(rev) || REVIEW_STATUS.test(status)) return 'review';
   return 'notIssued';
 }

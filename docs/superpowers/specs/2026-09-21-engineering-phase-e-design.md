@@ -144,10 +144,14 @@ export function stageOf(doc: EngDocument): StageKey
 Rules, first match wins:
 
 1. Status is `Issued for Construction` or `Issued for Use` → `final`.
-2. Rev starts with `N` or `V` → `final`.
-3. Has a `code`, or rev starts with `L` → `commented`.
-4. Rev starts with `J`, `K` or `H`, or status is `Issued for Information` → `review`.
-5. Otherwise (rev `0`, empty) → `notIssued`.
+2. Rev starts with `N` or `V` followed by a digit → `final`.
+3. Has a `code`, or rev starts with `L` followed by a digit → `commented`.
+4. Rev starts with `J`, `K` or `H` followed by a digit, or status is `Issued for Information` → `review`.
+5. Otherwise (rev `0`, empty, `NA`, or a letter not followed by a digit) → `notIssued`.
+
+The digit-after-letter requirement keeps a letter-only revision code (such as `NA`,
+meaning "not applicable") from being mistaken for a real revision starting with that
+letter.
 
 Each stage above `notIssued` has a planned-date field:
 `review` ← `planIssue`, `commented` ← `deadlineComment`, `final` ← `deadlineResponse`.

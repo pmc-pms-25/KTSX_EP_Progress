@@ -32,6 +32,8 @@ interface Candidate {
 const UNKNOWN = '—';
 const GROUP = /^([A-Z]{2,5})\s*-\s*(.+)$/;
 const DATE_TEXT = /(\d{1,2})[/-](\d{1,2})[/-](\d{4})/;
+/** `'NA'`, `'N/A'`, `'-'` or `'—'` (case-insensitive) mean "no transmittal number". */
+const EMPTY_TR_NO = /^(NA|N\/A|-|—)$/i;
 
 /** `Plan Issue\n(dd/mm/yyyy)` → `plan issue`, `DOC. No` → `doc no`. */
 const norm = (value: unknown) =>
@@ -136,7 +138,8 @@ function parseSheet(sheet: string, rows: Row[], warnings: DataWarning[]): Candid
       warnings.push(warn('BAD_DOC_NUMBER', 'warn', msg('warning.eng.badDocNumber', { id, sheet }), excelRow));
       [facility, discipline, docType] = [UNKNOWN, sheetDiscipline(sheet), UNKNOWN];
     }
-    const trNo = cols.trNo === undefined ? '' : text(row[cols.trNo]);
+    const trNoRaw = cols.trNo === undefined ? '' : text(row[cols.trNo]);
+    const trNo = EMPTY_TR_NO.test(trNoRaw) ? '' : trNoRaw;
     const trDate = date(cols.trDate, 'Incoming Transmittal');
     const status = cols.status === undefined ? '' : text(row[cols.status]);
     const remark = cols.remark === undefined ? '' : text(row[cols.remark]);

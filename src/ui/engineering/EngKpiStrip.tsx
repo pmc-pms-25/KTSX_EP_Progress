@@ -34,6 +34,9 @@ const TILES: Tile[] = [
 
 const TONE: Record<NonNullable<Tile['tone']>, string> = { critical: 'text-critical', warning: 'text-warning', good: 'text-good' };
 
+/** Tailwind only keeps classes it can see as literals, so the count → class map is spelled out. Between 6 and 8 tiles are ever visible. */
+const XL_COLS: Record<number, string> = { 6: 'xl:grid-cols-6', 7: 'xl:grid-cols-7', 8: 'xl:grid-cols-8' };
+
 interface EngKpiStripProps {
   kpis: EngKpis;
   filters: EngFilters;
@@ -44,6 +47,7 @@ interface EngKpiStripProps {
 export function EngKpiStrip({ kpis, filters, onFilter }: EngKpiStripProps) {
   const { t } = useT();
   const tiles = TILES.filter((tile) => tile.visible?.(kpis) ?? true);
+  const xlCols = XL_COLS[tiles.length] ?? XL_COLS[8];
 
   const toggle = (tile: Tile) => {
     if (tile.flag) {
@@ -56,7 +60,7 @@ export function EngKpiStrip({ kpis, filters, onFilter }: EngKpiStripProps) {
   };
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 xl:grid-cols-8">
+    <div className={`grid grid-cols-2 gap-3 sm:grid-cols-4 ${xlCols}`}>
       {tiles.map((tile) => {
         const value = kpis[tile.key];
         const active = (tile.flag !== undefined && filters.flags.includes(tile.flag)) || (tile.stage !== undefined && filters.stages.includes(tile.stage));

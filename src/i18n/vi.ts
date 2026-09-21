@@ -33,7 +33,7 @@ export const vi: Dictionary = {
   'error.parse.sheetNotFound': 'Không tìm thấy sheet "{sheet}". Các sheet hiện có: {sheets}',
   'error.parse.empty': 'Sheet "{sheet}" không có dữ liệu.',
   'error.parse.missingColumns': 'Thiếu cột bắt buộc: {columns}',
-  'error.parse.noRegisterSheets': 'Không tìm thấy tab register nào (tab cần có cột "DOC. No"). Các tab: {sheets}',
+  'error.parse.noRegisterSheets': 'Không tìm thấy tab register nào (tab cần có cột "DOC. No" và "DOC. TITLE"). Các tab: {sheets}',
   'error.parse.noDocuments': 'Các tab register không có tài liệu nào.',
 
   // Load-error titles shown by the store (src/store/appStore.ts).
@@ -55,7 +55,7 @@ export const vi: Dictionary = {
   'warning.noDiscipline': 'Có dòng dữ liệu nằm trước tiêu đề discipline đầu tiên',
 
   // Engineering register warnings (src/data/engineering/parseEmdr.ts).
-  'warning.eng.skippedSheet': 'Bỏ qua tab "{sheet}": không có cột "DOC. No"',
+  'warning.eng.skippedSheet': 'Bỏ qua tab "{sheet}": thiếu cột "DOC. No" hoặc "DOC. TITLE"',
   'warning.eng.badDocNumber': '{id} ({sheet}): số tài liệu thiếu phần; discipline lấy theo tên tab',
   'warning.eng.badDate': '{id}: ngày không đọc được ở {column}: "{value}"',
   'warning.eng.duplicateDoc': '{id} xuất hiện ở nhiều tab ({sheets}); giữ bản rev mới nhất',
@@ -323,6 +323,7 @@ export const vi: Dictionary = {
   'eng.timeline.late': '{count} trễ',
   'eng.timeline.noPlan': 'Chưa có ngày kế hoạch',
   'eng.stageDrawer.summary': '{reached} / {total} tài liệu đã đạt bước này · {late} trễ',
+  'eng.stageDrawer.tabsLabel': 'Trạng thái tài liệu',
   'eng.stageDrawer.empty': 'Không có tài liệu nào trong danh sách này.',
   'eng.stageDrawer.plan': 'Kế hoạch',
 

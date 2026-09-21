@@ -43,8 +43,8 @@ export function registerSheet(rows: FixtureRow[], opts: { cutOff?: string; extra
     table.forEach((r, i) => r.splice(opts.extraColumnAt!, 0, i === 0 ? 'Extra' : ''));
   }
   return [
-    ['', '', '', '', 'CLQ0-Design Engineering - Living Quarters Platform - General'],
-    [15],
+    ['', '', '', '', 'CLQ0-Design Engineering - Living Quarters Platform - General', ...Array(21).fill(''), 'Doc. No: '],
+    [15, ...Array(25).fill(''), 'Rev. No: '],
     ['', '', '', '', 'ENGINEERING MASTER DELIVERABLE REGISTER\n'],
     [...Array(24).fill(''), `Cut - off: ${opts.cutOff ?? '09-05-2025'}`],
     ...table,

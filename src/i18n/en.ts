@@ -31,7 +31,7 @@ export const en = {
   'error.parse.sheetNotFound': 'Sheet "{sheet}" not found. Available sheets: {sheets}',
   'error.parse.empty': 'Sheet "{sheet}" has no data.',
   'error.parse.missingColumns': 'Missing required columns: {columns}',
-  'error.parse.noRegisterSheets': 'No register tab found (a tab needs a "DOC. No" header). Tabs: {sheets}',
+  'error.parse.noRegisterSheets': 'No register tab found (a tab needs "DOC. No" and "DOC. TITLE" headers). Tabs: {sheets}',
   'error.parse.noDocuments': 'The register tabs contain no documents.',
 
   // Load-error titles shown by the store (src/store/appStore.ts).
@@ -53,7 +53,7 @@ export const en = {
   'warning.noDiscipline': 'Row appears before the first discipline heading',
 
   // Engineering register warnings (src/data/engineering/parseEmdr.ts).
-  'warning.eng.skippedSheet': 'Tab "{sheet}" skipped: no "DOC. No" header',
+  'warning.eng.skippedSheet': 'Tab "{sheet}" skipped: missing "DOC. No" or "DOC. TITLE" header',
   'warning.eng.badDocNumber': '{id} ({sheet}): document number has fewer than 4 parts; discipline taken from the tab name',
   'warning.eng.badDate': '{id}: unreadable date in {column}: "{value}"',
   'warning.eng.duplicateDoc': '{id} appears in several tabs ({sheets}); kept the latest revision',
@@ -321,6 +321,7 @@ export const en = {
   'eng.timeline.late': '{count} late',
   'eng.timeline.noPlan': 'No planned dates',
   'eng.stageDrawer.summary': '{reached} / {total} documents reached this step · {late} late',
+  'eng.stageDrawer.tabsLabel': 'Document status',
   'eng.stageDrawer.empty': 'No documents in this list.',
   'eng.stageDrawer.plan': 'Plan',
 

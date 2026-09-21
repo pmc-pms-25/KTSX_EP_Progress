@@ -5,6 +5,9 @@ import { applyEngFilters, EMPTY_ENG_FILTERS, engFiltersFromParams, engVocabulary
 const metrics = () => computeDocMetrics(sampleRegister().documents, ENG_CUTOFF);
 const ids = (list: { doc: { id: string } }[]) => list.map((m) => m.doc.id.split('-')[5]);
 
+const doc = (id: string, docTypeLabel: string) =>
+  computeDocMetrics([{ id, title: 't', facility: 'CLQ0', discipline: 'PIP', docType: 'SPC', docTypeLabel, sheet: 'PIP', rev: '0' }], ENG_CUTOFF)[0];
+
 describe('engineering URL filters', () => {
   it('reads known values and drops unknown stages and flags', () => {
     const params = new URLSearchParams('discipline=PIP&discipline=STR&facility=CPC0&type=SPC&phase=final&phase=bogus&flag=rejected&flag=slipped&q=%20spec%20&pkg=X');
@@ -48,6 +51,11 @@ describe('applyEngFilters', () => {
     expect(ids(applyEngFilters(metrics(), { ...EMPTY_ENG_FILTERS, q: 'str  spec' }))).toEqual(['00005']);
     expect(ids(applyEngFilters(metrics(), { ...EMPTY_ENG_FILTERS, q: 'clq0 LAYOUT' }))).toEqual(['00001']);
     expect(searchWords('  A  b ')).toEqual(['a', 'b']);
+  });
+
+  it('also matches the document-type label', () => {
+    const m = doc('PQ-CLQ0-PIP-SPC-MPC-00001-00', 'Specification');
+    expect(applyEngFilters([m], { ...EMPTY_ENG_FILTERS, q: 'specification' })).toEqual([m]);
   });
 });
 

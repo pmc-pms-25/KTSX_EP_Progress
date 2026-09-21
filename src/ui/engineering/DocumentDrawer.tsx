@@ -36,8 +36,14 @@ export function DocumentDrawer() {
             <h2 className="text-base font-semibold">{doc.title || '—'}</h2>
             <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
               <StageChip stage={m!.stage} />
-              <span className="font-mono text-ink-3">Rev {doc.rev || '—'}</span>
-              {doc.code !== undefined && <span className="font-mono text-ink-3">Code {doc.code}</span>}
+              <span className="font-mono text-ink-3">
+                {t('eng.table.rev')} {doc.rev || '—'}
+              </span>
+              {doc.code !== undefined && (
+                <span className="font-mono text-ink-3">
+                  {t('eng.table.code')} {doc.code}
+                </span>
+              )}
             </div>
           </div>
         ) : (

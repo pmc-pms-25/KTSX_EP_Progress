@@ -28,6 +28,12 @@ describe('stageOf', () => {
     ['H01', IFU, undefined, 'final'],
     ['H01', undefined, undefined, 'review'],
     ['0', IFI, undefined, 'review'],
+    ['NA', undefined, undefined, 'notIssued'],
+    ['NA', 'Issued for Use', undefined, 'final'],
+    ['R6', undefined, undefined, 'notIssued'],
+    ['2', undefined, undefined, 'notIssued'],
+    ['L01', 'Issued for Information', 3, 'commented'],
+    ['K01', undefined, 4, 'commented'],
   ];
 
   it.each(cases)('rev %s, status %s, code %s → %s', (rev, status, code, expected) => {

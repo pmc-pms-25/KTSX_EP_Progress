@@ -103,6 +103,14 @@ describe('parseEmdr', () => {
     expect(parseEmdr(buf).warnings.map((w) => w.code)).not.toContain('SUMMARY_MISMATCH');
   });
 
+  it('treats a "NA" transmittal number with no date as no transmittal', () => {
+    const buf = emdrWorkbook({
+      Summary: summarySheet(1),
+      PIP: registerSheet([{ id: 'PQ-CLQ0-PIP-LAY-MPC-00001-00', rev: 'K01', trNo: 'NA' }]),
+    });
+    expect(parseEmdr(buf).data.documents[0].transmittal).toBeUndefined();
+  });
+
   it('fails clearly on bad input', () => {
     expect(failCode(() => parseEmdr(new TextEncoder().encode('nope').buffer as ArrayBuffer))).toBe('NOT_XLSX');
     expect(failCode(() => parseEmdr(emdrWorkbook({ Summary: summarySheet(0), Notes: [['x']] })))).toBe('NO_REGISTER_SHEETS');
