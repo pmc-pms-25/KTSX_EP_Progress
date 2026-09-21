@@ -251,4 +251,19 @@ export const vi: Dictionary = {
   // Engineering placeholder page (src/ui/engineering/EngineeringPage.tsx).
   'engineering.placeholder.title': 'Engineering',
   'engineering.placeholder.detail': 'Đã tải {rows} dòng từ sheet “{sheet}”. Nội dung dashboard Engineering sẽ được thiết kế ở buổi sau.',
+
+  // Modules and the shared sidebar (src/modules, src/ui/shell/Sidebar.tsx).
+  'module.procurement': 'Procurement',
+  'module.engineering': 'Engineering',
+  'module.unconfigured.title': 'Chưa cấu hình nguồn dữ liệu',
+  'module.unconfigured.detail': 'Thêm "dataSources.{id}" vào config.json để tải dashboard {module}.',
+  'sidebar.label': 'Dashboard',
+  'sidebar.collapse': 'Thu gọn thanh bên',
+  'sidebar.expand': 'Mở rộng thanh bên',
+  'sidebar.open': 'Mở menu',
+  'notFound.title': 'Không tìm thấy trang.',
+  'notFound.back': 'Về dashboard',
+  'filter.discipline': 'Discipline',
+  'filter.facility': 'Facility',
+  'filter.itemType': 'Tagged/Bulk',
 };

@@ -249,6 +249,21 @@ export const en = {
   // Engineering placeholder page (src/ui/engineering/EngineeringPage.tsx).
   'engineering.placeholder.title': 'Engineering',
   'engineering.placeholder.detail': 'Loaded {rows} {rows|row|rows} from sheet “{sheet}”. The Engineering dashboard content will be designed in a later session.',
+
+  // Modules and the shared sidebar (src/modules, src/ui/shell/Sidebar.tsx).
+  'module.procurement': 'Procurement',
+  'module.engineering': 'Engineering',
+  'module.unconfigured.title': 'No data source configured',
+  'module.unconfigured.detail': 'Add "dataSources.{id}" to config.json to load the {module} dashboard.',
+  'sidebar.label': 'Dashboards',
+  'sidebar.collapse': 'Collapse sidebar',
+  'sidebar.expand': 'Expand sidebar',
+  'sidebar.open': 'Open menu',
+  'notFound.title': 'Page not found.',
+  'notFound.back': 'Back to the dashboard',
+  'filter.discipline': 'Discipline',
+  'filter.facility': 'Facility',
+  'filter.itemType': 'Tagged/Bulk',
 } as const;
 
 export type MessageKey = keyof typeof en;
