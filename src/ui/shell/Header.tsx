@@ -18,8 +18,8 @@ function timeAgo(t: ReturnType<typeof useT>['t'], lang: Lang, date: Date, now = 
 }
 
 function SearchSlot({ module }: { module: AnyModule }) {
-  const { value, vocab, onChange } = module.useSearch!();
-  return <AskBox value={value} vocab={vocab} onChange={onChange} />;
+  const { value, vocab, onChange, describe, placeholderKey } = module.useSearch!();
+  return <AskBox value={value} vocab={vocab} onChange={onChange} describe={describe} placeholderKey={placeholderKey} />;
 }
 
 /** Refresh + Data Health for the module on screen; hidden while the module has no configured source. */

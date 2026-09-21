@@ -71,7 +71,7 @@ WantedBy=multi-user.target
 | `dataSources.<module>` | Nguồn dữ liệu của từng dashboard: `procurement`, `engineering`. Thiếu nguồn nào thì dashboard đó hiện "Chưa cấu hình nguồn dữ liệu" |
 | `dataSources.<module>.type` | `google-sheet` (trình duyệt tải trực tiếp) hoặc `server` (file đặt trên server, ví dụ `data/engineering.xlsx` cạnh `index.html`) |
 | `dataSources.<module>.url` | Link Google Sheet (link edit hoặc `export?format=xlsx` đều được) hoặc đường dẫn file trên server |
-| `dataSources.<module>.sheetName` | Tên sheet dữ liệu (mặc định sheet đầu tiên) |
+| `dataSources.<module>.sheetName` | Procurement: tên sheet dữ liệu (mặc định sheet đầu tiên). Engineering bỏ qua trường này và đọc mọi tab register (mọi tab trừ `Summary`) |
 | `dueSoonDays` | Cửa sổ "sắp đến hạn", tính bằng ngày |
 | `port` | Cổng server |
 
@@ -80,7 +80,7 @@ Ví dụ:
 ```json
 "dataSources": {
   "procurement": { "type": "google-sheet", "url": "https://docs.google.com/spreadsheets/d/<id>/edit", "sheetName": "ALL" },
-  "engineering": { "type": "server", "url": "data/engineering.xlsx" }
+  "engineering": { "type": "google-sheet", "url": "https://docs.google.com/spreadsheets/d/<id>/edit" }
 }
 ```
 

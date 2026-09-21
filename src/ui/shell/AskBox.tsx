@@ -1,15 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
 import { describeSearch, parseSearch, type SearchVocabulary } from '../../analytics/search';
+import type { MessageKey } from '../../i18n/en';
 import { useT } from '../../i18n/useT';
 
 interface AskBoxProps {
   value: string;
   vocab: SearchVocabulary;
   onChange: (q: string) => void;
+  describe?: (q: string) => string[];
+  placeholderKey?: MessageKey;
 }
 
 /** "Ask PMS - PEIW" — smart search today, the LLM entry point later. */
-export function AskBox({ value, vocab, onChange }: AskBoxProps) {
+export function AskBox({ value, vocab, onChange, describe, placeholderKey = 'ask.placeholder' }: AskBoxProps) {
   const { t } = useT();
   const [draft, setDraft] = useState(value);
 
@@ -22,7 +25,10 @@ export function AskBox({ value, vocab, onChange }: AskBoxProps) {
     return () => clearTimeout(t);
   }, [draft, value, onChange]);
 
-  const understood = useMemo(() => (draft.trim() ? describeSearch(parseSearch(draft, vocab)) : []), [draft, vocab]);
+  const understood = useMemo(
+    () => (draft.trim() ? (describe ? describe(draft) : describeSearch(parseSearch(draft, vocab))) : []),
+    [draft, vocab, describe],
+  );
 
   return (
     <div className="w-full">
@@ -32,7 +38,7 @@ export function AskBox({ value, vocab, onChange }: AskBoxProps) {
         <input
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          placeholder={t('ask.placeholder')}
+          placeholder={t(placeholderKey)}
           className="min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-3"
         />
         {draft && (

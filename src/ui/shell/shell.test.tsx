@@ -4,6 +4,7 @@ import { createMemoryRouter, MemoryRouter, RouterProvider, useLocation } from 'r
 import { routes } from '../../App';
 import { engineeringStore } from '../../modules/engineering/store';
 import { procurementStore } from '../../modules/procurement/store';
+import { sampleRegister } from '../../test/engFixture';
 import { seedStore } from '../../test/seedStore';
 import { useFacetParams } from './useFacetParams';
 
@@ -17,7 +18,7 @@ function renderAt(path: string) {
   return router;
 }
 
-const ENG_READY = { status: 'ready' as const, data: { sheetName: 'ENG', sheets: ['ENG'], rowCount: 3 }, warnings: [] };
+const ENG_READY = { status: 'ready' as const, data: sampleRegister(), warnings: [] };
 
 beforeEach(seedStore);
 
@@ -28,13 +29,14 @@ describe('shared shell per module', () => {
     expect(await screen.findByText('Test Project · Procurement')).toBeInTheDocument();
   });
 
-  it('hides the AskBox and the filter bar on a module without search or facets', async () => {
+  it('shows the engineering search, facets and document count', async () => {
     engineeringStore.setState(ENG_READY);
     renderAt('/engineering');
-    await screen.findByText(/Đã tải 3 dòng/);
+    await screen.findByRole('button', { name: /Chưa phát hành/ });
     expect(await screen.findByText('Test Project · Engineering')).toBeInTheDocument();
-    expect(screen.queryByPlaceholderText(/Ask PMS - PEIW/)).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /Discipline/ })).not.toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/Tìm tài liệu/)).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: /Loại tài liệu/ }).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/\/ 6 tài liệu/).length).toBeGreaterThan(0);
   });
 
   it('draws the procurement facets with translated labels and the result count', async () => {
@@ -68,7 +70,7 @@ describe('shared shell per module', () => {
     engineeringStore.setState({ ...ENG_READY, load });
     try {
       renderAt('/engineering');
-      await screen.findByText(/Đã tải 3 dòng/);
+      await screen.findByRole('button', { name: /Chưa phát hành/ });
       fireEvent.click(await screen.findByTitle('Tải lại dữ liệu'));
       await waitFor(() => expect(load).toHaveBeenCalledTimes(1));
     } finally {
@@ -87,7 +89,7 @@ describe('shared shell per module', () => {
   it('counts Data Health warnings of the active module only', async () => {
     engineeringStore.setState(ENG_READY);
     renderAt('/engineering');
-    await screen.findByText(/Đã tải 3 dòng/);
+    await screen.findByRole('button', { name: /Chưa phát hành/ });
     expect(procurementStore.getState().warnings.length).toBeGreaterThan(0);
     await waitFor(() => expect(screen.getByTitle('Data Health').textContent).not.toMatch(/\d/));
   });

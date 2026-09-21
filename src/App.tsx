@@ -37,7 +37,7 @@ export const routes: RouteObject[] = [
         path: 'engineering',
         element: <ModuleRoute module={engineeringModule} />,
         children: [
-          { index: true, lazy: () => import('./ui/engineering/EngineeringPage').then((m) => ({ Component: m.EngineeringPage })) },
+          { index: true, lazy: () => import('./ui/engineering/EngOverviewPage').then((m) => ({ Component: m.EngOverviewPage })) },
           { path: '*', element: <NotFound /> },
         ],
       },

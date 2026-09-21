@@ -3,6 +3,7 @@ import { createMemoryRouter, RouterProvider, type RouteObject } from 'react-rout
 import { routes } from '../../App';
 import { engineeringStore } from '../../modules/engineering/store';
 import { appStore } from '../../store/appStore';
+import { sampleRegister } from '../../test/engFixture';
 import { seedStore } from '../../test/seedStore';
 import { filterQuery } from './ModuleRoute';
 
@@ -43,7 +44,7 @@ describe('routing', () => {
   });
 
   it('shows the 404 page inside the module for unknown module sub-paths', async () => {
-    engineeringStore.setState({ status: 'ready', data: { sheetName: 'ENG', sheets: ['ENG'], rowCount: 3 }, warnings: [] });
+    engineeringStore.setState({ status: 'ready', data: sampleRegister(), warnings: [] });
     for (const [path, module] of [['/procurement/foo', 'procurement'], ['/engineering/foo/bar', 'engineering']]) {
       const router = renderAt(path);
       expect(await screen.findByText('Không tìm thấy trang.')).toBeInTheDocument();

@@ -23,7 +23,7 @@ describe('module registry', () => {
 
   it('knows which query keys are filters', () => {
     expect(filterKeys(procurementModule)).toEqual(['discipline', 'facility', 'type', 'phase', 'flag', 'q']);
-    expect(filterKeys(modules[0])).toEqual([]);
+    expect(filterKeys(modules[0])).toEqual(['discipline', 'facility', 'type', 'phase', 'flag', 'q']);
   });
 
   it('builds procurement facet options from the plan', () => {

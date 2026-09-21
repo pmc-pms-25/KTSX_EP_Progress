@@ -62,6 +62,7 @@ export const en = {
 
   // Loading-step detail (src/store/appStore.ts).
   'status.linesLoaded': '{count} {count|line|lines}',
+  'status.documentsLoaded': '{count} {count|document|documents}',
 
   // Insights (src/analytics/insights/rules/*.ts).
   'insight.rosRisk.title': '{count} {count|line|lines} at risk of missing ROS',
@@ -116,6 +117,7 @@ export const en = {
   'unit.lines': '{n|line|lines}',
   'unit.weeks': '{n|week|weeks}',
   'unit.milestones': '{n|milestone|milestones}',
+  'unit.documents': '{n|document|documents}',
   'chip.status.done': 'Done',
   'chip.status.overdue': 'Overdue',
   'chip.status.dueSoon': 'Due soon',
@@ -263,10 +265,6 @@ export const en = {
   'health.subtitle': 'Data-quality issues detected while reading the sheet. The app still shows these lines.',
   'health.empty': '✓ No issues detected.',
 
-  // Engineering placeholder page (src/ui/engineering/EngineeringPage.tsx).
-  'engineering.placeholder.title': 'Engineering',
-  'engineering.placeholder.detail': 'Loaded {rows} {rows|row|rows} from sheet “{sheet}”. The Engineering dashboard content will be designed in a later session.',
-
   // Modules and the shared sidebar (src/modules, src/ui/shell/Sidebar.tsx).
   'module.procurement': 'Procurement',
   'module.engineering': 'Engineering',
@@ -290,6 +288,31 @@ export const en = {
   'eng.stage.review': 'Review (IFI/IFR)',
   'eng.stage.commented': 'Commented (IFA)',
   'eng.stage.final': 'Final (IFC/IFU)',
+
+  'eng.ask.placeholder': 'Search documents…  e.g. PIP layout',
+  'eng.filter.docType': 'Document type',
+  'eng.filter.stage': 'Stage (Phase E)',
+  'eng.flag.notIssued': 'Not issued',
+  'eng.flag.overdue': 'Overdue',
+  'eng.flag.code1': 'Code 1 (approved)',
+  'eng.flag.code2': 'Code 2 (with comments)',
+  'eng.flag.rejected': 'Rejected (Code 3/4)',
+  'eng.kpi.total': 'Documents',
+  'eng.kpi.issued': 'Issued',
+  'eng.kpi.final': 'IFC / IFU',
+  'eng.kpi.code1': 'Code 1',
+  'eng.kpi.code2': 'Code 2',
+  'eng.kpi.notIssued': 'Not issued',
+  'eng.kpi.overdue': 'Overdue',
+  'eng.kpi.rejected': 'Rejected',
+  'eng.kpi.hint.total': 'Deliverables in the register',
+  'eng.kpi.hint.issued': 'Issued at least once',
+  'eng.kpi.hint.final': 'Issued for Construction or Use',
+  'eng.kpi.hint.code1': 'Approved by the client',
+  'eng.kpi.hint.code2': 'Approved with comments',
+  'eng.kpi.hint.notIssued': 'Never issued (rev 0)',
+  'eng.kpi.hint.overdue': 'A planned date passed without the step',
+  'eng.kpi.hint.rejected': 'Client Code 3 or 4',
 } as const;
 
 export type MessageKey = keyof typeof en;

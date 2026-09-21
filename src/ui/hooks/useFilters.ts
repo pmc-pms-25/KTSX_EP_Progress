@@ -20,7 +20,7 @@ export function useFilters() {
 }
 
 /** A drawer driven by a single query key; opening pushes a history entry so Back closes it. */
-function useDrawerParam(key: string) {
+export function useDrawerParam(key: string) {
   const [params, setParams] = useSearchParams();
   const value = params.get(key) ?? undefined;
   const open = useCallback(

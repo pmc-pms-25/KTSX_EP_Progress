@@ -64,6 +64,7 @@ export const vi: Dictionary = {
 
   // Loading-step detail (src/store/appStore.ts).
   'status.linesLoaded': '{count} dòng',
+  'status.documentsLoaded': '{count} tài liệu',
 
   // Insights (src/analytics/insights/rules/*.ts).
   'insight.rosRisk.title': '{count} dòng có nguy cơ trễ ROS',
@@ -118,6 +119,7 @@ export const vi: Dictionary = {
   'unit.lines': 'dòng',
   'unit.weeks': 'tuần',
   'unit.milestones': 'mốc',
+  'unit.documents': 'tài liệu',
   'chip.status.done': 'Hoàn thành',
   'chip.status.overdue': 'Quá hạn',
   'chip.status.dueSoon': 'Sắp đến hạn',
@@ -265,10 +267,6 @@ export const vi: Dictionary = {
   'health.subtitle': 'Các vấn đề chất lượng dữ liệu phát hiện khi đọc sheet. App vẫn hiển thị các dòng này.',
   'health.empty': '✓ Không phát hiện vấn đề nào.',
 
-  // Engineering placeholder page (src/ui/engineering/EngineeringPage.tsx).
-  'engineering.placeholder.title': 'Engineering',
-  'engineering.placeholder.detail': 'Đã tải {rows} dòng từ sheet “{sheet}”. Nội dung dashboard Engineering sẽ được thiết kế ở buổi sau.',
-
   // Modules and the shared sidebar (src/modules, src/ui/shell/Sidebar.tsx).
   'module.procurement': 'Procurement',
   'module.engineering': 'Engineering',
@@ -292,4 +290,29 @@ export const vi: Dictionary = {
   'eng.stage.review': 'Đang review (IFI/IFR)',
   'eng.stage.commented': 'Đã có phản hồi (IFA)',
   'eng.stage.final': 'Hoàn tất (IFC/IFU)',
+
+  'eng.ask.placeholder': 'Tìm tài liệu…  ví dụ: PIP layout',
+  'eng.filter.docType': 'Loại tài liệu',
+  'eng.filter.stage': 'Bước (Phase E)',
+  'eng.flag.notIssued': 'Chưa phát hành',
+  'eng.flag.overdue': 'Quá hạn',
+  'eng.flag.code1': 'Code 1 (chấp thuận)',
+  'eng.flag.code2': 'Code 2 (kèm comment)',
+  'eng.flag.rejected': 'Bị từ chối (Code 3/4)',
+  'eng.kpi.total': 'Tài liệu',
+  'eng.kpi.issued': 'Đã phát hành',
+  'eng.kpi.final': 'IFC / IFU',
+  'eng.kpi.code1': 'Code 1',
+  'eng.kpi.code2': 'Code 2',
+  'eng.kpi.notIssued': 'Chưa phát hành',
+  'eng.kpi.overdue': 'Quá hạn',
+  'eng.kpi.rejected': 'Bị từ chối',
+  'eng.kpi.hint.total': 'Tài liệu trong register',
+  'eng.kpi.hint.issued': 'Đã phát hành ít nhất một lần',
+  'eng.kpi.hint.final': 'Đã phát hành IFC hoặc IFU',
+  'eng.kpi.hint.code1': 'Khách hàng chấp thuận',
+  'eng.kpi.hint.code2': 'Chấp thuận kèm comment',
+  'eng.kpi.hint.notIssued': 'Chưa phát hành lần nào (rev 0)',
+  'eng.kpi.hint.overdue': 'Quá ngày kế hoạch mà chưa đạt bước',
+  'eng.kpi.hint.rejected': 'Khách hàng trả Code 3 hoặc 4',
 };

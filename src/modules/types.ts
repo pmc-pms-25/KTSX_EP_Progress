@@ -23,6 +23,10 @@ export interface ModuleSearch {
   value: string;
   vocab: SearchVocabulary;
   onChange(q: string): void;
+  /** Chips for how the query is read; Procurement's parser when absent. */
+  describe?(q: string): string[];
+  /** Input placeholder; `ask.placeholder` when absent. */
+  placeholderKey?: MessageKey;
 }
 
 export interface ResultCount {
