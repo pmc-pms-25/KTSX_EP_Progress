@@ -11,7 +11,7 @@ import { createAppStore, type StoreDeps } from './appStore';
 const CONFIG: AppConfig = {
   appName: 'PMS - PEIW',
   projectName: 'Test Project',
-  dataSource: { type: 'google-sheet', url: 'https://x' },
+  dataSources: { procurement: { type: 'google-sheet', url: 'https://x' } },
   dueSoonDays: 30,
 };
 

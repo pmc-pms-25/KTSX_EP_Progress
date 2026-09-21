@@ -16,9 +16,10 @@ export const en = {
 
   // Config load/validation errors (src/config/config.ts).
   'error.config.notObject': 'config.json must be a JSON object.',
-  'error.config.missingDataSource': 'Missing "dataSource" in config.json.',
-  'error.config.badType': '"dataSource.type" must be "google-sheet" or "server".',
-  'error.config.missingUrl': 'Missing "dataSource.url" in config.json.',
+  'error.config.missingDataSource': 'Missing "dataSources" in config.json.',
+  'error.config.badSource': '"dataSources.{module}" must be an object.',
+  'error.config.badType': '"dataSources.{module}.type" must be "google-sheet" or "server".',
+  'error.config.missingUrl': 'Missing "dataSources.{module}.url" in config.json.',
   'error.config.badDueSoon': '"dueSoonDays" must be a positive integer.',
   'error.config.fetchFailed': 'Could not load config.json from the server.',
   'error.config.http': 'Could not load config.json (HTTP {status}).',

@@ -1,6 +1,6 @@
 import { createStore } from 'zustand/vanilla';
 import { computeAllMetrics, type LineMetrics } from '../analytics/lineMetrics';
-import { loadConfig as defaultLoadConfig, type AppConfig, type ConfigError } from '../config/config';
+import { ConfigError, loadConfig as defaultLoadConfig, type AppConfig } from '../config/config';
 import { parsePlan as defaultParsePlan } from '../data/parser/parsePlan';
 import { createDataSource as defaultCreateDataSource, SourceError } from '../data/sources/sources';
 import type { Plan } from '../data/types';
@@ -112,11 +112,13 @@ export function createAppStore(deps: StoreDeps) {
         const config = get().config ?? (await deps.loadConfig());
         if (controller.signal.aborted) return;
         set({ config, step: 'fetch', stepDetail: undefined });
-        const buf = await deps.createDataSource(config.dataSource).load(controller.signal);
+        const source = config.dataSources.procurement;
+        if (!source) throw new ConfigError(msg('error.config.missingDataSource'));
+        const buf = await deps.createDataSource(source).load(controller.signal);
         if (controller.signal.aborted) return;
         set({ step: 'parse' });
         await nextFrame();
-        const parsed = deps.parsePlan(buf, { projectName: config.projectName, sheetName: config.dataSource.sheetName, now: deps.now() });
+        const parsed = deps.parsePlan(buf, { projectName: config.projectName, sheetName: source.sheetName, now: deps.now() });
         if (!parsed.ok) {
           throw Object.assign(new Error(parsed.error.message), { name: 'ParseError', code: parsed.error.code, detail: parsed.error.detail });
         }

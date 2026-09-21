@@ -7,7 +7,7 @@ export function seedStore(): void {
     status: 'ready',
     refreshing: false,
     step: 'done',
-    config: { appName: 'PMS - PEIW', projectName: 'Test Project', dataSource: { type: 'google-sheet', url: 'x' }, dueSoonDays: 30 },
+    config: { appName: 'PMS - PEIW', projectName: 'Test Project', dataSources: { procurement: { type: 'google-sheet', url: 'x' } }, dueSoonDays: 30 },
     plan: samplePlan(),
     metrics: sampleMetrics(),
     cutOff: TEST_CTX.cutOff,

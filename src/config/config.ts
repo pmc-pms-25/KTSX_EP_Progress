@@ -9,10 +9,15 @@ export interface DataSourceConfig {
   sheetName?: string;
 }
 
+/** Every module that can have its own data source. Order does not matter here. */
+export const MODULE_IDS = ['procurement', 'engineering'] as const;
+export type ModuleId = (typeof MODULE_IDS)[number];
+
 export interface AppConfig {
   appName: string;
   projectName: string;
-  dataSource: DataSourceConfig;
+  /** A module without an entry shows the "source not configured" screen. */
+  dataSources: Partial<Record<ModuleId, DataSourceConfig>>;
   dueSoonDays: number;
 }
 
@@ -31,16 +36,31 @@ function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null && !Array.isArray(v);
 }
 
+function parseSource(module: ModuleId, ds: unknown): DataSourceConfig {
+  if (!isRecord(ds)) throw new ConfigError(msg('error.config.badSource', { module }));
+  if (ds.type !== 'google-sheet' && ds.type !== 'server') {
+    throw new ConfigError(msg('error.config.badType', { module }));
+  }
+  if (typeof ds.url !== 'string' || ds.url.trim() === '') {
+    throw new ConfigError(msg('error.config.missingUrl', { module }));
+  }
+  return {
+    type: ds.type,
+    url: ds.url.trim(),
+    sheetName: typeof ds.sheetName === 'string' && ds.sheetName.trim() ? ds.sheetName.trim() : undefined,
+  };
+}
+
 /** Validate raw JSON and apply defaults. Throws ConfigError with a readable message. */
 export function parseConfig(raw: unknown): AppConfig {
   if (!isRecord(raw)) throw new ConfigError(msg('error.config.notObject'));
-  const ds = raw.dataSource;
-  if (!isRecord(ds)) throw new ConfigError(msg('error.config.missingDataSource'));
-  if (ds.type !== 'google-sheet' && ds.type !== 'server') {
-    throw new ConfigError(msg('error.config.badType'));
-  }
-  if (typeof ds.url !== 'string' || ds.url.trim() === '') {
-    throw new ConfigError(msg('error.config.missingUrl'));
+  // The single `dataSource` key predates modules; it still means the procurement source.
+  const entries: Record<string, unknown> = isRecord(raw.dataSources) ? { ...raw.dataSources } : {};
+  if (entries.procurement === undefined && raw.dataSource !== undefined) entries.procurement = raw.dataSource;
+  if (!MODULE_IDS.some((id) => entries[id] !== undefined)) throw new ConfigError(msg('error.config.missingDataSource'));
+  const dataSources: AppConfig['dataSources'] = {};
+  for (const id of MODULE_IDS) {
+    if (entries[id] !== undefined) dataSources[id] = parseSource(id, entries[id]);
   }
   const dueSoonDays = raw.dueSoonDays ?? DEFAULTS.dueSoonDays;
   if (typeof dueSoonDays !== 'number' || !Number.isInteger(dueSoonDays) || dueSoonDays < 1) {
@@ -50,11 +70,7 @@ export function parseConfig(raw: unknown): AppConfig {
   return {
     appName: str(raw.appName, DEFAULTS.appName),
     projectName: str(raw.projectName, DEFAULTS.projectName),
-    dataSource: {
-      type: ds.type,
-      url: ds.url.trim(),
-      sheetName: typeof ds.sheetName === 'string' && ds.sheetName.trim() ? ds.sheetName.trim() : undefined,
-    },
+    dataSources,
     dueSoonDays,
   };
 }

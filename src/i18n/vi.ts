@@ -18,9 +18,10 @@ export const vi: Dictionary = {
 
   // Config load/validation errors (src/config/config.ts).
   'error.config.notObject': 'config.json phải là một object JSON.',
-  'error.config.missingDataSource': 'Thiếu "dataSource" trong config.json.',
-  'error.config.badType': '"dataSource.type" phải là "google-sheet" hoặc "server".',
-  'error.config.missingUrl': 'Thiếu "dataSource.url" trong config.json.',
+  'error.config.missingDataSource': 'Thiếu "dataSources" trong config.json.',
+  'error.config.badSource': '"dataSources.{module}" phải là một object.',
+  'error.config.badType': '"dataSources.{module}.type" phải là "google-sheet" hoặc "server".',
+  'error.config.missingUrl': 'Thiếu "dataSources.{module}.url" trong config.json.',
   'error.config.badDueSoon': '"dueSoonDays" phải là số nguyên dương.',
   'error.config.fetchFailed': 'Không tải được config.json từ server.',
   'error.config.http': 'Không tải được config.json (HTTP {status}).',
