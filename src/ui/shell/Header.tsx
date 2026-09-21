@@ -3,8 +3,10 @@ import { LANGS, type Lang } from '../../i18n/message';
 import { locale } from '../../i18n/translate';
 import { useT } from '../../i18n/useT';
 import { dayFromISO, dayToISO, todayDay } from '../../lib/day';
+import { procurementStore } from '../../modules/procurement/store';
 import { appStore } from '../../store/appStore';
 import { useApp } from '../../store/useApp';
+import { useModule } from '../../store/useModule';
 import { useDashboard } from '../hooks/useDashboard';
 import { AskBox } from './AskBox';
 
@@ -20,13 +22,15 @@ export function Header({ onOpenHealth }: { onOpenHealth: () => void }) {
   const projectName = useApp((s) => s.config?.projectName ?? '');
   const cutOff = useApp((s) => s.cutOff);
   const theme = useApp((s) => s.theme);
-  const plan = useApp((s) => s.plan);
-  const refreshing = useApp((s) => s.refreshing);
-  const refreshError = useApp((s) => s.refreshError);
+  const refreshing = useModule(procurementStore, (s) => s.refreshing);
+  const refreshError = useModule(procurementStore, (s) => s.refreshError);
+  const lastSync = useModule(procurementStore, (s) => s.lastSync);
+  const warnings = useModule(procurementStore, (s) => s.warnings);
   const { filters, setFilters, vocab } = useDashboard();
-  const { load, setCutOff, toggleTheme, setLang } = appStore.getState();
+  const { setCutOff, toggleTheme, setLang } = appStore.getState();
+  const { load } = procurementStore.getState();
   const { t, lang } = useT();
-  const warningCount = plan?.warnings.filter((w) => w.level !== 'info').length ?? 0;
+  const warningCount = warnings.filter((w) => w.level !== 'info').length;
 
   return (
     <header
@@ -80,8 +84,8 @@ export function Header({ onOpenHealth }: { onOpenHealth: () => void }) {
                 ? t('header.syncing')
                 : refreshError
                   ? t('header.staleData')
-                  : plan
-                    ? t('header.synced', { time: timeAgo(t, lang, plan.loadedAt) })
+                  : lastSync
+                    ? t('header.synced', { time: timeAgo(t, lang, lastSync) })
                     : ''}
             </span>
           </button>

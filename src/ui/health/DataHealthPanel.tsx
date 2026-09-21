@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import type { DataWarning, WarningCode } from '../../data/types';
 import type { MessageKey } from '../../i18n/en';
 import { useT } from '../../i18n/useT';
-import { useApp } from '../../store/useApp';
 import { Drawer } from '../common/Drawer';
 
 const CODE_LABEL_KEY: Record<WarningCode, MessageKey> = {
@@ -18,14 +17,13 @@ const CODE_LABEL_KEY: Record<WarningCode, MessageKey> = {
 
 const LEVEL_TONE: Record<DataWarning['level'], string> = { error: 'text-critical', warn: 'text-serious', info: 'text-ink-3' };
 
-export function DataHealthPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function DataHealthPanel({ open, onClose, warnings }: { open: boolean; onClose: () => void; warnings: readonly DataWarning[] }) {
   const { t } = useT();
-  const plan = useApp((s) => s.plan);
   const groups = useMemo(() => {
     const map = new Map<WarningCode, DataWarning[]>();
-    for (const w of plan?.warnings ?? []) map.set(w.code, [...(map.get(w.code) ?? []), w]);
+    for (const w of warnings) map.set(w.code, [...(map.get(w.code) ?? []), w]);
     return [...map];
-  }, [plan]);
+  }, [warnings]);
 
   return (
     <Drawer

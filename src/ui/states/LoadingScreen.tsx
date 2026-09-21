@@ -1,8 +1,8 @@
 import { motion } from 'motion/react';
 import type { LoadStep } from '../../store/appStore';
 import type { MessageKey } from '../../i18n/en';
+import type { Message } from '../../i18n/message';
 import { useT } from '../../i18n/useT';
-import { useApp } from '../../store/useApp';
 
 const STEPS: { key: Exclude<LoadStep, 'done'>; labelKey: MessageKey }[] = [
   { key: 'config', labelKey: 'loading.step.config' },
@@ -12,10 +12,8 @@ const STEPS: { key: Exclude<LoadStep, 'done'>; labelKey: MessageKey }[] = [
 ];
 
 /** Real pipeline progress (not a fake timer) over scanning skeletons. */
-export function LoadingScreen() {
+export function LoadingScreen({ step, detail }: { step: LoadStep; detail?: Message }) {
   const { t } = useT();
-  const step = useApp((s) => s.step);
-  const detail = useApp((s) => s.stepDetail);
   const current = STEPS.findIndex((s) => s.key === step);
 
   return (

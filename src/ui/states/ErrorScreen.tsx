@@ -1,6 +1,6 @@
 import type { MessageKey } from '../../i18n/en';
 import { useT } from '../../i18n/useT';
-import { appStore, type LoadError } from '../../store/appStore';
+import { type LoadError } from '../../store/appStore';
 
 const HINTS: Record<string, MessageKey> = {
   NETWORK: 'error.hint.network',
@@ -10,7 +10,7 @@ const HINTS: Record<string, MessageKey> = {
   MISSING_COLUMNS: 'error.hint.missingColumns',
 };
 
-export function ErrorScreen({ error }: { error: LoadError }) {
+export function ErrorScreen({ error, onRetry }: { error: LoadError; onRetry: () => void }) {
   const { t } = useT();
   return (
     <div className="mx-auto max-w-lg px-4 py-16 text-center">
@@ -21,7 +21,7 @@ export function ErrorScreen({ error }: { error: LoadError }) {
       <p className="mt-2 text-sm text-ink-2">{t(error.detail)}</p>
       {HINTS[error.code] && <p className="mt-2 text-xs text-ink-3">{t(HINTS[error.code])}</p>}
       <p className="mt-1 font-mono text-[10px] text-ink-3">{t('error.codeLabel', { code: error.code })}</p>
-      <button type="button" onClick={() => void appStore.getState().load()} className="mt-5 rounded-lg bg-ai-1/20 px-4 py-2 text-sm text-ai-1 hover:bg-ai-1/30">
+      <button type="button" onClick={onRetry} className="mt-5 rounded-lg bg-ai-1/20 px-4 py-2 text-sm text-ai-1 hover:bg-ai-1/30">
         {t('common.retry')}
       </button>
     </div>

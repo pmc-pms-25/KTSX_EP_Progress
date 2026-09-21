@@ -1,16 +1,20 @@
 import { useMemo } from 'react';
 import { applyFilters, vocabularyOf } from '../../analytics/filters';
-import type { MetricsContext } from '../../analytics/lineMetrics';
+import type { LineMetrics, MetricsContext } from '../../analytics/lineMetrics';
+import { procurementMetrics } from '../../modules/procurement/metrics';
+import { procurementStore } from '../../modules/procurement/store';
 import { useApp } from '../../store/useApp';
+import { useModule } from '../../store/useModule';
 import { useFilters } from './useFilters';
 
-/** Everything a dashboard view needs: all metrics, the filtered subset and the search vocabulary. */
+const NO_METRICS: LineMetrics[] = [];
+
+/** Everything a procurement view needs: all metrics, the filtered subset and the search vocabulary. */
 export function useDashboard() {
-  const metrics = useApp((s) => s.metrics);
+  const plan = useModule(procurementStore, (s) => s.data);
   const cutOff = useApp((s) => s.cutOff);
   const dueSoonDays = useApp((s) => s.config?.dueSoonDays ?? 30);
-  // Select stable references only; derive arrays in useMemo (a new array per selector call loops forever).
-  const plan = useApp((s) => s.plan);
+  const metrics = useMemo(() => (plan ? procurementMetrics(plan, cutOff, dueSoonDays) : NO_METRICS), [plan, cutOff, dueSoonDays]);
   const { filters, setFilters, clear } = useFilters();
   const vocab = useMemo(() => vocabularyOf(metrics), [metrics]);
   const filtered = useMemo(() => applyFilters(metrics, filters, vocab), [metrics, filters, vocab]);
