@@ -17,53 +17,61 @@ function renderAt(path: string) {
   return router;
 }
 
+async function renderPage(path: string) {
+  const router = renderAt(path);
+  await screen.findByText('AI Insights');
+  return router;
+}
+
 beforeEach(seedStore);
 
 describe('dashboard app', () => {
-  it('renders the shell and the overview', () => {
-    renderAt('/');
+  it('renders the shell and the overview', async () => {
+    await renderPage('/procurement');
     expect(screen.getByText('PMS - PEIW')).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/Ask PMS - PEIW/)).toBeInTheDocument();
     expect(screen.getByText('AI Insights')).toBeInTheDocument();
     expect(document.documentElement.dataset.theme).toBe(appStore.getState().theme);
   });
 
-  it('filters through a KPI tile and shows the row count', () => {
-    const router = renderAt('/');
+  it('filters through a KPI tile and shows the row count', async () => {
+    const router = await renderPage('/procurement');
     fireEvent.click(screen.getByRole('button', { name: /ROS at risk/ }));
     expect(router.state.location.search).toContain('flag=rosRisk');
     expect(screen.getAllByText((_, el) => el?.textContent === '1 / 6 dòng').length).toBeGreaterThan(0);
   });
 
-  it('drills into a discipline and opens a package drawer', () => {
-    const router = renderAt('/');
+  it('drills into a discipline and opens a package drawer', async () => {
+    const router = await renderPage('/procurement');
     fireEvent.click(screen.getByRole('link', { name: /MECHANICAL/ }));
-    expect(router.state.location.pathname).toBe('/discipline/MECHANICAL');
+    await screen.findByRole('table');
+    expect(router.state.location.pathname).toBe('/procurement/discipline/MECHANICAL');
     fireEvent.click(within(screen.getByRole('table')).getByText('Centrifugal Pump'));
     expect(router.state.location.search).toContain('pkg=MEC-001');
     expect(within(screen.getByRole('dialog')).getByText('Chi tiết mốc')).toBeInTheDocument();
   });
 
-  it('scrolls to the top when moving to another page, but not when filters change', () => {
+  it('scrolls to the top when moving to another page, but not when filters change', async () => {
     const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
-    renderAt('/');
+    await renderPage('/procurement');
     scrollTo.mockClear();
     fireEvent.click(screen.getByRole('button', { name: /ROS at risk/ }));
     expect(scrollTo).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('link', { name: /MECHANICAL/ }));
+    await screen.findByRole('table');
     expect(scrollTo).toHaveBeenCalledWith(0, 0);
     scrollTo.mockRestore();
   });
 
-  it('toggles the theme', () => {
-    renderAt('/');
+  it('toggles the theme', async () => {
+    await renderPage('/procurement');
     const before = appStore.getState().theme;
     fireEvent.click(screen.getByRole('button', { name: /Chuyển sang giao diện/ }));
     expect(appStore.getState().theme).not.toBe(before);
     expect(document.documentElement.dataset.theme).toBe(appStore.getState().theme);
   });
 
-  it('shows the error screen when loading failed', () => {
+  it('shows the error screen when loading failed', async () => {
     act(() => {
       procurementStore.setState({
         status: 'error',
@@ -71,20 +79,20 @@ describe('dashboard app', () => {
         error: { title: msg('error.title.source'), detail: msg('error.source.accessDenied'), code: 'ACCESS_DENIED' },
       });
     });
-    renderAt('/');
-    expect(screen.getByText('Không tải được dữ liệu')).toBeInTheDocument();
+    renderAt('/procurement');
+    expect(await screen.findByText('Không tải được dữ liệu')).toBeInTheDocument();
     expect(screen.getByText(/Anyone with the link/)).toBeInTheDocument();
   });
 
-  it('opens Data Health with grouped warnings', () => {
-    renderAt('/');
+  it('opens Data Health with grouped warnings', async () => {
+    await renderPage('/procurement');
     fireEvent.click(screen.getByTitle('Data Health'));
     expect(screen.getByText('Package Code trống / bằng 0')).toBeInTheDocument();
   });
 
-  it('switches the whole UI to English and back to Vietnamese with the language switch', () => {
+  it('switches the whole UI to English and back to Vietnamese with the language switch', async () => {
     act(() => appStore.setState({ lang: 'en' }));
-    renderAt('/');
+    await renderPage('/procurement');
     expect(screen.getByText('1 line at risk of missing ROS')).toBeInTheDocument();
     expect(screen.getByText(/Automatically detected from the current data/)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/Ask PMS - PEIW/).getAttribute('placeholder')).toBe('Ask PMS - PEIW…  e.g. PS2R LOA Q2-2027');

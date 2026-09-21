@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import type { DisciplineHealth, RiskLevel } from '../../analytics/aggregate';
 import type { MessageKey } from '../../i18n/en';
 import { useT } from '../../i18n/useT';
+import { procurementModule } from '../../modules/procurement/module';
 import { Card } from '../common/Card';
 
 const LEVEL: Record<RiskLevel, { labelKey: MessageKey; icon: string; ring: string; tone: string }> = {
@@ -23,7 +24,7 @@ export function DisciplineGrid({ health }: { health: DisciplineHealth[] }) {
           return (
             <motion.div key={h.name} layoutId={`discipline-${h.name}`} whileHover={{ y: -2 }}>
               <Link
-                to={{ pathname: `/discipline/${encodeURIComponent(h.name)}`, search: query ? `?${query}` : '' }}
+                to={{ pathname: `${procurementModule.path}/discipline/${encodeURIComponent(h.name)}`, search: query ? `?${query}` : '' }}
                 className={`block rounded-xl border bg-surface p-3 transition-colors hover:bg-surface-2 ${lvl.ring} ${h.level === 'risk' ? 'pulse-risk' : ''}`}
               >
                 <p className="truncate text-xs font-semibold tracking-wide text-ink" title={h.name}>

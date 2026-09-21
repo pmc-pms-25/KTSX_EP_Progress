@@ -13,7 +13,7 @@ function renderAt(path: string) {
   const router = createMemoryRouter(
     [
       {
-        path: '/discipline/:name',
+        path: '/procurement/discipline/:name',
         element: (
           <>
             <DisciplinePage />
@@ -21,7 +21,7 @@ function renderAt(path: string) {
           </>
         ),
       },
-      { path: '/', element: <p>overview</p> },
+      { path: '/procurement', element: <p>overview</p> },
     ],
     { initialEntries: [path] },
   );
@@ -39,13 +39,13 @@ beforeEach(seedStore);
 
 describe('DisciplinePage', () => {
   it('lists packages riskiest first', () => {
-    renderAt('/discipline/MECHANICAL');
+    renderAt('/procurement/discipline/MECHANICAL');
     expect(codesInTable()).toEqual(['MEC-001', 'MEC-002', 'UNCODED-15']);
     expect(within(screen.getByRole('table')).getAllByRole('row')[1]).toHaveTextContent('▲ ROS');
   });
 
   it('sorts by a column and reverses on a second click', () => {
-    renderAt('/discipline/MECHANICAL');
+    renderAt('/procurement/discipline/MECHANICAL');
     fireEvent.click(screen.getByRole('button', { name: /^Package/ }));
     expect(codesInTable()).toEqual(['MEC-001', 'MEC-002', 'UNCODED-15']);
     fireEvent.click(screen.getByRole('button', { name: /^Package/ }));
@@ -53,12 +53,12 @@ describe('DisciplinePage', () => {
   });
 
   it('reports an unknown discipline', () => {
-    renderAt('/discipline/NOPE');
+    renderAt('/procurement/discipline/NOPE');
     expect(screen.getByText(/Không tìm thấy discipline/)).toBeInTheDocument();
   });
 
   it('shows risk tags on mobile cards too, not just a colored border', () => {
-    renderAt('/discipline/MECHANICAL');
+    renderAt('/procurement/discipline/MECHANICAL');
     const lists = screen.getAllByRole('list');
     const mobileList = lists.find((l) => within(l).queryByRole('button', { name: /MEC-001/ }));
     expect(mobileList).toBeDefined();
@@ -68,7 +68,7 @@ describe('DisciplinePage', () => {
 
 describe('PackageDrawer', () => {
   it('shows milestones per facility and switches facility', () => {
-    renderAt('/discipline/MECHANICAL?pkg=MEC-001');
+    renderAt('/procurement/discipline/MECHANICAL?pkg=MEC-001');
     const dialog = screen.getByRole('dialog');
     expect(within(dialog).getByText('Centrifugal Pump')).toBeInTheDocument();
     expect(within(dialog).getByText('MTO / TR Approval')).toBeInTheDocument();
@@ -79,13 +79,13 @@ describe('PackageDrawer', () => {
   });
 
   it('closes with the close button', () => {
-    const router = renderAt('/discipline/MECHANICAL?pkg=MEC-001');
+    const router = renderAt('/procurement/discipline/MECHANICAL?pkg=MEC-001');
     fireEvent.click(screen.getByRole('button', { name: 'Đóng' }));
     expect(router.state.location.search).not.toContain('pkg=');
   });
 
   it('marks overdue Gantt dots with an icon, not color alone', () => {
-    renderAt('/discipline/MECHANICAL?pkg=MEC-002');
+    renderAt('/procurement/discipline/MECHANICAL?pkg=MEC-002');
     const dots = within(screen.getByRole('dialog')).getAllByTitle(/^RFQ Issue/);
     expect(dots.some((el) => el.textContent === '!')).toBe(true);
   });
