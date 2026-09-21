@@ -237,6 +237,8 @@ Cập nhật `public/config.json` và `docs/deploy.md`.
 
 Giới hạn đã biết: sidebar ≥ ~8 mục nên có trường `group` tùy chọn; dictionary i18n có thể tách file theo module khi quá lớn — cả hai không đổi kiến trúc.
 
+Module có mã cảnh báo riêng phải mở rộng `CODE_LABEL_KEY` trong `DataHealthPanel` (`Record<WarningCode, …>`), nếu không panel Data Health không có nhãn cho các mã đó.
+
 ## 10. Kiểm thử (Vitest + Testing Library, TDD)
 
 | Phần | Kiểm tra |
