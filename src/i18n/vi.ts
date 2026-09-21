@@ -33,6 +33,8 @@ export const vi: Dictionary = {
   'error.parse.sheetNotFound': 'Không tìm thấy sheet "{sheet}". Các sheet hiện có: {sheets}',
   'error.parse.empty': 'Sheet "{sheet}" không có dữ liệu.',
   'error.parse.missingColumns': 'Thiếu cột bắt buộc: {columns}',
+  'error.parse.noRegisterSheets': 'Không tìm thấy tab register nào (tab cần có cột "DOC. No"). Các tab: {sheets}',
+  'error.parse.noDocuments': 'Các tab register không có tài liệu nào.',
 
   // Load-error titles shown by the store (src/store/appStore.ts).
   'error.title.source': 'Không tải được dữ liệu',
@@ -51,6 +53,14 @@ export const vi: Dictionary = {
   'warning.invalidDate': '{code} @ {facility}: ngày không hợp lệ ở {columns}',
   'warning.unknownColumn': 'Bỏ qua cột không nhận diện: "{header}"',
   'warning.noDiscipline': 'Có dòng dữ liệu nằm trước tiêu đề discipline đầu tiên',
+
+  // Engineering register warnings (src/data/engineering/parseEmdr.ts).
+  'warning.eng.skippedSheet': 'Bỏ qua tab "{sheet}": không có cột "DOC. No"',
+  'warning.eng.badDocNumber': '{id} ({sheet}): số tài liệu thiếu phần; discipline lấy theo tên tab',
+  'warning.eng.badDate': '{id}: ngày không đọc được ở {column}: "{value}"',
+  'warning.eng.duplicateDoc': '{id} xuất hiện ở nhiều tab ({sheets}); giữ bản rev mới nhất',
+  'warning.eng.summaryMismatch': 'Tab Summary ghi {summary} tài liệu; đọc được {parsed}',
+  'warning.eng.sheetCutOff': 'Cut-off ghi trong sheet: {date}',
 
   // Loading-step detail (src/store/appStore.ts).
   'status.linesLoaded': '{count} dòng',
@@ -245,6 +255,12 @@ export const vi: Dictionary = {
   'health.code.invalidDate': 'Ô ngày không hợp lệ (#####, 00/Jan/00…)',
   'health.code.unknownColumn': 'Cột không nhận diện',
   'health.code.noDiscipline': 'Dòng nằm ngoài discipline',
+  'health.code.skippedSheet': 'Tab bị bỏ qua',
+  'health.code.badDocNumber': 'Số tài liệu sai định dạng',
+  'health.code.badDate': 'Ngày không đọc được',
+  'health.code.duplicateDoc': 'Trùng số tài liệu',
+  'health.code.summaryMismatch': 'Tổng lệch với tab Summary',
+  'health.code.sheetCutOff': 'Cut-off của sheet',
   'health.title': 'Data Health',
   'health.subtitle': 'Các vấn đề chất lượng dữ liệu phát hiện khi đọc sheet. App vẫn hiển thị các dòng này.',
   'health.empty': '✓ Không phát hiện vấn đề nào.',

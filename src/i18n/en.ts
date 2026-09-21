@@ -31,6 +31,8 @@ export const en = {
   'error.parse.sheetNotFound': 'Sheet "{sheet}" not found. Available sheets: {sheets}',
   'error.parse.empty': 'Sheet "{sheet}" has no data.',
   'error.parse.missingColumns': 'Missing required columns: {columns}',
+  'error.parse.noRegisterSheets': 'No register tab found (a tab needs a "DOC. No" header). Tabs: {sheets}',
+  'error.parse.noDocuments': 'The register tabs contain no documents.',
 
   // Load-error titles shown by the store (src/store/appStore.ts).
   'error.title.source': 'Could not load data',
@@ -49,6 +51,14 @@ export const en = {
   'warning.invalidDate': '{code} @ {facility}: invalid date in {columns}',
   'warning.unknownColumn': 'Ignoring unrecognized column: "{header}"',
   'warning.noDiscipline': 'Row appears before the first discipline heading',
+
+  // Engineering register warnings (src/data/engineering/parseEmdr.ts).
+  'warning.eng.skippedSheet': 'Tab "{sheet}" skipped: no "DOC. No" header',
+  'warning.eng.badDocNumber': '{id} ({sheet}): document number has fewer than 4 parts; discipline taken from the tab name',
+  'warning.eng.badDate': '{id}: unreadable date in {column}: "{value}"',
+  'warning.eng.duplicateDoc': '{id} appears in several tabs ({sheets}); kept the latest revision',
+  'warning.eng.summaryMismatch': 'The Summary tab reports {summary} documents; {parsed} were read',
+  'warning.eng.sheetCutOff': 'Cut-off written in the sheet: {date}',
 
   // Loading-step detail (src/store/appStore.ts).
   'status.linesLoaded': '{count} {count|line|lines}',
@@ -243,6 +253,12 @@ export const en = {
   'health.code.invalidDate': 'Invalid date cell (#####, 00/Jan/00…)',
   'health.code.unknownColumn': 'Unrecognized column',
   'health.code.noDiscipline': 'Row outside any discipline',
+  'health.code.skippedSheet': 'Skipped tab',
+  'health.code.badDocNumber': 'Malformed document number',
+  'health.code.badDate': 'Unreadable date',
+  'health.code.duplicateDoc': 'Duplicate document number',
+  'health.code.summaryMismatch': 'Total differs from the Summary tab',
+  'health.code.sheetCutOff': 'Sheet cut-off',
   'health.title': 'Data Health',
   'health.subtitle': 'Data-quality issues detected while reading the sheet. The app still shows these lines.',
   'health.empty': '✓ No issues detected.',

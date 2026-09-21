@@ -13,6 +13,12 @@ const CODE_LABEL_KEY: Record<WarningCode, MessageKey> = {
   INVALID_DATE: 'health.code.invalidDate',
   UNKNOWN_COLUMN: 'health.code.unknownColumn',
   NO_DISCIPLINE: 'health.code.noDiscipline',
+  SKIPPED_SHEET: 'health.code.skippedSheet',
+  BAD_DOC_NUMBER: 'health.code.badDocNumber',
+  BAD_DATE: 'health.code.badDate',
+  DUPLICATE_DOC: 'health.code.duplicateDoc',
+  SUMMARY_MISMATCH: 'health.code.summaryMismatch',
+  SHEET_CUTOFF: 'health.code.sheetCutOff',
 };
 
 const LEVEL_TONE: Record<DataWarning['level'], string> = { error: 'text-critical', warn: 'text-serious', info: 'text-ink-3' };

@@ -84,7 +84,14 @@ export type WarningCode =
   | 'UNKNOWN_ROW_TYPE'
   | 'INVALID_DATE'
   | 'UNKNOWN_COLUMN'
-  | 'NO_DISCIPLINE';
+  | 'NO_DISCIPLINE'
+  // Engineering register (src/data/engineering/parseEmdr.ts).
+  | 'SKIPPED_SHEET'
+  | 'BAD_DOC_NUMBER'
+  | 'BAD_DATE'
+  | 'DUPLICATE_DOC'
+  | 'SUMMARY_MISMATCH'
+  | 'SHEET_CUTOFF';
 
 export interface DataWarning {
   level: 'info' | 'warn' | 'error';
