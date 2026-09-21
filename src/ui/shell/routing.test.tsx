@@ -23,7 +23,7 @@ describe('routing', () => {
   it('sends the root to procurement for now', async () => {
     const router = renderAt('/');
     await waitFor(() => expect(router.state.location.pathname).toBe('/procurement'));
-    expect(await screen.findByText('AI Insights')).toBeInTheDocument();
+    expect(await screen.findByText('Phase funnel')).toBeInTheDocument();
   });
 
   it('translates old filter links', async () => {
@@ -55,7 +55,7 @@ describe('routing', () => {
 
   it('does not load the engineering source while on procurement', async () => {
     renderAt('/procurement');
-    await screen.findByText('AI Insights');
+    await screen.findByText('Phase funnel');
     expect(engineeringStore.getState().status).toBe('idle');
   });
 
@@ -67,7 +67,7 @@ describe('routing', () => {
 
   it('remembers only the filter keys of the module', async () => {
     renderAt('/procurement?discipline=MECHANICAL&pkg=MEC-001');
-    await screen.findByText('AI Insights');
+    await screen.findByText('Phase funnel');
     await waitFor(() => expect(appStore.getState().lastQuery.procurement).toBe('?discipline=MECHANICAL'));
   });
 });

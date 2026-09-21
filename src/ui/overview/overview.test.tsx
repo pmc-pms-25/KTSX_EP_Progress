@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { seedStore } from '../../test/seedStore';
 import { OverviewPage } from './OverviewPage';
@@ -17,26 +17,14 @@ function renderOverview(path = '/') {
 beforeEach(seedStore);
 
 describe('OverviewPage', () => {
-  it('shows KPI tiles, insights and every widget', () => {
+  it('shows KPI tiles and the widgets, without AI Insights or the facility heatmap', () => {
     renderOverview();
     expect(screen.getByRole('button', { name: /ROS at risk/ })).toHaveTextContent('1');
-    expect(screen.getByText('1 dòng có nguy cơ trễ ROS')).toBeInTheDocument();
     expect(screen.getByText('Phase funnel')).toBeInTheDocument();
     expect(screen.getByText('Discipline health')).toBeInTheDocument();
     expect(screen.getByRole('img', { name: 'Số mốc đến hạn theo tháng' })).toBeInTheDocument();
-    expect(screen.getByRole('img', { name: 'Heatmap số mốc theo facility và tháng' })).toBeInTheDocument();
-  });
-
-  it('reveals insight evidence with Why?', () => {
-    renderOverview();
-    fireEvent.click(screen.getAllByRole('button', { name: 'Why?' })[0]);
-    expect(screen.getByText(/@ PS2R · dòng 7/)).toBeInTheDocument();
-  });
-
-  it('applies an insight filter to the URL', () => {
-    const router = renderOverview();
-    fireEvent.click(screen.getAllByRole('button', { name: 'Lọc theo insight' })[0]);
-    expect(router.state.location.search).toContain('flag=rosRisk');
+    expect(screen.queryByText('AI Insights')).not.toBeInTheDocument();
+    expect(screen.queryByRole('img', { name: 'Heatmap số mốc theo facility và tháng' })).not.toBeInTheDocument();
   });
 
   it('shows the empty state when filters match nothing', () => {

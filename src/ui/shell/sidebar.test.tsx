@@ -33,7 +33,7 @@ describe('Sidebar', () => {
 
   it('restores the filters of a module when coming back to it', async () => {
     const router = renderAt('/procurement?discipline=MECHANICAL&pkg=MEC-001');
-    await screen.findByText('AI Insights');
+    await screen.findByText('Phase funnel');
     fireEvent.click(within(sidebar()).getByRole('link', { name: /Engineering/ }));
     await waitFor(() => expect(router.state.location.pathname).toBe('/engineering'));
     fireEvent.click(within(sidebar()).getByRole('link', { name: /Procurement/ }));
@@ -43,7 +43,7 @@ describe('Sidebar', () => {
 
   it('collapses to icons and remembers it', async () => {
     renderAt('/procurement');
-    await screen.findByText('AI Insights');
+    await screen.findByText('Phase funnel');
     fireEvent.click(screen.getByRole('button', { name: 'Thu gọn thanh bên' }));
     await waitFor(() => expect(appStore.getState().sidebarCollapsed).toBe(true));
     const link = await within(sidebar()).findByRole('link', { name: 'Procurement' });
@@ -57,7 +57,7 @@ describe('Sidebar', () => {
 
   it('opens as a drawer from the header menu button on phones and closes after choosing', async () => {
     const router = renderAt('/procurement');
-    await screen.findByText('AI Insights');
+    await screen.findByText('Phase funnel');
     fireEvent.click(screen.getByRole('button', { name: 'Mở menu' }));
     const dialog = await screen.findByRole('dialog');
     fireEvent.click(within(dialog).getByRole('link', { name: /Engineering/ }));

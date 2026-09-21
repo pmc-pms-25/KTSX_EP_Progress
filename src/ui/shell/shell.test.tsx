@@ -25,7 +25,7 @@ beforeEach(seedStore);
 describe('shared shell per module', () => {
   it('names the active module in the header subtitle', async () => {
     renderAt('/procurement');
-    await screen.findByText('AI Insights');
+    await screen.findByText('Phase funnel');
     expect(await screen.findByText('Test Project · Procurement')).toBeInTheDocument();
   });
 
@@ -41,7 +41,7 @@ describe('shared shell per module', () => {
 
   it('draws the procurement facets with translated labels and the result count', async () => {
     renderAt('/procurement');
-    await screen.findByText('AI Insights');
+    await screen.findByText('Phase funnel');
     for (const label of ['Discipline', 'Facility', 'Tagged/Bulk', 'Phase (kế hoạch)', 'Cảnh báo']) {
       expect(screen.getAllByRole('button', { name: new RegExp(label.replace(/[()]/g, '\\$&')) }).length).toBeGreaterThan(0);
     }
@@ -50,14 +50,14 @@ describe('shared shell per module', () => {
 
   it('ignores URL facet values that are not among the facet options', async () => {
     renderAt('/procurement?flag=bad&type=Weird');
-    await screen.findByText('AI Insights');
+    await screen.findByText('Phase funnel');
     expect(await screen.findByRole('button', { name: 'Bộ lọc' })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Xóa bộ lọc' })).not.toBeInTheDocument();
     for (const button of screen.getAllByRole('button', { name: /Tagged\/Bulk|Cảnh báo/ })) expect(button.textContent).not.toMatch(/\d/);
     cleanup();
 
     const router = renderAt('/procurement?flag=bad&type=Bulk&pkg=MEC-001');
-    await screen.findByText('AI Insights');
+    await screen.findByText('Phase funnel');
     expect(await screen.findByRole('button', { name: 'Bộ lọc 1' })).toBeInTheDocument();
     fireEvent.click(screen.getAllByRole('button', { name: 'Xóa bộ lọc' })[0]);
     // Clear still removes every filter key of the module, known or not.

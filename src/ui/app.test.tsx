@@ -19,7 +19,7 @@ function renderAt(path: string) {
 
 async function renderPage(path: string) {
   const router = renderAt(path);
-  await screen.findByText('AI Insights');
+  await screen.findByText('Phase funnel');
   return router;
 }
 
@@ -30,7 +30,7 @@ describe('dashboard app', () => {
     await renderPage('/procurement');
     expect(screen.getByText('PMS - PEIW')).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/Ask PMS - PEIW/)).toBeInTheDocument();
-    expect(screen.getByText('AI Insights')).toBeInTheDocument();
+    expect(screen.getByText('Phase funnel')).toBeInTheDocument();
     await waitFor(() => expect(document.documentElement.dataset.theme).toBe(appStore.getState().theme));
   });
 
@@ -97,13 +97,12 @@ describe('dashboard app', () => {
   it('switches the whole UI to English and back to Vietnamese with the language switch', async () => {
     act(() => appStore.setState({ lang: 'en' }));
     await renderPage('/procurement');
-    expect(screen.getByText('1 line at risk of missing ROS')).toBeInTheDocument();
-    expect(screen.getByText(/Automatically detected from the current data/)).toBeInTheDocument();
+    expect(screen.getByText('By schedule: which phase a line should be in at cut-off')).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/Ask PMS - PEIW/).getAttribute('placeholder')).toBe('Ask PMS - PEIW…  e.g. PS2R LOA Q2-2027');
     await waitFor(() => expect(document.documentElement.lang).toBe('en'));
 
     fireEvent.click(screen.getByRole('button', { name: 'VI' }));
-    expect(await screen.findByText('1 dòng có nguy cơ trễ ROS')).toBeInTheDocument();
+    expect(await screen.findByText('Theo kế hoạch: dòng đáng lẽ đang ở phase nào tại cut-off')).toBeInTheDocument();
     await waitFor(() => expect(document.documentElement.lang).toBe('vi'));
   });
 });

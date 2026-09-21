@@ -18,6 +18,10 @@ import { PhaseProgressDrawer } from './PhaseProgressDrawer';
 import { PhaseTimeline } from './PhaseTimeline';
 import { WorkloadChart } from './WorkloadChart';
 
+/** Hidden since 2026-09-21 so Procurement and Engineering share one layout. Set to true to bring them back. */
+const SHOW_INSIGHTS = false;
+const SHOW_FACILITY_HEATMAP = false;
+
 export function OverviewPage() {
   const { t } = useT();
   const { filtered, filters, setFilters, clearFilters, ctx, disciplineOrder } = useDashboard();
@@ -27,7 +31,7 @@ export function OverviewPage() {
   const kpis = useMemo(() => computeKpis(filtered), [filtered]);
   const health = useMemo(() => disciplineHealth(filtered, disciplineOrder), [filtered, disciplineOrder]);
   const progress = useMemo(() => phaseProgress(filtered, cutOff), [filtered, cutOff]);
-  const insights = useMemo(() => generateInsights({ metrics: filtered, ctx }), [filtered, ctx]);
+  const insights = useMemo(() => (SHOW_INSIGHTS ? generateInsights({ metrics: filtered, ctx }) : []), [filtered, ctx]);
 
   if (filtered.length === 0) return <EmptyFilterState onClear={clearFilters} />;
 
@@ -40,9 +44,11 @@ export function OverviewPage() {
         <PhaseTimeline progress={progress} onSelect={openPhase} />
         <PhaseProgressDrawer progress={progress} />
       </ErrorBoundary>
-      <ErrorBoundary label="AI Insights">
-        <InsightsPanel insights={insights} metrics={filtered} onApply={setFilters} onOpenPackage={open} />
-      </ErrorBoundary>
+      {SHOW_INSIGHTS && (
+        <ErrorBoundary label="AI Insights">
+          <InsightsPanel insights={insights} metrics={filtered} onApply={setFilters} onOpenPackage={open} />
+        </ErrorBoundary>
+      )}
       <div className="grid gap-4 lg:grid-cols-2">
         <ErrorBoundary label="Phase funnel">
           <PhaseFunnel metrics={filtered} onSelectPhase={(p) => setFilters({ phases: [p] })} />
@@ -54,9 +60,11 @@ export function OverviewPage() {
       <ErrorBoundary label={t('errorBoundary.workloadLabel')}>
         <WorkloadChart metrics={filtered} cutOff={cutOff} />
       </ErrorBoundary>
-      <ErrorBoundary label={t('facilityHeatmap.title')}>
-        <FacilityHeatmap metrics={filtered} />
-      </ErrorBoundary>
+      {SHOW_FACILITY_HEATMAP && (
+        <ErrorBoundary label={t('facilityHeatmap.title')}>
+          <FacilityHeatmap metrics={filtered} />
+        </ErrorBoundary>
+      )}
     </Stagger>
   );
 }
