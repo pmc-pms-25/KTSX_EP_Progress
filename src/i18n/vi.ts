@@ -325,4 +325,18 @@ export const vi: Dictionary = {
   'eng.stageDrawer.summary': '{reached} / {total} tài liệu đã đạt bước này · {late} trễ',
   'eng.stageDrawer.empty': 'Không có tài liệu nào trong danh sách này.',
   'eng.stageDrawer.plan': 'Kế hoạch',
+
+  'eng.funnel.title': 'Phân bố theo bước',
+  'eng.funnel.subtitle': 'Số tài liệu đang ở mỗi bước · bấm một cột để lọc',
+  'eng.funnel.chartAriaLabel': 'Số tài liệu theo bước',
+  'eng.discipline.title': 'Tình trạng theo discipline',
+  'eng.discipline.subtitle': 'Rủi ro: có tài liệu quá hạn · Theo dõi: hơn 30% chưa phát hành · bấm để xem tài liệu',
+  'eng.discipline.documents': 'Tài liệu',
+  'eng.discipline.final': 'IFC/IFU',
+  'eng.discipline.notIssued': 'Chưa phát hành',
+  'eng.discipline.overdue': 'Quá hạn',
+  'eng.transmittal.title': 'Hoạt động transmittal',
+  'eng.transmittal.subtitle': 'Số tài liệu nhận được mỗi tuần (ngày Incoming Transmittal)',
+  'eng.transmittal.chartAriaLabel': 'Số tài liệu nhận được mỗi tuần',
+  'eng.transmittal.noData': 'Chưa có ngày transmittal.',
 };

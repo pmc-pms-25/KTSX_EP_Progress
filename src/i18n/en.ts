@@ -323,6 +323,20 @@ export const en = {
   'eng.stageDrawer.summary': '{reached} / {total} documents reached this step · {late} late',
   'eng.stageDrawer.empty': 'No documents in this list.',
   'eng.stageDrawer.plan': 'Plan',
+
+  'eng.funnel.title': 'Stage funnel',
+  'eng.funnel.subtitle': 'Documents at each step now · click a bar to filter',
+  'eng.funnel.chartAriaLabel': 'Document count by stage',
+  'eng.discipline.title': 'Discipline status',
+  'eng.discipline.subtitle': 'At risk: something overdue · Watch: over 30% not issued · click for documents',
+  'eng.discipline.documents': 'Documents',
+  'eng.discipline.final': 'IFC/IFU',
+  'eng.discipline.notIssued': 'Not issued',
+  'eng.discipline.overdue': 'Overdue',
+  'eng.transmittal.title': 'Transmittal activity',
+  'eng.transmittal.subtitle': 'Documents received per week (Incoming Transmittal date)',
+  'eng.transmittal.chartAriaLabel': 'Documents received per week',
+  'eng.transmittal.noData': 'No transmittal dates.',
 } as const;
 
 export type MessageKey = keyof typeof en;

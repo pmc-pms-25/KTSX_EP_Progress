@@ -67,4 +67,14 @@ describe('EngOverviewPage', () => {
     renderPage('/?stage=final');
     expect(await screen.findByRole('dialog')).toHaveTextContent('1 / 6 tài liệu đã đạt bước này · 0 trễ');
   });
+
+  it('draws the funnel, discipline cards and transmittal chart', () => {
+    renderPage('/?facility=CLQ0');
+    expect(screen.getByRole('img', { name: 'Số tài liệu theo bước' })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Số tài liệu nhận được mỗi tuần' })).toBeInTheDocument();
+    const pip = screen.getByRole('link', { name: /PIP/ });
+    expect(pip).toHaveAttribute('href', '/engineering/discipline/PIP?facility=CLQ0');
+    expect(pip).toHaveTextContent('Rủi ro');
+    expect(screen.queryByRole('link', { name: /STR/ })).not.toBeInTheDocument();
+  });
 });
