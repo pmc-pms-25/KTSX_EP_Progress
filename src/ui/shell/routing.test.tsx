@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { createMemoryRouter, RouterProvider, type RouteObject } from 'react-router-dom';
 import { routes } from '../../App';
 import { engineeringStore } from '../../modules/engineering/store';
 import { appStore } from '../../store/appStore';
@@ -65,5 +65,33 @@ describe('filterQuery', () => {
   it('keeps listed keys in order and drops the rest', () => {
     expect(filterQuery('?pkg=X&discipline=A&q=loa&discipline=B', ['discipline', 'q'])).toBe('?discipline=A&q=loa&discipline=B');
     expect(filterQuery('?pkg=X', ['discipline'])).toBe('');
+  });
+});
+
+describe('route errors', () => {
+  /** The real root route (shell, errorElement, HydrateFallback) around test pages. */
+  function withRoot(children: RouteObject[]): RouteObject[] {
+    const [{ path, element, errorElement, HydrateFallback }] = routes;
+    return [{ path, element, errorElement, HydrateFallback, children }];
+  }
+
+  it('shows a translated reload screen when a page chunk fails to load', async () => {
+    const broken = withRoot([{ path: 'boom', lazy: () => Promise.reject(new Error('Failed to fetch dynamically imported module')) }]);
+    const router = createMemoryRouter(broken, { initialEntries: ['/boom'] });
+    render(<RouterProvider router={router} />);
+    expect(await screen.findByText('Không tải được trang này')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Tải lại trang' })).toBeInTheDocument();
+    expect(screen.queryByText(/Unexpected Application Error/)).not.toBeInTheDocument();
+  });
+
+  it('shows the loading screen while the first page chunk loads', async () => {
+    let resolve!: () => void;
+    const pending = new Promise<void>((r) => (resolve = r));
+    const slow = withRoot([{ path: 'slow', lazy: () => pending.then(() => ({ Component: () => <p>slow page</p> })) }]);
+    const router = createMemoryRouter(slow, { initialEntries: ['/slow'] });
+    render(<RouterProvider router={router} />);
+    expect(await screen.findByText('Đọc cấu hình…')).toBeInTheDocument();
+    resolve();
+    expect(await screen.findByText('slow page')).toBeInTheDocument();
   });
 });
