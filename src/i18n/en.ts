@@ -245,6 +245,10 @@ export const en = {
   'health.code.noDiscipline': 'Row outside any discipline',
   'health.subtitle': 'Data-quality issues detected while reading the sheet. The app still shows these lines.',
   'health.empty': '✓ No issues detected.',
+
+  // Engineering placeholder page (src/ui/engineering/EngineeringPage.tsx).
+  'engineering.placeholder.title': 'Engineering',
+  'engineering.placeholder.detail': 'Loaded {rows} {rows|row|rows} from sheet “{sheet}”. The Engineering dashboard content will be designed in a later session.',
 } as const;
 
 export type MessageKey = keyof typeof en;

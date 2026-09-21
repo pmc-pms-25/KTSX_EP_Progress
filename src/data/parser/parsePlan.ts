@@ -61,7 +61,7 @@ function num(value: unknown): number | undefined {
   return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
 }
 
-function isZip(buf: ArrayBuffer): boolean {
+export function isZip(buf: ArrayBuffer): boolean {
   const bytes = new Uint8Array(buf, 0, Math.min(2, buf.byteLength));
   return bytes.length === 2 && bytes[0] === 0x50 && bytes[1] === 0x4b; // "PK"
 }

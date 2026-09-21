@@ -247,4 +247,8 @@ export const vi: Dictionary = {
   'health.code.noDiscipline': 'Dòng nằm ngoài discipline',
   'health.subtitle': 'Các vấn đề chất lượng dữ liệu phát hiện khi đọc sheet. App vẫn hiển thị các dòng này.',
   'health.empty': '✓ Không phát hiện vấn đề nào.',
+
+  // Engineering placeholder page (src/ui/engineering/EngineeringPage.tsx).
+  'engineering.placeholder.title': 'Engineering',
+  'engineering.placeholder.detail': 'Đã tải {rows} dòng từ sheet “{sheet}”. Nội dung dashboard Engineering sẽ được thiết kế ở buổi sau.',
 };

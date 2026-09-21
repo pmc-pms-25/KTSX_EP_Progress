@@ -1,3 +1,4 @@
+import { engineeringStore } from '../modules/engineering/store';
 import { procurementStore } from '../modules/procurement/store';
 import { appStore } from '../store/appStore';
 import { samplePlan, TEST_CTX } from './planFixture';
@@ -23,4 +24,5 @@ export function seedStore(): void {
     error: undefined,
     refreshError: undefined,
   });
+  engineeringStore.setState({ status: 'idle', refreshing: false, step: 'fetch', data: undefined, warnings: [], error: undefined, refreshError: undefined });
 }
