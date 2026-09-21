@@ -107,9 +107,9 @@ export interface EmdrRegister {
    not break parsing. `INCOMING TRANSMITTAL` `No.`/`Date` are read from the sub-header
    row beneath it. A tab without a recognisable header is skipped with a
    `SKIPPED_SHEET` warning.
-3. A row is a document when its `DOC. No` cell matches `^[A-Z0-9]+-[A-Z0-9]+-[A-Z]+-[A-Z]+-`.
-   Other non-empty rows in the `DOC. No` column whose text looks like `XXX - Label` are
-   group rows; their label becomes `docTypeLabel` for the documents that follow.
+3. A row is a document when its `No.` cell is a positive number and its `DOC. No` cell
+   is not empty. A row with an empty `No.` whose `DOC. No` text looks like `XXX - Label`
+   is a group row; its label becomes `docTypeLabel` for the documents that follow.
 4. Split the document number into facility / discipline / docType. If it has fewer
    than four parts, keep the row, take the discipline from the tab name prefix
    (`PIP-Piping…` → `PIP`) and add a `BAD_DOC_NUMBER` warning.
@@ -238,6 +238,9 @@ hex colours. All text goes through `t()` with new `eng.*` keys in both `en.ts` a
 - Data type becomes `EmdrRegister`.
 - Facets: Discipline, Facility, Document type, Stage, Flag.
 - `useSearch`: header AskBox over document number / title; vocabulary = disciplines and facilities.
+  Search is plain text: every word must appear in the document number, title, discipline,
+  facility or document type. `ModuleSearch` gains an optional `describe(q)` so the AskBox's
+  "understood as" chips show these words instead of Procurement's milestone/period parsing.
 - `useResultCount`: "shown / total documents" (new `unit.documents` key).
 - Drawer keys `doc` and `stage` are not filter keys, so they are not remembered in `lastQuery`.
 
