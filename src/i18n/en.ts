@@ -268,6 +268,12 @@ export const en = {
   'filter.discipline': 'Discipline',
   'filter.facility': 'Facility',
   'filter.itemType': 'Tagged/Bulk',
+
+  // Engineering (src/ui/engineering, src/modules/engineering).
+  'eng.stage.notIssued': 'Not issued',
+  'eng.stage.review': 'Review (IFI/IFR)',
+  'eng.stage.commented': 'Commented (IFA)',
+  'eng.stage.final': 'Final (IFC/IFU)',
 } as const;
 
 export type MessageKey = keyof typeof en;

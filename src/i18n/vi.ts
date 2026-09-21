@@ -270,4 +270,10 @@ export const vi: Dictionary = {
   'filter.discipline': 'Discipline',
   'filter.facility': 'Facility',
   'filter.itemType': 'Tagged/Bulk',
+
+  // Engineering (src/ui/engineering, src/modules/engineering).
+  'eng.stage.notIssued': 'Chưa phát hành',
+  'eng.stage.review': 'Đang review (IFI/IFR)',
+  'eng.stage.commented': 'Đã có phản hồi (IFA)',
+  'eng.stage.final': 'Hoàn tất (IFC/IFU)',
 };
