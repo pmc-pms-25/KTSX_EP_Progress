@@ -76,6 +76,14 @@ describe('shared shell per module', () => {
     }
   });
 
+  it('hides Refresh and Data Health for a module without a configured source', async () => {
+    renderAt('/engineering');
+    await screen.findByText('Chưa cấu hình nguồn dữ liệu');
+    await waitFor(() => expect(engineeringStore.getState().status).toBe('unconfigured'));
+    await waitFor(() => expect(screen.queryByTitle('Data Health')).not.toBeInTheDocument());
+    expect(screen.queryByTitle('Tải lại dữ liệu')).not.toBeInTheDocument();
+  });
+
   it('counts Data Health warnings of the active module only', async () => {
     engineeringStore.setState(ENG_READY);
     renderAt('/engineering');

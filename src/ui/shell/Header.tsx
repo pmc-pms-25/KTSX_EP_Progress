@@ -22,14 +22,16 @@ function SearchSlot({ module }: { module: AnyModule }) {
   return <AskBox value={value} vocab={vocab} onChange={onChange} />;
 }
 
-/** Refresh + Data Health for the module on screen. */
+/** Refresh + Data Health for the module on screen; hidden while the module has no configured source. */
 function ModuleStatus({ module, onOpenHealth }: { module: AnyModule; onOpenHealth: () => void }) {
   const { t, lang } = useT();
+  const unconfigured = useModule(module.store, (s) => s.status === 'unconfigured');
   const refreshing = useModule(module.store, (s) => s.refreshing);
   const refreshError = useModule(module.store, (s) => s.refreshError);
   const lastSync = useModule(module.store, (s) => s.lastSync);
   const warnings = useModule(module.store, (s) => s.warnings);
   const warningCount = warnings.filter((w) => w.level !== 'info').length;
+  if (unconfigured) return null;
   return (
     <>
       <button
