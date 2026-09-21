@@ -68,11 +68,23 @@ WantedBy=multi-user.target
 |---|---|
 | `appName` | Tên hiển thị trên header và tab trình duyệt |
 | `projectName` | Tên dự án |
-| `dataSource.type` | `google-sheet` (trình duyệt tải trực tiếp) hoặc `server` (dành cho v2) |
-| `dataSource.url` | Link Google Sheet — dán link edit hoặc link `export?format=xlsx` đều được |
-| `dataSource.sheetName` | Tên sheet dữ liệu (mặc định sheet đầu tiên) |
+| `dataSources.<module>` | Nguồn dữ liệu của từng dashboard: `procurement`, `engineering`. Thiếu nguồn nào thì dashboard đó hiện "Chưa cấu hình nguồn dữ liệu" |
+| `dataSources.<module>.type` | `google-sheet` (trình duyệt tải trực tiếp) hoặc `server` (file đặt trên server, ví dụ `data/engineering.xlsx` cạnh `index.html`) |
+| `dataSources.<module>.url` | Link Google Sheet (link edit hoặc `export?format=xlsx` đều được) hoặc đường dẫn file trên server |
+| `dataSources.<module>.sheetName` | Tên sheet dữ liệu (mặc định sheet đầu tiên) |
 | `dueSoonDays` | Cửa sổ "sắp đến hạn", tính bằng ngày |
 | `port` | Cổng server |
+
+Ví dụ:
+
+```json
+"dataSources": {
+  "procurement": { "type": "google-sheet", "url": "https://docs.google.com/spreadsheets/d/<id>/edit", "sheetName": "ALL" },
+  "engineering": { "type": "server", "url": "data/engineering.xlsx" }
+}
+```
+
+Key cũ `dataSource` (một nguồn) vẫn được hiểu là nguồn của Procurement.
 
 Sửa `config.json` rồi tải lại trang là có hiệu lực — không cần khởi động lại server.
 

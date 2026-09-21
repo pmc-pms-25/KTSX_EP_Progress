@@ -31,7 +31,7 @@ server/                   # Fastify: phục vụ file tĩnh + config.json
 ```
 
 Thêm insight: tạo file trong `src/analytics/insights/rules/`, thêm vào `INSIGHT_RULES`.
-Đổi nguồn dữ liệu: sửa `dataSource` trong `config.json`.
+Đổi nguồn dữ liệu: sửa `dataSources` trong `config.json` (mỗi dashboard một nguồn).
 
 ## Triển khai
 
