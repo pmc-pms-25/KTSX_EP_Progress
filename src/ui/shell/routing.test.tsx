@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider, type RouteObject } from 'react-router-dom';
 import { routes } from '../../App';
 import { engineeringStore } from '../../modules/engineering/store';
@@ -40,6 +40,16 @@ describe('routing', () => {
   it('shows a 404 page for unknown paths', async () => {
     renderAt('/nope');
     expect(await screen.findByText('Không tìm thấy trang.')).toBeInTheDocument();
+  });
+
+  it('shows the 404 page inside the module for unknown module sub-paths', async () => {
+    engineeringStore.setState({ status: 'ready', data: { sheetName: 'ENG', sheets: ['ENG'], rowCount: 3 }, warnings: [] });
+    for (const [path, module] of [['/procurement/foo', 'procurement'], ['/engineering/foo/bar', 'engineering']]) {
+      const router = renderAt(path);
+      expect(await screen.findByText('Không tìm thấy trang.')).toBeInTheDocument();
+      expect(router.state.matches.map((m) => m.route.path)).toEqual(['/', module, '*']);
+      cleanup();
+    }
   });
 
   it('does not load the engineering source while on procurement', async () => {

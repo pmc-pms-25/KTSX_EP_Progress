@@ -29,12 +29,17 @@ export const routes: RouteObject[] = [
         children: [
           { index: true, lazy: () => import('./ui/overview/OverviewPage').then((m) => ({ Component: m.OverviewPage })) },
           { path: 'discipline/:name', lazy: () => import('./ui/discipline/DisciplinePage').then((m) => ({ Component: m.DisciplinePage })) },
+          // Unknown sub-paths stay inside the module, so the header's module controls still apply.
+          { path: '*', element: <NotFound /> },
         ],
       },
       {
         path: 'engineering',
         element: <ModuleRoute module={engineeringModule} />,
-        children: [{ index: true, lazy: () => import('./ui/engineering/EngineeringPage').then((m) => ({ Component: m.EngineeringPage })) }],
+        children: [
+          { index: true, lazy: () => import('./ui/engineering/EngineeringPage').then((m) => ({ Component: m.EngineeringPage })) },
+          { path: '*', element: <NotFound /> },
+        ],
       },
       { path: '*', element: <NotFound /> },
     ],
