@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { routes } from '../App';
 import { msg } from '../i18n/message';
@@ -31,35 +31,39 @@ describe('dashboard app', () => {
     expect(screen.getByText('PMS - PEIW')).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/Ask PMS - PEIW/)).toBeInTheDocument();
     expect(screen.getByText('AI Insights')).toBeInTheDocument();
-    expect(document.documentElement.dataset.theme).toBe(appStore.getState().theme);
+    await waitFor(() => expect(document.documentElement.dataset.theme).toBe(appStore.getState().theme));
   });
 
   it('filters through a KPI tile and shows the row count', async () => {
     const router = await renderPage('/procurement');
     fireEvent.click(screen.getByRole('button', { name: /ROS at risk/ }));
-    expect(router.state.location.search).toContain('flag=rosRisk');
-    expect(screen.getAllByText((_, el) => el?.textContent === '1 / 6 dòng').length).toBeGreaterThan(0);
+    await waitFor(() => expect(router.state.location.search).toContain('flag=rosRisk'));
+    await waitFor(() => expect(screen.getAllByText((_, el) => el?.textContent === '1 / 6 dòng').length).toBeGreaterThan(0));
   });
 
   it('drills into a discipline and opens a package drawer', async () => {
     const router = await renderPage('/procurement');
     fireEvent.click(screen.getByRole('link', { name: /MECHANICAL/ }));
     await screen.findByRole('table');
-    expect(router.state.location.pathname).toBe('/procurement/discipline/MECHANICAL');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/procurement/discipline/MECHANICAL'));
     fireEvent.click(within(screen.getByRole('table')).getByText('Centrifugal Pump'));
-    expect(router.state.location.search).toContain('pkg=MEC-001');
-    expect(within(screen.getByRole('dialog')).getByText('Chi tiết mốc')).toBeInTheDocument();
+    await waitFor(() => expect(router.state.location.search).toContain('pkg=MEC-001'));
+    expect(await within(await screen.findByRole('dialog')).findByText('Chi tiết mốc')).toBeInTheDocument();
   });
 
   it('scrolls to the top when moving to another page, but not when filters change', async () => {
     const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
-    await renderPage('/procurement');
+    const router = await renderPage('/procurement');
+    // Let the first page's mount effect run before watching for new scrolls.
+    await waitFor(() => expect(scrollTo).toHaveBeenCalled());
     scrollTo.mockClear();
     fireEvent.click(screen.getByRole('button', { name: /ROS at risk/ }));
+    await waitFor(() => expect(router.state.location.search).toContain('flag=rosRisk'));
+    await waitFor(() => expect(screen.getAllByText((_, el) => el?.textContent === '1 / 6 dòng').length).toBeGreaterThan(0));
     expect(scrollTo).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('link', { name: /MECHANICAL/ }));
     await screen.findByRole('table');
-    expect(scrollTo).toHaveBeenCalledWith(0, 0);
+    await waitFor(() => expect(scrollTo).toHaveBeenCalledWith(0, 0));
     scrollTo.mockRestore();
   });
 
@@ -67,8 +71,8 @@ describe('dashboard app', () => {
     await renderPage('/procurement');
     const before = appStore.getState().theme;
     fireEvent.click(screen.getByRole('button', { name: /Chuyển sang giao diện/ }));
-    expect(appStore.getState().theme).not.toBe(before);
-    expect(document.documentElement.dataset.theme).toBe(appStore.getState().theme);
+    await waitFor(() => expect(appStore.getState().theme).not.toBe(before));
+    await waitFor(() => expect(document.documentElement.dataset.theme).toBe(appStore.getState().theme));
   });
 
   it('shows the error screen when loading failed', async () => {
@@ -87,7 +91,7 @@ describe('dashboard app', () => {
   it('opens Data Health with grouped warnings', async () => {
     await renderPage('/procurement');
     fireEvent.click(screen.getByTitle('Data Health'));
-    expect(screen.getByText('Package Code trống / bằng 0')).toBeInTheDocument();
+    expect(await screen.findByText('Package Code trống / bằng 0')).toBeInTheDocument();
   });
 
   it('switches the whole UI to English and back to Vietnamese with the language switch', async () => {
@@ -96,10 +100,10 @@ describe('dashboard app', () => {
     expect(screen.getByText('1 line at risk of missing ROS')).toBeInTheDocument();
     expect(screen.getByText(/Automatically detected from the current data/)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/Ask PMS - PEIW/).getAttribute('placeholder')).toBe('Ask PMS - PEIW…  e.g. PS2R LOA Q2-2027');
-    expect(document.documentElement.lang).toBe('en');
+    await waitFor(() => expect(document.documentElement.lang).toBe('en'));
 
     fireEvent.click(screen.getByRole('button', { name: 'VI' }));
-    expect(screen.getByText('1 dòng có nguy cơ trễ ROS')).toBeInTheDocument();
-    expect(document.documentElement.lang).toBe('vi');
+    expect(await screen.findByText('1 dòng có nguy cơ trễ ROS')).toBeInTheDocument();
+    await waitFor(() => expect(document.documentElement.lang).toBe('vi'));
   });
 });

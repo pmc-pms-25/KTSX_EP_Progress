@@ -25,14 +25,14 @@ describe('shared shell per module', () => {
   it('names the active module in the header subtitle', async () => {
     renderAt('/procurement');
     await screen.findByText('AI Insights');
-    expect(screen.getByText('Test Project · Procurement')).toBeInTheDocument();
+    expect(await screen.findByText('Test Project · Procurement')).toBeInTheDocument();
   });
 
   it('hides the AskBox and the filter bar on a module without search or facets', async () => {
     engineeringStore.setState(ENG_READY);
     renderAt('/engineering');
     await screen.findByText(/Đã tải 3 dòng/);
-    expect(screen.getByText('Test Project · Engineering')).toBeInTheDocument();
+    expect(await screen.findByText('Test Project · Engineering')).toBeInTheDocument();
     expect(screen.queryByPlaceholderText(/Ask PMS - PEIW/)).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /Discipline/ })).not.toBeInTheDocument();
   });
@@ -53,8 +53,8 @@ describe('shared shell per module', () => {
     try {
       renderAt('/engineering');
       await screen.findByText(/Đã tải 3 dòng/);
-      fireEvent.click(screen.getByTitle('Tải lại dữ liệu'));
-      expect(load).toHaveBeenCalledTimes(1);
+      fireEvent.click(await screen.findByTitle('Tải lại dữ liệu'));
+      await waitFor(() => expect(load).toHaveBeenCalledTimes(1));
     } finally {
       engineeringStore.setState({ load: original });
     }
@@ -65,7 +65,7 @@ describe('shared shell per module', () => {
     renderAt('/engineering');
     await screen.findByText(/Đã tải 3 dòng/);
     expect(procurementStore.getState().warnings.length).toBeGreaterThan(0);
-    expect(screen.getByTitle('Data Health').textContent).not.toMatch(/\d/);
+    await waitFor(() => expect(screen.getByTitle('Data Health').textContent).not.toMatch(/\d/));
   });
 });
 

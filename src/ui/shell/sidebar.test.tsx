@@ -27,7 +27,7 @@ describe('Sidebar', () => {
     await screen.findByRole('table');
     const links = within(sidebar()).getAllByRole('link');
     expect(links.map((l) => l.textContent)).toEqual(['⚙Engineering', '▦Procurement']);
-    expect(links[1]).toHaveAttribute('aria-current', 'page');
+    await waitFor(() => expect(links[1]).toHaveAttribute('aria-current', 'page'));
     expect(links[0]).not.toHaveAttribute('aria-current');
   });
 
@@ -38,25 +38,25 @@ describe('Sidebar', () => {
     await waitFor(() => expect(router.state.location.pathname).toBe('/engineering'));
     fireEvent.click(within(sidebar()).getByRole('link', { name: /Procurement/ }));
     await waitFor(() => expect(router.state.location.pathname).toBe('/procurement'));
-    expect(router.state.location.search).toBe('?discipline=MECHANICAL');
+    await waitFor(() => expect(router.state.location.search).toBe('?discipline=MECHANICAL'));
   });
 
   it('collapses to icons and remembers it', async () => {
     renderAt('/procurement');
     await screen.findByText('AI Insights');
     fireEvent.click(screen.getByRole('button', { name: 'Thu gọn thanh bên' }));
-    expect(appStore.getState().sidebarCollapsed).toBe(true);
-    const link = within(sidebar()).getByRole('link', { name: 'Procurement' });
-    expect(link).toHaveAttribute('title', 'Procurement');
-    expect(link.textContent).toBe('▦');
-    expect(screen.getByRole('button', { name: 'Mở rộng thanh bên' })).toHaveAttribute('aria-expanded', 'false');
+    await waitFor(() => expect(appStore.getState().sidebarCollapsed).toBe(true));
+    const link = await within(sidebar()).findByRole('link', { name: 'Procurement' });
+    await waitFor(() => expect(link).toHaveAttribute('title', 'Procurement'));
+    await waitFor(() => expect(link.textContent).toBe('▦'));
+    expect(await screen.findByRole('button', { name: 'Mở rộng thanh bên' })).toHaveAttribute('aria-expanded', 'false');
   });
 
   it('opens as a drawer from the header menu button on phones and closes after choosing', async () => {
     const router = renderAt('/procurement');
     await screen.findByText('AI Insights');
     fireEvent.click(screen.getByRole('button', { name: 'Mở menu' }));
-    const dialog = screen.getByRole('dialog');
+    const dialog = await screen.findByRole('dialog');
     fireEvent.click(within(dialog).getByRole('link', { name: /Engineering/ }));
     await waitFor(() => expect(router.state.location.pathname).toBe('/engineering'));
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());

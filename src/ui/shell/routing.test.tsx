@@ -28,13 +28,13 @@ describe('routing', () => {
   it('translates old filter links', async () => {
     const router = renderAt('/?d=MECHANICAL,PIPING&pkg=MEC-001');
     await waitFor(() => expect(router.state.location.pathname).toBe('/procurement'));
-    expect(router.state.location.search).toBe('?discipline=MECHANICAL&discipline=PIPING&pkg=MEC-001');
+    await waitFor(() => expect(router.state.location.search).toBe('?discipline=MECHANICAL&discipline=PIPING&pkg=MEC-001'));
   });
 
   it('translates old discipline links', async () => {
     const router = renderAt('/discipline/MECHANICAL?f=BF');
     await waitFor(() => expect(router.state.location.pathname).toBe('/procurement/discipline/MECHANICAL'));
-    expect(router.state.location.search).toBe('?facility=BF');
+    await waitFor(() => expect(router.state.location.search).toBe('?facility=BF'));
   });
 
   it('shows a 404 page for unknown paths', async () => {
@@ -51,13 +51,13 @@ describe('routing', () => {
   it('explains a module without a configured source', async () => {
     renderAt('/engineering');
     expect(await screen.findByText('Chưa cấu hình nguồn dữ liệu')).toBeInTheDocument();
-    expect(screen.getByText('Thêm "dataSources.engineering" vào config.json để tải dashboard Engineering.')).toBeInTheDocument();
+    expect(await screen.findByText('Thêm "dataSources.engineering" vào config.json để tải dashboard Engineering.')).toBeInTheDocument();
   });
 
   it('remembers only the filter keys of the module', async () => {
     renderAt('/procurement?discipline=MECHANICAL&pkg=MEC-001');
     await screen.findByText('AI Insights');
-    expect(appStore.getState().lastQuery.procurement).toBe('?discipline=MECHANICAL');
+    await waitFor(() => expect(appStore.getState().lastQuery.procurement).toBe('?discipline=MECHANICAL'));
   });
 });
 
