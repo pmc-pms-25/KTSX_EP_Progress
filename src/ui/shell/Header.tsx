@@ -17,7 +17,7 @@ function timeAgo(t: ReturnType<typeof useT>['t'], lang: Lang, date: Date, now = 
   return date.toLocaleTimeString(locale(lang), { hour: '2-digit', minute: '2-digit' });
 }
 
-export function Header({ onOpenHealth }: { onOpenHealth: () => void }) {
+export function Header({ onOpenHealth, onOpenNav }: { onOpenHealth: () => void; onOpenNav: () => void }) {
   const appName = useApp((s) => s.config?.appName ?? 'PMS - PEIW');
   const projectName = useApp((s) => s.config?.projectName ?? '');
   const cutOff = useApp((s) => s.cutOff);
@@ -38,6 +38,14 @@ export function Header({ onOpenHealth }: { onOpenHealth: () => void }) {
       style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
     >
       <div className="mx-auto flex max-w-[1600px] flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
+        <button
+          type="button"
+          onClick={onOpenNav}
+          aria-label={t('sidebar.open')}
+          className="grid h-9 w-9 place-items-center rounded-lg border border-line text-ink-2 hover:text-ink md:hidden"
+        >
+          <span aria-hidden>☰</span>
+        </button>
         <Link to="/" className="flex items-center gap-2">
           <span className="ai-border grid h-9 w-9 place-items-center rounded-xl text-lg">
             <span className="ai-text">◈</span>

@@ -9,10 +9,12 @@ interface DrawerProps {
   children: ReactNode;
   /** Tailwind max-width class for desktop; full screen below `sm`. */
   width?: string;
+  /** Edge the sheet slides from; right by default. */
+  side?: 'left' | 'right';
 }
 
-/** Right-side sheet (full screen on phones), closes on Escape or backdrop click. */
-export function Drawer({ open, onClose, title, children, width = 'sm:max-w-3xl' }: DrawerProps) {
+/** Side sheet (full screen on phones), closes on Escape or backdrop click. */
+export function Drawer({ open, onClose, title, children, width = 'sm:max-w-3xl', side = 'right' }: DrawerProps) {
   const { t } = useT();
   useEffect(() => {
     if (!open) return;
@@ -35,10 +37,10 @@ export function Drawer({ open, onClose, title, children, width = 'sm:max-w-3xl' 
           <motion.aside
             role="dialog"
             aria-modal="true"
-            className={`absolute inset-y-0 right-0 flex w-full flex-col border-l border-line bg-bg shadow-2xl ${width}`}
-            initial={{ x: '100%' }}
+            className={`absolute inset-y-0 ${side === 'left' ? 'left-0 border-r' : 'right-0 border-l'} flex w-full flex-col border-line bg-bg shadow-2xl ${width}`}
+            initial={{ x: side === 'left' ? '-100%' : '100%' }}
             animate={{ x: 0 }}
-            exit={{ x: '100%' }}
+            exit={{ x: side === 'left' ? '-100%' : '100%' }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
           >
             <header

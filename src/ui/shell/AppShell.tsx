@@ -10,6 +10,7 @@ import { ErrorScreen } from '../states/ErrorScreen';
 import { LoadingScreen } from '../states/LoadingScreen';
 import { FilterBar } from './FilterBar';
 import { Header } from './Header';
+import { MobileNav, Sidebar } from './Sidebar';
 
 export function AppShell() {
   const configStatus = useApp((s) => s.configStatus);
@@ -22,6 +23,7 @@ export function AppShell() {
   const procurementReady = useModule(procurementStore, (s) => s.status === 'ready');
   const warnings = useModule(procurementStore, (s) => s.warnings);
   const [healthOpen, setHealthOpen] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
 
   useEffect(() => {
     void appStore.getState().loadConfig();
@@ -46,18 +48,22 @@ export function AppShell() {
   }, [pathname]);
 
   return (
-    <div className="min-h-screen" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
-      <Header onOpenHealth={() => setHealthOpen(true)} />
-      {module?.id === 'procurement' && procurementReady && <FilterBar />}
-      <main>
-        {configStatus === 'error' && configError ? (
-          <ErrorScreen error={configError} onRetry={() => void appStore.getState().loadConfig()} />
-        ) : configStatus === 'ready' ? (
-          <Outlet />
-        ) : (
-          <LoadingScreen step="config" />
-        )}
-      </main>
+    <div className="flex min-h-screen" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+      <Sidebar />
+      <div className="min-w-0 flex-1">
+        <Header onOpenHealth={() => setHealthOpen(true)} onOpenNav={() => setNavOpen(true)} />
+        {module?.id === 'procurement' && procurementReady && <FilterBar />}
+        <main>
+          {configStatus === 'error' && configError ? (
+            <ErrorScreen error={configError} onRetry={() => void appStore.getState().loadConfig()} />
+          ) : configStatus === 'ready' ? (
+            <Outlet />
+          ) : (
+            <LoadingScreen step="config" />
+          )}
+        </main>
+      </div>
+      <MobileNav open={navOpen} onClose={() => setNavOpen(false)} />
       <DataHealthPanel open={healthOpen} onClose={() => setHealthOpen(false)} warnings={warnings} />
     </div>
   );
