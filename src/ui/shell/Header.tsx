@@ -3,11 +3,11 @@ import { LANGS, type Lang } from '../../i18n/message';
 import { locale } from '../../i18n/translate';
 import { useT } from '../../i18n/useT';
 import { dayFromISO, dayToISO, todayDay } from '../../lib/day';
-import { procurementStore } from '../../modules/procurement/store';
+import { useActiveModule } from '../../modules/registry';
+import type { AnyModule } from '../../modules/types';
 import { appStore } from '../../store/appStore';
 import { useApp } from '../../store/useApp';
 import { useModule } from '../../store/useModule';
-import { useDashboard } from '../hooks/useDashboard';
 import { AskBox } from './AskBox';
 
 function timeAgo(t: ReturnType<typeof useT>['t'], lang: Lang, date: Date, now = new Date()): string {
@@ -17,20 +17,64 @@ function timeAgo(t: ReturnType<typeof useT>['t'], lang: Lang, date: Date, now = 
   return date.toLocaleTimeString(locale(lang), { hour: '2-digit', minute: '2-digit' });
 }
 
+function SearchSlot({ module }: { module: AnyModule }) {
+  const { value, vocab, onChange } = module.useSearch!();
+  return <AskBox value={value} vocab={vocab} onChange={onChange} />;
+}
+
+/** Refresh + Data Health for the module on screen. */
+function ModuleStatus({ module, onOpenHealth }: { module: AnyModule; onOpenHealth: () => void }) {
+  const { t, lang } = useT();
+  const refreshing = useModule(module.store, (s) => s.refreshing);
+  const refreshError = useModule(module.store, (s) => s.refreshError);
+  const lastSync = useModule(module.store, (s) => s.lastSync);
+  const warnings = useModule(module.store, (s) => s.warnings);
+  const warningCount = warnings.filter((w) => w.level !== 'info').length;
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => void module.store.getState().load()}
+        title={refreshError ? t(refreshError.detail) : t('header.reloadData')}
+        className={`flex h-9 items-center gap-1.5 rounded-lg border px-2.5 text-xs ${
+          refreshError ? 'border-serious/50 text-serious' : 'border-line text-ink-2 hover:text-ink'
+        }`}
+      >
+        <span aria-hidden className={refreshing ? 'animate-spin' : ''}>⟳</span>
+        <span className="hidden sm:inline">
+          {refreshing
+            ? t('header.syncing')
+            : refreshError
+              ? t('header.staleData')
+              : lastSync
+                ? t('header.synced', { time: timeAgo(t, lang, lastSync) })
+                : ''}
+        </span>
+      </button>
+      <button
+        type="button"
+        onClick={onOpenHealth}
+        title="Data Health"
+        className="relative flex h-9 items-center rounded-lg border border-line px-2.5 text-xs text-ink-2 hover:text-ink"
+      >
+        <span aria-hidden>⚕</span>
+        <span className="ml-1 hidden sm:inline">Data Health</span>
+        {warningCount > 0 && (
+          <span className="absolute -top-1.5 -right-1.5 rounded-full bg-serious px-1.5 font-mono text-[10px] text-white">{warningCount}</span>
+        )}
+      </button>
+    </>
+  );
+}
+
 export function Header({ onOpenHealth, onOpenNav }: { onOpenHealth: () => void; onOpenNav: () => void }) {
   const appName = useApp((s) => s.config?.appName ?? 'PMS - PEIW');
   const projectName = useApp((s) => s.config?.projectName ?? '');
   const cutOff = useApp((s) => s.cutOff);
   const theme = useApp((s) => s.theme);
-  const refreshing = useModule(procurementStore, (s) => s.refreshing);
-  const refreshError = useModule(procurementStore, (s) => s.refreshError);
-  const lastSync = useModule(procurementStore, (s) => s.lastSync);
-  const warnings = useModule(procurementStore, (s) => s.warnings);
-  const { filters, setFilters, vocab } = useDashboard();
+  const module = useActiveModule();
   const { setCutOff, toggleTheme, setLang } = appStore.getState();
-  const { load } = procurementStore.getState();
   const { t, lang } = useT();
-  const warningCount = warnings.filter((w) => w.level !== 'info').length;
 
   return (
     <header
@@ -52,13 +96,15 @@ export function Header({ onOpenHealth, onOpenNav }: { onOpenHealth: () => void; 
           </span>
           <span className="leading-tight">
             <span className="block text-sm font-bold tracking-wide">{appName}</span>
-            <span className="block text-[11px] text-ink-3">{projectName} · Procurement Intelligence</span>
+            <span className="block text-[11px] text-ink-3">{projectName}{module ? ` · ${t(module.labelKey)}` : ''}</span>
           </span>
         </Link>
 
-        <div className="order-last w-full lg:order-none lg:w-auto lg:flex-1 lg:max-w-xl">
-          <AskBox value={filters.q} vocab={vocab} onChange={(q) => setFilters({ q })} />
-        </div>
+        {module?.useSearch && (
+          <div className="order-last w-full lg:order-none lg:w-auto lg:flex-1 lg:max-w-xl">
+            <SearchSlot key={module.id} module={module} />
+          </div>
+        )}
 
         <div className="ml-auto flex items-center gap-2">
           <label className="flex items-center gap-1.5 text-xs text-ink-3">
@@ -78,37 +124,7 @@ export function Header({ onOpenHealth, onOpenNav }: { onOpenHealth: () => void; 
               {t('header.today')}
             </button>
           )}
-          <button
-            type="button"
-            onClick={() => void load()}
-            title={refreshError ? t(refreshError.detail) : t('header.reloadData')}
-            className={`flex h-9 items-center gap-1.5 rounded-lg border px-2.5 text-xs ${
-              refreshError ? 'border-serious/50 text-serious' : 'border-line text-ink-2 hover:text-ink'
-            }`}
-          >
-            <span aria-hidden className={refreshing ? 'animate-spin' : ''}>⟳</span>
-            <span className="hidden sm:inline">
-              {refreshing
-                ? t('header.syncing')
-                : refreshError
-                  ? t('header.staleData')
-                  : lastSync
-                    ? t('header.synced', { time: timeAgo(t, lang, lastSync) })
-                    : ''}
-            </span>
-          </button>
-          <button
-            type="button"
-            onClick={onOpenHealth}
-            title="Data Health"
-            className="relative flex h-9 items-center rounded-lg border border-line px-2.5 text-xs text-ink-2 hover:text-ink"
-          >
-            <span aria-hidden>⚕</span>
-            <span className="ml-1 hidden sm:inline">Data Health</span>
-            {warningCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 rounded-full bg-serious px-1.5 font-mono text-[10px] text-white">{warningCount}</span>
-            )}
-          </button>
+          {module && <ModuleStatus key={module.id} module={module} onOpenHealth={onOpenHealth} />}
           <div role="group" aria-label={t('header.language')} className="flex rounded-lg border border-line p-0.5 text-xs">
             {LANGS.map((l) => (
               <button

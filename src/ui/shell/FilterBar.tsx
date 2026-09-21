@@ -1,43 +1,34 @@
-import { useState } from 'react';
-import { isEmptyFilters, type Filters, type Flag } from '../../analytics/filters';
-import { LINE_PHASE_LABEL, LINE_PHASE_ORDER } from '../../data/milestones';
-import type { MessageKey } from '../../i18n/en';
+import { useMemo, useState } from 'react';
 import { useT } from '../../i18n/useT';
-import type { ItemType } from '../../data/types';
+import { filterKeys } from '../../modules/registry';
+import type { AnyModule } from '../../modules/types';
+import { useModule } from '../../store/useModule';
 import { MultiSelect } from '../common/MultiSelect';
-import { useDashboard } from '../hooks/useDashboard';
+import { useFacetParams } from './useFacetParams';
 
-const FLAG_LABEL_KEY: Record<Flag, MessageKey> = {
-  rosRisk: 'filter.flag.rosRisk',
-  slipped: 'filter.flag.slipped',
-  overdue: 'filter.flag.overdue',
-  dueSoon: 'filter.flag.dueSoon',
-};
-
-function Controls() {
+function ResultCount({ module }: { module: AnyModule }) {
   const { t } = useT();
-  const { filters, setFilters, clearFilters, vocab, filtered, metrics } = useDashboard();
-  const set = <K extends keyof Filters>(key: K) => (value: Filters[K]) => setFilters({ [key]: value } as Partial<Filters>);
+  const { shown, total, unitKey } = module.useResultCount!();
+  return (
+    <span className="ml-auto text-xs text-ink-3">
+      <span className="font-mono text-ink">{shown}</span> / {total} {t(unitKey, { n: total })}
+    </span>
+  );
+}
+
+function Controls({ module, keys }: { module: AnyModule; keys: readonly string[] }) {
+  const { t } = useT();
+  const data = useModule(module.store, (s) => s.data);
+  const { values, setValues, clear } = useFacetParams(keys);
+  const empty = keys.every((k) => values[k].length === 0);
   return (
     <>
-      <MultiSelect label="Discipline" options={vocab.disciplines.map((d) => ({ value: d, label: d }))} selected={filters.disciplines} onChange={set('disciplines')} />
-      <MultiSelect label="Facility" options={vocab.facilities.map((f) => ({ value: f, label: f }))} selected={filters.facilities} onChange={set('facilities')} />
-      <MultiSelect<ItemType>
-        label="Tagged/Bulk"
-        options={[
-          { value: 'Tagged', label: 'Tagged' },
-          { value: 'Bulk', label: 'Bulk' },
-        ]}
-        selected={filters.itemTypes}
-        onChange={set('itemTypes')}
-      />
-      <MultiSelect label={t('filter.phaseLabel')} options={LINE_PHASE_ORDER.map((p) => ({ value: p, label: LINE_PHASE_LABEL[p] }))} selected={filters.phases} onChange={set('phases')} />
-      <MultiSelect<Flag> label={t('filter.flagsLabel')} options={(Object.keys(FLAG_LABEL_KEY) as Flag[]).map((f) => ({ value: f, label: t(FLAG_LABEL_KEY[f]) }))} selected={filters.flags} onChange={set('flags')} />
-      <span className="ml-auto text-xs text-ink-3">
-        <span className="font-mono text-ink">{filtered.length}</span> / {metrics.length} {t('unit.lines', { n: metrics.length })}
-      </span>
-      {!isEmptyFilters(filters) && (
-        <button type="button" onClick={clearFilters} className="text-xs text-ai-1 underline">
+      {module.facets.map((f) => (
+        <MultiSelect key={f.key} label={t(f.labelKey)} options={f.options(data, t)} selected={values[f.key]} onChange={(next) => setValues(f.key, next)} />
+      ))}
+      {module.useResultCount ? <ResultCount module={module} /> : <span className="ml-auto" />}
+      {!empty && (
+        <button type="button" onClick={clear} className="text-xs text-ai-1 underline">
           {t('filter.clear')}
         </button>
       )}
@@ -45,19 +36,22 @@ function Controls() {
   );
 }
 
-/** Sticky filter row on desktop; a filter button opening a bottom sheet on phones. */
-export function FilterBar() {
+/** Sticky filter row on desktop; a filter button opening a bottom sheet on phones. Drawn from the module's facets. */
+export function FilterBar({ module }: { module: AnyModule }) {
   const { t } = useT();
   const [sheetOpen, setSheetOpen] = useState(false);
-  const { filters } = useDashboard();
-  const activeCount =
-    filters.disciplines.length + filters.facilities.length + filters.itemTypes.length + filters.phases.length + filters.flags.length;
+  const keys = useMemo(() => filterKeys(module), [module]);
+  const facetKeys = useMemo(() => module.facets.map((f) => f.key), [module]);
+  const ready = useModule(module.store, (s) => s.status === 'ready');
+  const { values } = useFacetParams(facetKeys);
+  if (!ready) return null;
+  const activeCount = facetKeys.reduce((n, k) => n + values[k].length, 0);
 
   return (
     // No backdrop-filter here: it would create a stacking context that traps the dropdowns under the cards below.
     <div className="border-b border-line bg-bg/60">
       <div className="mx-auto hidden max-w-[1600px] flex-wrap items-center gap-2 px-4 py-2 md:flex">
-        <Controls />
+        <Controls module={module} keys={keys} />
       </div>
       <div className="flex items-center justify-between px-4 py-2 md:hidden">
         <button type="button" onClick={() => setSheetOpen(true)} className="flex h-9 items-center gap-2 rounded-lg border border-line px-3 text-sm">
@@ -71,7 +65,7 @@ export function FilterBar() {
             className="absolute inset-x-0 bottom-0 flex flex-wrap items-center gap-2 rounded-t-2xl border-t border-line bg-bg p-4"
             style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 1rem)' }}
           >
-            <Controls />
+            <Controls module={module} keys={keys} />
             <button type="button" onClick={() => setSheetOpen(false)} className="mt-2 w-full rounded-lg bg-ai-1/20 py-2 text-sm text-ai-1">
               {t('filter.done')}
             </button>

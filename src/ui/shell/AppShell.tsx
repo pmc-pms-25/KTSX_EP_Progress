@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { procurementStore } from '../../modules/procurement/store';
 import { useActiveModule } from '../../modules/registry';
+import type { AnyModule } from '../../modules/types';
 import { appStore } from '../../store/appStore';
 import { useApp } from '../../store/useApp';
 import { useModule } from '../../store/useModule';
@@ -12,6 +12,11 @@ import { FilterBar } from './FilterBar';
 import { Header } from './Header';
 import { MobileNav, Sidebar } from './Sidebar';
 
+function HealthSlot({ module, open, onClose }: { module: AnyModule; open: boolean; onClose: () => void }) {
+  const warnings = useModule(module.store, (s) => s.warnings);
+  return <DataHealthPanel open={open} onClose={onClose} warnings={warnings} />;
+}
+
 export function AppShell() {
   const configStatus = useApp((s) => s.configStatus);
   const configError = useApp((s) => s.configError);
@@ -19,9 +24,6 @@ export function AppShell() {
   const lang = useApp((s) => s.lang);
   const appName = useApp((s) => s.config?.appName);
   const module = useActiveModule();
-  // Interim until Task 9: the filter bar and Data Health still speak procurement only.
-  const procurementReady = useModule(procurementStore, (s) => s.status === 'ready');
-  const warnings = useModule(procurementStore, (s) => s.warnings);
   const [healthOpen, setHealthOpen] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
 
@@ -52,7 +54,7 @@ export function AppShell() {
       <Sidebar />
       <div className="min-w-0 flex-1">
         <Header onOpenHealth={() => setHealthOpen(true)} onOpenNav={() => setNavOpen(true)} />
-        {module?.id === 'procurement' && procurementReady && <FilterBar />}
+        {module && module.facets.length > 0 && <FilterBar key={module.id} module={module} />}
         <main>
           {configStatus === 'error' && configError ? (
             <ErrorScreen error={configError} onRetry={() => void appStore.getState().loadConfig()} />
@@ -64,7 +66,7 @@ export function AppShell() {
         </main>
       </div>
       <MobileNav open={navOpen} onClose={() => setNavOpen(false)} />
-      <DataHealthPanel open={healthOpen} onClose={() => setHealthOpen(false)} warnings={warnings} />
+      {module && <HealthSlot key={module.id} module={module} open={healthOpen} onClose={() => setHealthOpen(false)} />}
     </div>
   );
 }
