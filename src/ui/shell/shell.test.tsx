@@ -1,4 +1,4 @@
-import { act, fireEvent, render, renderHook, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, renderHook, screen, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { createMemoryRouter, MemoryRouter, RouterProvider, useLocation } from 'react-router-dom';
 import { routes } from '../../App';
@@ -44,6 +44,22 @@ describe('shared shell per module', () => {
       expect(screen.getAllByRole('button', { name: new RegExp(label.replace(/[()]/g, '\\$&')) }).length).toBeGreaterThan(0);
     }
     expect(screen.getAllByText((_, el) => el?.textContent === '6 / 6 dòng').length).toBeGreaterThan(0);
+  });
+
+  it('ignores URL facet values that are not among the facet options', async () => {
+    renderAt('/procurement?flag=bad&type=Weird');
+    await screen.findByText('AI Insights');
+    expect(await screen.findByRole('button', { name: 'Bộ lọc' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Xóa bộ lọc' })).not.toBeInTheDocument();
+    for (const button of screen.getAllByRole('button', { name: /Tagged\/Bulk|Cảnh báo/ })) expect(button.textContent).not.toMatch(/\d/);
+    cleanup();
+
+    const router = renderAt('/procurement?flag=bad&type=Bulk&pkg=MEC-001');
+    await screen.findByText('AI Insights');
+    expect(await screen.findByRole('button', { name: 'Bộ lọc 1' })).toBeInTheDocument();
+    fireEvent.click(screen.getAllByRole('button', { name: 'Xóa bộ lọc' })[0]);
+    // Clear still removes every filter key of the module, known or not.
+    await waitFor(() => expect(router.state.location.search).toBe('?pkg=MEC-001'));
   });
 
   it('refreshes the store of the active module', async () => {

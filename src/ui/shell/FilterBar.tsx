@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useT } from '../../i18n/useT';
 import { filterKeys } from '../../modules/registry';
-import type { AnyModule } from '../../modules/types';
+import type { AnyModule, FacetOption } from '../../modules/types';
 import { useModule } from '../../store/useModule';
 import { MultiSelect } from '../common/MultiSelect';
 import { useFacetParams } from './useFacetParams';
@@ -16,15 +16,22 @@ function ResultCount({ module }: { module: AnyModule }) {
   );
 }
 
-function Controls({ module, keys }: { module: AnyModule; keys: readonly string[] }) {
+/** URL values of each facet that exist among its options; unknown values (e.g. `?flag=bad`) filter nothing, so they are not shown. */
+function knownValues(values: Record<string, string[]>, options: Record<string, FacetOption[]>): Record<string, string[]> {
+  const known = { ...values };
+  for (const [key, opts] of Object.entries(options)) known[key] = values[key].filter((v) => opts.some((o) => o.value === v));
+  return known;
+}
+
+function Controls({ module, keys, options }: { module: AnyModule; keys: readonly string[]; options: Record<string, FacetOption[]> }) {
   const { t } = useT();
-  const data = useModule(module.store, (s) => s.data);
-  const { values, setValues, clear } = useFacetParams(keys);
+  const { values: raw, setValues, clear } = useFacetParams(keys);
+  const values = knownValues(raw, options);
   const empty = keys.every((k) => values[k].length === 0);
   return (
     <>
       {module.facets.map((f) => (
-        <MultiSelect key={f.key} label={t(f.labelKey)} options={f.options(data, t)} selected={values[f.key]} onChange={(next) => setValues(f.key, next)} />
+        <MultiSelect key={f.key} label={t(f.labelKey)} options={options[f.key]} selected={values[f.key]} onChange={(next) => setValues(f.key, next)} />
       ))}
       {module.useResultCount ? <ResultCount module={module} /> : <span className="ml-auto" />}
       {!empty && (
@@ -43,15 +50,18 @@ export function FilterBar({ module }: { module: AnyModule }) {
   const keys = useMemo(() => filterKeys(module), [module]);
   const facetKeys = useMemo(() => module.facets.map((f) => f.key), [module]);
   const ready = useModule(module.store, (s) => s.status === 'ready');
-  const { values } = useFacetParams(facetKeys);
+  const data = useModule(module.store, (s) => s.data);
+  const { values: raw } = useFacetParams(facetKeys);
   if (!ready) return null;
+  const options = Object.fromEntries(module.facets.map((f) => [f.key, f.options(data, t)]));
+  const values = knownValues(raw, options);
   const activeCount = facetKeys.reduce((n, k) => n + values[k].length, 0);
 
   return (
     // No backdrop-filter here: it would create a stacking context that traps the dropdowns under the cards below.
     <div className="border-b border-line bg-bg/60">
       <div className="mx-auto hidden max-w-[1600px] flex-wrap items-center gap-2 px-4 py-2 md:flex">
-        <Controls module={module} keys={keys} />
+        <Controls module={module} keys={keys} options={options} />
       </div>
       <div className="flex items-center justify-between px-4 py-2 md:hidden">
         <button type="button" onClick={() => setSheetOpen(true)} className="flex h-9 items-center gap-2 rounded-lg border border-line px-3 text-sm">
@@ -65,7 +75,7 @@ export function FilterBar({ module }: { module: AnyModule }) {
             className="absolute inset-x-0 bottom-0 flex flex-wrap items-center gap-2 rounded-t-2xl border-t border-line bg-bg p-4"
             style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 1rem)' }}
           >
-            <Controls module={module} keys={keys} />
+            <Controls module={module} keys={keys} options={options} />
             <button type="button" onClick={() => setSheetOpen(false)} className="mt-2 w-full rounded-lg bg-ai-1/20 py-2 text-sm text-ai-1">
               {t('filter.done')}
             </button>
