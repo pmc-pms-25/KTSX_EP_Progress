@@ -225,8 +225,8 @@ export const vi: Dictionary = {
   'loading.preparing': 'Đang chuẩn bị dashboard…',
   'loading.step.config': 'Đọc cấu hình',
   'loading.step.fetch': 'Đồng bộ dữ liệu từ nguồn',
-  'loading.step.parse': 'Phân tích cấu trúc Procurement Plan',
-  'loading.step.analyze': 'Phát hiện rủi ro & tạo insight',
+  'loading.step.parse': 'Phân tích cấu trúc dữ liệu',
+  'loading.step.analyze': 'Phân tích dữ liệu',
 
   // Error screen hints (src/ui/states/ErrorScreen.tsx).
   'error.hint.network': 'Máy của bạn cần truy cập được docs.google.com và *.googleusercontent.com.',

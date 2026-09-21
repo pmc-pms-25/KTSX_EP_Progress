@@ -223,8 +223,8 @@ export const en = {
   'loading.preparing': 'Preparing dashboard…',
   'loading.step.config': 'Reading configuration',
   'loading.step.fetch': 'Syncing data from source',
-  'loading.step.parse': 'Parsing Procurement Plan structure',
-  'loading.step.analyze': 'Detecting risks & generating insights',
+  'loading.step.parse': 'Parsing data structure',
+  'loading.step.analyze': 'Analyzing data',
 
   // Error screen hints (src/ui/states/ErrorScreen.tsx).
   'error.hint.network': 'Your machine needs access to docs.google.com and *.googleusercontent.com.',
