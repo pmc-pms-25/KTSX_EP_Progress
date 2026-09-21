@@ -38,12 +38,15 @@ function NavItems({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: 
   );
 }
 
+const SIDEBAR_ID = 'app-sidebar';
+
 /** Desktop sidebar; collapses to icons. Hidden on phones (see MobileNav). */
 export function Sidebar() {
   const { t } = useT();
   const collapsed = useApp((s) => s.sidebarCollapsed);
   return (
     <nav
+      id={SIDEBAR_ID}
       aria-label={t('sidebar.label')}
       className={`sticky top-0 hidden h-screen shrink-0 flex-col border-r border-line bg-bg py-3 md:flex ${collapsed ? 'w-14 px-1.5' : 'w-56 px-2'}`}
     >
@@ -52,6 +55,7 @@ export function Sidebar() {
         type="button"
         onClick={() => appStore.getState().toggleSidebar()}
         aria-expanded={!collapsed}
+        aria-controls={SIDEBAR_ID}
         aria-label={collapsed ? t('sidebar.expand') : t('sidebar.collapse')}
         className="mt-auto flex h-9 items-center justify-center rounded-lg text-ink-3 hover:text-ink"
       >

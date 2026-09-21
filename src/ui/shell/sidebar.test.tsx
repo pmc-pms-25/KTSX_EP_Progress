@@ -49,7 +49,10 @@ describe('Sidebar', () => {
     const link = await within(sidebar()).findByRole('link', { name: 'Procurement' });
     await waitFor(() => expect(link).toHaveAttribute('title', 'Procurement'));
     await waitFor(() => expect(link.textContent).toBe('▦'));
-    expect(await screen.findByRole('button', { name: 'Mở rộng thanh bên' })).toHaveAttribute('aria-expanded', 'false');
+    const expand = await screen.findByRole('button', { name: 'Mở rộng thanh bên' });
+    expect(expand).toHaveAttribute('aria-expanded', 'false');
+    expect(expand).toHaveAttribute('aria-controls', sidebar().id);
+    expect(sidebar().id).not.toBe('');
   });
 
   it('opens as a drawer from the header menu button on phones and closes after choosing', async () => {
