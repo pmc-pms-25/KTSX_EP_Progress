@@ -1,6 +1,6 @@
 import type { MessageKey } from '../../i18n/en';
 import { useT } from '../../i18n/useT';
-import { type LoadError } from '../../store/appStore';
+import type { LoadError } from '../../store/moduleStore';
 
 const HINTS: Record<string, MessageKey> = {
   NETWORK: 'error.hint.network',

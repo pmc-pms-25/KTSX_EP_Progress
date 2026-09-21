@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import type { LoadStep } from '../../store/appStore';
+import type { LoadStep } from '../../store/moduleStore';
 import type { MessageKey } from '../../i18n/en';
 import type { Message } from '../../i18n/message';
 import { useT } from '../../i18n/useT';

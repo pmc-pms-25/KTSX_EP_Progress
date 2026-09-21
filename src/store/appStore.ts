@@ -4,7 +4,6 @@ import type { Lang } from '../i18n/message';
 import { todayDay, type Day } from '../lib/day';
 import { toLoadError, type LoadError } from './moduleStore';
 
-export type { LoadError, LoadStep } from './moduleStore';
 export type Theme = 'dark' | 'light';
 
 /** App-wide state shared by every module. Module data lives in each module's own store. */
