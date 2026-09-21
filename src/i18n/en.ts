@@ -337,6 +337,27 @@ export const en = {
   'eng.transmittal.subtitle': 'Documents received per week (Incoming Transmittal date)',
   'eng.transmittal.chartAriaLabel': 'Documents received per week',
   'eng.transmittal.noData': 'No transmittal dates.',
+
+  'eng.table.title': 'Documents ({count})',
+  'eng.table.subtitle': 'Overdue and rejected first · click a row for details',
+  'eng.table.document': 'Document',
+  'eng.table.stage': 'Stage',
+  'eng.table.rev': 'Rev',
+  'eng.table.code': 'Code',
+  'eng.table.transmittal': 'Transmittal',
+  'eng.table.risk': 'Risk',
+  'eng.table.overdue': 'Overdue',
+  'eng.table.rejected': 'Rejected',
+  'eng.table.errorLabel': 'Document list',
+  'eng.doc.notFound': 'Document {id} not found.',
+  'eng.doc.status': 'Status',
+  'eng.doc.docType': 'Document type',
+  'eng.doc.sourceTab': 'Source tab',
+  'eng.doc.transmittal': 'Incoming transmittal',
+  'eng.doc.steps': 'Steps',
+  'eng.doc.plan': 'Plan',
+  'eng.doc.actual': 'Actual',
+  'eng.doc.remark': 'Remark',
 } as const;
 
 export type MessageKey = keyof typeof en;

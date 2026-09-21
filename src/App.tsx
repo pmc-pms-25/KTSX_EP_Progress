@@ -2,6 +2,7 @@ import { MotionConfig } from 'motion/react';
 import { createHashRouter, RouterProvider, type RouteObject } from 'react-router-dom';
 import { engineeringModule } from './modules/engineering/module';
 import { procurementModule } from './modules/procurement/module';
+import { DocumentDrawer } from './ui/engineering/DocumentDrawer';
 import { PackageDrawer } from './ui/package/PackageDrawer';
 import { AppShell } from './ui/shell/AppShell';
 import { LegacyRedirect } from './ui/shell/LegacyRedirect';
@@ -35,9 +36,10 @@ export const routes: RouteObject[] = [
       },
       {
         path: 'engineering',
-        element: <ModuleRoute module={engineeringModule} />,
+        element: <ModuleRoute module={engineeringModule} overlay={<DocumentDrawer />} />,
         children: [
           { index: true, lazy: () => import('./ui/engineering/EngOverviewPage').then((m) => ({ Component: m.EngOverviewPage })) },
+          { path: 'discipline/:name', lazy: () => import('./ui/engineering/EngDisciplinePage').then((m) => ({ Component: m.EngDisciplinePage })) },
           { path: '*', element: <NotFound /> },
         ],
       },
