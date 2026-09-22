@@ -35,10 +35,18 @@ describe('dashboard app', () => {
   });
 
   it('filters through a KPI tile and shows the row count', async () => {
-    const router = await renderPage('/procurement');
+    const router = renderAt('/procurement/discipline/MECHANICAL');
+    await screen.findByRole('table');
     fireEvent.click(screen.getByRole('button', { name: /ROS at risk/ }));
     await waitFor(() => expect(router.state.location.search).toContain('flag=rosRisk'));
     await waitFor(() => expect(screen.getAllByText((_, el) => el?.textContent === '1 / 6 dòng').length).toBeGreaterThan(0));
+  });
+
+  it('opens a package from the top risks card', async () => {
+    const router = await renderPage('/procurement');
+    fireEvent.click(within(screen.getByRole('region', { name: 'Top 10 rủi ro' })).getByRole('button', { name: /MEC-001/ }));
+    await waitFor(() => expect(router.state.location.search).toContain('pkg=MEC-001'));
+    expect(await within(await screen.findByRole('dialog')).findByText('Chi tiết mốc')).toBeInTheDocument();
   });
 
   it('drills into a discipline and opens a package drawer', async () => {
@@ -53,7 +61,8 @@ describe('dashboard app', () => {
 
   it('scrolls to the top when moving to another page, but not when filters change', async () => {
     const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
-    const router = await renderPage('/procurement');
+    const router = renderAt('/procurement/discipline/MECHANICAL');
+    await screen.findByRole('table');
     // Let the first page's mount effect run before watching for new scrolls.
     await waitFor(() => expect(scrollTo).toHaveBeenCalled());
     scrollTo.mockClear();
@@ -61,8 +70,8 @@ describe('dashboard app', () => {
     await waitFor(() => expect(router.state.location.search).toContain('flag=rosRisk'));
     await waitFor(() => expect(screen.getAllByText((_, el) => el?.textContent === '1 / 6 dòng').length).toBeGreaterThan(0));
     expect(scrollTo).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole('link', { name: /MECHANICAL/ }));
-    await screen.findByRole('table');
+    await act(() => router.navigate('/procurement'));
+    await screen.findByText('Phase funnel');
     await waitFor(() => expect(scrollTo).toHaveBeenCalledWith(0, 0));
     scrollTo.mockRestore();
   });

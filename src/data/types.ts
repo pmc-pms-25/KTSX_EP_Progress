@@ -59,6 +59,8 @@ export interface Line {
   deliveryWeeks?: number;
   transportDays?: number;
   bufferDays?: number;
+  /** Buffer on the FORECAST row: ROS − forecast "Received at Worksite", in days (negative = late). */
+  forecastBufferDays?: number;
   remark?: string;
   /** 1-based sheet row of the PLANNED row. */
   sourceRow: number;

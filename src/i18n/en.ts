@@ -137,6 +137,18 @@ export const en = {
   'kpi.hint.dueSoon': 'Milestones due within the upcoming window',
   'kpi.daysSuffix': '{days} {days|day|days}',
 
+  // Overview — headline cards and top risks (src/ui/overview/SummaryTiles.tsx, TopRiskTable.tsx).
+  'overview.progress.title': 'Overall progress',
+  'overview.progress.pending': 'Calculation coming soon',
+  'topRisk.title': 'Top 10 risks',
+  'topRisk.titleFacility': 'Top 10 risks · {facility}',
+  'topRisk.subtitle': 'Lowest forecast Buffer (ROS − received on site) among lines not yet received',
+  'topRisk.package': 'Package',
+  'topRisk.facility': 'Facility',
+  'topRisk.ros': 'ROS',
+  'topRisk.buffer': 'Buffer (days)',
+  'topRisk.empty': 'No packages at risk',
+
   // Overview — insights (src/ui/overview/InsightsPanel.tsx).
   'insightsPanel.subtitle': 'Automatically detected from the current data · click “Why?” to see the evidence',
   'insightsPanel.empty': 'No anomalies detected with the current filters.',

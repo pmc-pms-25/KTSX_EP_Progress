@@ -165,6 +165,7 @@ function buildLine(group: Group, map: ColumnMap, warnings: DataWarning[]): Line 
     deliveryWeeks: map.deliveryWeeks !== undefined ? num(planned[map.deliveryWeeks]) : undefined,
     transportDays: map.transportDays !== undefined ? num(planned[map.transportDays]) : undefined,
     bufferDays: map.buffer !== undefined ? num(planned[map.buffer]) : undefined,
+    forecastBufferDays: map.buffer !== undefined && forecast ? num(forecast[map.buffer]) : undefined,
     remark: remark || undefined,
     sourceRow: sheetRow,
   };

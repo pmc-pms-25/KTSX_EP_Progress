@@ -139,6 +139,18 @@ export const vi: Dictionary = {
   'kpi.hint.dueSoon': 'Số mốc đến hạn trong cửa sổ sắp tới',
   'kpi.daysSuffix': '{days} ngày',
 
+  // Overview — headline cards and top risks (src/ui/overview/SummaryTiles.tsx, TopRiskTable.tsx).
+  'overview.progress.title': 'Tiến độ tổng thể',
+  'overview.progress.pending': 'Logic đang được xây dựng',
+  'topRisk.title': 'Top 10 rủi ro',
+  'topRisk.titleFacility': 'Top 10 rủi ro · {facility}',
+  'topRisk.subtitle': 'Buffer dự báo thấp nhất (ROS − ngày nhận tại công trường) trong các dòng chưa nhận hàng',
+  'topRisk.package': 'Gói',
+  'topRisk.facility': 'Facility',
+  'topRisk.ros': 'ROS',
+  'topRisk.buffer': 'Buffer (ngày)',
+  'topRisk.empty': 'Không có gói rủi ro',
+
   // Overview — insights (src/ui/overview/InsightsPanel.tsx).
   'insightsPanel.subtitle': 'Tự động phát hiện từ dữ liệu hiện tại · bấm “Why?” để xem bằng chứng',
   'insightsPanel.empty': 'Không phát hiện điểm bất thường nào với bộ lọc hiện tại.',

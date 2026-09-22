@@ -36,6 +36,8 @@ export interface FixtureLine {
   actual?: DateMap;
   ros?: string;
   forecastRos?: unknown;
+  /** Buffer on the FORECAST row (ROS − forecast "Received at Worksite"); defaults to 10 like the sheet. */
+  forecastBuffer?: number;
   remark?: string;
   rosHistory?: string[];
   omitForecast?: boolean;
@@ -97,6 +99,7 @@ function buildRow(line: FixtureLine, rowType: string, dates: DateMap | undefined
   }
   if (rowType === 'FORECAST') {
     row[col('ROS')] = line.forecastRos ?? (line.ros ? serial(line.ros) : null);
+    row[col('Buffer')] = line.forecastBuffer ?? 10;
   }
   return row;
 }
@@ -131,11 +134,11 @@ const compressorPlan = chain('2026-06-01');
 /**
  * Small but representative plan:
  * - MEC-001 @ PS2K TS: on plan.
- * - MEC-001 @ PS2R: forecast slips late, received after ROS (ROS at risk).
+ * - MEC-001 @ PS2R: forecast slips late, received after ROS (ROS at risk, forecast Buffer −19).
  * - MEC-002 @ BF (Bulk): two actuals recorded, one forecast earlier than plan.
  * - blank code/facility on PLANNED, 0 on FORECAST/ACTUAL (as the sheet's formulas produce): warnings, not orphans.
  * - PIP-001 @ PS2L TS: '#####' date, '00/Jan/00' ROS on FORECAST, no ACTUAL row.
- * - PIP-002 @ WHJs: every milestone has an actual (delivered).
+ * - PIP-002 @ WHJs: every milestone has an actual (delivered); forecast Buffer 4 but no longer a risk.
  */
 export const SAMPLE_SECTIONS: FixtureSection[] = [
   {
@@ -156,6 +159,7 @@ export const SAMPLE_SECTIONS: FixtureSection[] = [
         plan: pumpPlan,
         forecast: pumpSlipForecast,
         ros: '2028-04-01',
+        forecastBuffer: -19,
         remark: 'Kiểm tra lại ROS',
       },
       {
@@ -199,6 +203,7 @@ export const SAMPLE_SECTIONS: FixtureSection[] = [
         plan: chain('2025-01-01', 10),
         actual: chain('2025-01-01', 10),
         ros: '2026-01-01',
+        forecastBuffer: 4,
       },
     ],
   },

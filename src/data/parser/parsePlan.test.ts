@@ -51,8 +51,17 @@ describe('parsePlan', () => {
     expect(line.deliveryWeeks).toBe(40);
     expect(line.transportDays).toBe(30);
     expect(line.bufferDays).toBe(10);
+    expect(line.forecastBufferDays).toBe(10);
     expect(line.sourceRow).toBe(3);
     expect(line.id).toBe('MEC-001|PS2K TS|3');
+  });
+
+  it('reads the Buffer of the FORECAST row separately from the PLANNED one', () => {
+    const late = parseSample().lines.find((l) => l.packageCode === 'MEC-001' && l.facility === 'PS2R')!;
+    expect(late.bufferDays).toBe(10);
+    expect(late.forecastBufferDays).toBe(-19);
+    const noForecast = parseSample().lines.find((l) => l.packageCode === 'PIP-001')!;
+    expect(noForecast.forecastBufferDays).toBe(10);
   });
 
   it('keeps dirty rows and reports data-quality warnings', () => {
