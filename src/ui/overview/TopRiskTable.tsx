@@ -15,6 +15,9 @@ const ONE_LINE = 'truncate whitespace-nowrap';
 
 const bufferTone = (buffer: number) => (buffer < 0 ? 'text-critical' : 'text-warning');
 
+/** A true minus sign (U+2212): a hyphen is short and easy to miss. */
+const signed = (days: number) => (days < 0 ? `−${-days}` : String(days));
+
 /** The riskiest Package × Facility lines by forecast Buffer; a row opens its package. */
 export function TopRiskTable({ rows, facility, onOpen }: TopRiskTableProps) {
   const { t } = useT();
@@ -52,7 +55,7 @@ export function TopRiskTable({ rows, facility, onOpen }: TopRiskTableProps) {
                     </span>
                     {!facility && <span className="truncate text-ink-2">{line.facility}</span>}
                     <span className={`font-mono text-xs text-ink-2 ${hideRos}`}>{formatDay(line.ros)}</span>
-                    <span className={`text-right font-mono font-semibold ${bufferTone(buffer)}`}>{buffer}</span>
+                    <span className={`text-right font-mono font-semibold tabular-nums ${bufferTone(buffer)}`}>{signed(buffer)}</span>
                   </button>
                 </li>
               ))}

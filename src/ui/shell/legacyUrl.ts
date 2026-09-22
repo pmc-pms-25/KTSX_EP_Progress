@@ -1,7 +1,7 @@
 /** Short keys with comma-joined values, used by links shared before the multi-module shell. */
 const LEGACY_KEYS: Record<string, string> = { d: 'discipline', f: 'facility', t: 'type', p: 'phase', flag: 'flag' };
 
-/** Phase values that were split: Logistics became On-sailing and Arrived at Site. */
+/** Phase values that were split: Logistics became On-Sailing and Arrived at Site. */
 const LEGACY_PHASES: Record<string, string[]> = { logistics: ['onSailing', 'arrived'] };
 
 function append(next: URLSearchParams, key: string, value: string): void {

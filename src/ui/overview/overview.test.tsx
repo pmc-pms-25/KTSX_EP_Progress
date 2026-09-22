@@ -19,7 +19,10 @@ beforeEach(seedStore);
 describe('OverviewPage', () => {
   it('shows the headline cards and the widgets, without AI Insights or the facility heatmap', () => {
     renderOverview();
-    expect(screen.getAllByText('Packages')[0].parentElement).toHaveTextContent('4');
+    const packages = screen.getAllByText('Packages')[0];
+    expect(packages.parentElement).toHaveTextContent('4');
+    // Peer cards share the card-title style: sentence case, not an all-caps eyebrow.
+    expect(packages).not.toHaveClass('uppercase');
     expect(screen.getByText('Tiến độ tổng thể').parentElement).toHaveTextContent('—%');
     expect(screen.queryByRole('button', { name: /ROS at risk/ })).not.toBeInTheDocument();
     expect(screen.getByText('Phase funnel')).toBeInTheDocument();
@@ -36,7 +39,8 @@ describe('OverviewPage', () => {
     expect(rows).toHaveLength(1);
     expect(rows[0]).toHaveTextContent('MEC-001');
     expect(rows[0]).toHaveTextContent('PS2R');
-    expect(rows[0]).toHaveTextContent('-19');
+    // A true minus sign, not a hyphen.
+    expect(rows[0]).toHaveTextContent('−19');
     expect(within(card).getByText('Facility')).toBeInTheDocument();
     // Column headers stay on one line.
     for (const header of ['#', 'Gói', 'Facility', 'ROS', 'Buffer (ngày)']) expect(within(card).getByText(header)).toHaveClass('whitespace-nowrap');

@@ -123,13 +123,13 @@ function PhaseNode({ progress: p, index, reduced, onSelect }: PhaseNodeProps) {
             <span aria-hidden className="h-2 w-2 shrink-0 rounded-full" style={{ background: phaseColor(p.phase, theme) }} />
             {p.label}
           </span>
-          <span className="block text-[11px] text-ink-3">{MILESTONE_BY_KEY[p.gate].short}</span>
+          <span className="block text-xs text-ink-3">{MILESTONE_BY_KEY[p.gate].short}</span>
           <span className="mt-0.5 block text-lg font-semibold text-ink">
             <AnimatedNumber value={p.actual} />
-            <span className="font-mono text-ink-3"> / </span>
+            <span className="text-ink-3"> / </span>
             <AnimatedNumber value={p.plan} className="text-ink-2" />
           </span>
-          <span className="block text-[11px] text-ink-3">
+          <span className="block text-xs text-ink-3">
             {p.plan === 0 ? (
               t('phaseTimeline.nothingDue')
             ) : p.late > 0 ? (
@@ -163,7 +163,7 @@ function AwaitingNode({ index, reduced }: { index: number; reduced: boolean }) {
       </span>
       <span className="min-w-0">
         <span className="block text-xs font-medium text-ink-3">{t('phaseTimeline.readyForConstruction')}</span>
-        <span className="mt-0.5 block text-[11px] text-ink-3">{t('phaseTimeline.awaitingWarehouse')}</span>
+        <span className="mt-0.5 block text-xs text-ink-3">{t('phaseTimeline.awaitingWarehouse')}</span>
       </span>
       <InfoTip label={t('phaseInfo.label', { phase: t('phaseTimeline.readyForConstruction') })} align="end" className={TIP_POSITION}>
         {t('phaseInfo.warehouse')}

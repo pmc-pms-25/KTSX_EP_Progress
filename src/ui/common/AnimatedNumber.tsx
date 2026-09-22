@@ -6,7 +6,7 @@ import type { Lang } from '../../i18n/message';
 
 const format = (n: number, lang: Lang) => formatNumber(Math.round(n), lang);
 
-/** Counts from the previous value to `value` (800 ms on first paint, 400 ms on updates). */
+/** Counts from the previous value to `value` (800 ms on first paint, 400 ms on updates). Tabular figures keep digits aligned. */
 export function AnimatedNumber({ value, className = '' }: { value: number; className?: string }) {
   const lang = useApp((s) => s.lang);
   const ref = useRef<HTMLSpanElement>(null);
@@ -33,7 +33,7 @@ export function AnimatedNumber({ value, className = '' }: { value: number; class
   }, [value, reduced, lang]);
 
   return (
-    <span ref={ref} className={`font-mono tabular-nums ${className}`}>
+    <span ref={ref} className={`tabular-nums ${className}`}>
       {format(value, lang)}
     </span>
   );

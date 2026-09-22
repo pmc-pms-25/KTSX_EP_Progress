@@ -213,7 +213,7 @@ export const en = {
 
   // Overview — workload chart (src/ui/overview/WorkloadChart.tsx).
   'workloadChart.title': 'Monthly milestone workload',
-  'workloadChart.subtitle': 'Each phase milestone (TR · Bids · CBE · LOA · FAT · Ship · Site) by effective date (Actual → Forecast → Plan)',
+  'workloadChart.subtitle': 'Milestones per month by effective date (Actual → Forecast → Plan)',
   'workloadChart.noData': 'No date data.',
   'workloadChart.chartAriaLabel': 'Milestones due by month',
 

@@ -24,7 +24,7 @@ export function Card({ title, subtitle, actions, children, className = '', ai = 
         <header className="mb-3 flex flex-wrap items-start justify-between gap-2">
           <div className="min-w-0">
             {title && (
-              <h2 className="flex items-center gap-2 text-sm font-semibold tracking-wide text-ink">
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-ink">
                 {ai && <span aria-hidden className="ai-text text-base">✦</span>}
                 {title}
               </h2>

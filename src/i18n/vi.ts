@@ -215,7 +215,7 @@ export const vi: Dictionary = {
 
   // Overview — workload chart (src/ui/overview/WorkloadChart.tsx).
   'workloadChart.title': 'Khối lượng mốc theo tháng',
-  'workloadChart.subtitle': 'Mốc của từng phase (TR · Bids · CBE · LOA · FAT · Ship · Site) theo ngày hiệu lực (Actual → Forecast → Plan)',
+  'workloadChart.subtitle': 'Số mốc mỗi tháng theo ngày hiệu lực (Actual → Forecast → Plan)',
   'workloadChart.noData': 'Không có dữ liệu ngày.',
   'workloadChart.chartAriaLabel': 'Số mốc đến hạn theo tháng',
 

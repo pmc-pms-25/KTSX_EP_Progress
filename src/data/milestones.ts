@@ -23,7 +23,7 @@ export const PHASES: readonly PhaseDef[] = [
   { key: 'evaluation', label: 'Evaluation' },
   { key: 'award', label: 'Award' },
   { key: 'manufacturing', label: 'Manufacturing' },
-  { key: 'onSailing', label: 'On-sailing' },
+  { key: 'onSailing', label: 'On-Sailing' },
   { key: 'arrived', label: 'Arrived at Site' },
 ];
 

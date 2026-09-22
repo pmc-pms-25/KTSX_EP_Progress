@@ -118,7 +118,7 @@ function StageNode({ progress: p, index, reduced, onSelect }: StageNodeProps) {
           </span>
           <span className="mt-0.5 block text-lg font-semibold text-ink">
             <AnimatedNumber value={p.reached} />
-            <span className="font-mono text-ink-3"> / </span>
+            <span className="text-ink-3"> / </span>
             <AnimatedNumber value={p.total} className="text-ink-2" />
           </span>
           <span className="block text-[11px] text-ink-3">
