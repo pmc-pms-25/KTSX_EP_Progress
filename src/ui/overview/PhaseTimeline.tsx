@@ -4,8 +4,10 @@ import { MILESTONE_BY_KEY } from '../../data/milestones';
 import type { PhaseKey } from '../../data/types';
 import { useT } from '../../i18n/useT';
 import { useApp } from '../../store/useApp';
+import { formatDay } from '../../lib/day';
 import { AnimatedNumber } from '../common/AnimatedNumber';
 import { Card } from '../common/Card';
+import { InfoTip } from '../common/InfoTip';
 import { phaseColor } from '../theme/palette';
 
 interface PhaseTimelineProps {
@@ -20,6 +22,9 @@ const TONE_TEXT: Record<ProgressTone, string> = {
   none: 'text-ink-3',
 };
 
+/** The "?" sits beside the ring: top-right of the row on phones, just right of the ring on desktop. */
+const TIP_POSITION = 'absolute top-4 right-0 lg:top-0 lg:right-[calc(50%-3rem)]';
+
 /** Seconds between one milestone's entrance and the next. */
 const STEP = 0.12;
 
@@ -30,7 +35,8 @@ export function PhaseTimeline({ progress, onSelect }: PhaseTimelineProps) {
   const draw = reduced ? { duration: 0 } : { duration: 0.9, ease: 'easeInOut' as const };
 
   return (
-    <Card title={t('phaseTimeline.title')} subtitle={t('phaseTimeline.subtitle')}>
+    // Raised above the next card so a help panel can hang over it.
+    <Card title={t('phaseTimeline.title')} subtitle={t('phaseTimeline.subtitle')} className="relative z-10">
       <ol className="relative grid gap-3 lg:grid-cols-8 lg:gap-2">
         {/* The track runs between the first and last ring centers: horizontal on desktop, vertical on phones. */}
         <div aria-hidden className="absolute top-7 right-[calc(100%/16)] left-[calc(100%/16)] hidden h-0.5 rounded-full bg-line lg:block">
@@ -134,6 +140,9 @@ function PhaseNode({ progress: p, index, reduced, onSelect }: PhaseNodeProps) {
           </span>
         </span>
       </motion.button>
+      <InfoTip label={t('phaseInfo.label', { phase: p.label })} align={index >= 4 ? 'end' : 'start'} className={TIP_POSITION}>
+        <PhaseHelp progress={p} />
+      </InfoTip>
     </motion.li>
   );
 }
@@ -156,6 +165,26 @@ function AwaitingNode({ index, reduced }: { index: number; reduced: boolean }) {
         <span className="block text-xs font-medium text-ink-3">{t('phaseTimeline.readyForConstruction')}</span>
         <span className="mt-0.5 block text-[11px] text-ink-3">{t('phaseTimeline.awaitingWarehouse')}</span>
       </span>
+      <InfoTip label={t('phaseInfo.label', { phase: t('phaseTimeline.readyForConstruction') })} align="end" className={TIP_POSITION}>
+        {t('phaseInfo.warehouse')}
+      </InfoTip>
     </motion.li>
+  );
+}
+
+/** Where a phase's numbers come from: the sheet column, how Plan / Actual / % are counted, and the package total. */
+function PhaseHelp({ progress: p }: { progress: PhaseProgress }) {
+  const { t } = useT();
+  const cutOff = useApp((s) => s.cutOff);
+  return (
+    <span className="block space-y-1">
+      <span className="block font-semibold text-ink">{p.label}</span>
+      <span className="block">{t('phaseInfo.date', { column: MILESTONE_BY_KEY[p.gate].header })}</span>
+      <span className="block">{t('phaseInfo.plan', { cutOff: formatDay(cutOff) })}</span>
+      <span className="block">{t('phaseInfo.actual')}</span>
+      <span className="block">{t('phaseInfo.ratio')}</span>
+      <span className="block">{t('phaseInfo.total', { total: p.total })}</span>
+      <span className="block text-ink-3 italic">{t('phaseInfo.facilities')}</span>
+    </span>
   );
 }

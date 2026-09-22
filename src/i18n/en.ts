@@ -181,6 +181,14 @@ export const en = {
   'phaseTimeline.nothingDue': 'Nothing due yet',
   'phaseTimeline.readyForConstruction': 'Ready for Construction',
   'phaseTimeline.awaitingWarehouse': 'Awaiting data from the Warehouse module',
+  'phaseInfo.label': 'How {phase} is calculated',
+  'phaseInfo.date': 'Date: the "{column}" column in the sheet',
+  'phaseInfo.plan': 'Plan: packages with a PLANNED date for this milestone ≤ cut-off ({cutOff})',
+  'phaseInfo.actual': 'Actual: packages with an ACTUAL date ≤ cut-off; finishing ahead of plan still counts',
+  'phaseInfo.ratio': '% = Actual / Plan',
+  'phaseInfo.total': 'Total: {total} {total|package has|packages have} a planned date for this milestone (click the phase for the list)',
+  'phaseInfo.facilities': 'A package over several facilities counts as done only when every facility that is due has an Actual date.',
+  'phaseInfo.warehouse': 'Dates will come from the Warehouse module once it has data.',
 
   // Overview — phase progress drawer (src/ui/overview/PhaseProgressDrawer.tsx).
   'phaseDrawer.summary': '{actual} / {plan} packages completed by cut-off · {total} {total|package|packages} planned in this phase',

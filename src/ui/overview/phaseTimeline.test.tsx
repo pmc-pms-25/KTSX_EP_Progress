@@ -30,7 +30,31 @@ describe('PhaseTimeline', () => {
     renderOverview();
     const node = screen.getByText('Ready for Construction').closest('li')!;
     expect(node).toHaveTextContent('Chờ dữ liệu từ module Kho');
-    expect(within(node).queryByRole('button')).not.toBeInTheDocument();
+    fireEvent.focus(within(node).getByRole('button', { name: 'Cách tính Ready for Construction' }));
+    expect(screen.getByRole('tooltip')).toHaveTextContent('Ngày sẽ lấy từ module Kho khi có dữ liệu.');
+  });
+
+  it('explains on hover or focus which date each phase uses and how it counts', () => {
+    renderOverview();
+    const help = screen.getByRole('button', { name: 'Cách tính TR / Pre-RFQ' });
+    fireEvent.mouseEnter(help.parentElement!);
+    const tip = screen.getByRole('tooltip');
+    expect(help).toHaveAttribute('aria-describedby', tip.id);
+    expect(tip).toHaveTextContent('cột "MTO/ TR Approval"');
+    expect(tip).toHaveTextContent('≤ cut-off (18-Sep-2026)');
+    expect(tip).toHaveTextContent('Tổng: 5 gói');
+    fireEvent.mouseLeave(help.parentElement!);
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+
+    fireEvent.focus(screen.getByRole('button', { name: 'Cách tính Arrived at Site' }));
+    expect(screen.getByRole('tooltip')).toHaveTextContent('cột "Received and Inspected at Worksite"');
+  });
+
+  it('keeps the help apart from the milestone, which still opens the drawer', () => {
+    const router = renderOverview();
+    fireEvent.click(screen.getByRole('button', { name: 'Cách tính RFQ / Bidding' }));
+    expect(screen.getByRole('tooltip')).toHaveTextContent('Bids Due');
+    expect(router.state.location.search).not.toContain('milestone=');
   });
 
   it('opens the phase drawer on click and puts the phase in the URL', () => {
