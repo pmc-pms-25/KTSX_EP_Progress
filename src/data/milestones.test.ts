@@ -1,4 +1,4 @@
-import { KEY_MILESTONES, LINE_PHASE_ORDER, MILESTONES, MILESTONE_BY_KEY, PHASES, phaseIndex } from './milestones';
+import { KEY_MILESTONES, LINE_PHASE_ORDER, PHASE_GATE, MILESTONES, MILESTONE_BY_KEY, PHASES, phaseIndex } from './milestones';
 
 describe('milestone catalog', () => {
   it('has unique keys and headers', () => {
@@ -15,7 +15,8 @@ describe('milestone catalog', () => {
 
   it('exposes lookups and the headline milestones', () => {
     expect(MILESTONE_BY_KEY.loa.header).toBe('LOA Effective Date');
-    expect(KEY_MILESTONES).toHaveLength(6);
+    // One per phase, in phase order, so the workload chart lines up with Phase progress.
+    expect(KEY_MILESTONES).toEqual(PHASES.map((p) => PHASE_GATE[p.key]));
     expect(LINE_PHASE_ORDER.at(-1)).toBe('delivered');
     expect(phaseIndex('award')).toBeLessThan(phaseIndex('onSailing'));
     expect(phaseIndex('onSailing')).toBeLessThan(phaseIndex('arrived'));

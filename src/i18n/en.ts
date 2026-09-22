@@ -206,7 +206,7 @@ export const en = {
 
   // Overview — workload chart (src/ui/overview/WorkloadChart.tsx).
   'workloadChart.title': 'Monthly milestone workload',
-  'workloadChart.subtitle': 'TR · TBE · CBE · LOA · FAT/EXW · Site — by effective date (Actual → Forecast → Plan)',
+  'workloadChart.subtitle': 'Each phase milestone (TR · Bids · CBE · LOA · FAT · Ship · Site) by effective date (Actual → Forecast → Plan)',
   'workloadChart.noData': 'No date data.',
   'workloadChart.chartAriaLabel': 'Milestones due by month',
 
@@ -295,6 +295,7 @@ export const en = {
   'routeError.reload': 'Reload page',
   'filter.discipline': 'Discipline',
   'filter.facility': 'Facility',
+  'filter.all': 'All',
   'filter.itemType': 'Tagged/Bulk',
 
   // Engineering (src/ui/engineering, src/modules/engineering).

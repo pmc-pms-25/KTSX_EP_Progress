@@ -24,18 +24,26 @@ export const procurementModule: ModuleDefinition<Plan> = {
   icon: '▦',
   store: procurementStore,
   facets: [
-    { key: FILTER_KEYS.disciplines, labelKey: 'filter.discipline', options: (plan) => distinct(plan.lines.map((l) => l.discipline)).map(same) },
     {
       key: FILTER_KEYS.facilities,
       labelKey: 'filter.facility',
       options: (plan) => distinct(plan.lines.map((l) => l.facility)).sort((a, b) => a.localeCompare(b)).map(same),
+      showValues: true,
     },
-    { key: FILTER_KEYS.itemTypes, labelKey: 'filter.itemType', options: () => ['Tagged', 'Bulk'].map(same) },
-    { key: FILTER_KEYS.phases, labelKey: 'filter.phaseLabel', options: () => LINE_PHASE_ORDER.map((p) => ({ value: p, label: LINE_PHASE_LABEL[p] })) },
+    {
+      key: FILTER_KEYS.disciplines,
+      labelKey: 'filter.discipline',
+      options: (plan) => distinct(plan.lines.map((l) => l.discipline)).map(same),
+      showValues: true,
+    },
+    // Hidden for now at the product owner's request; bring back by removing `hidden`.
+    { key: FILTER_KEYS.itemTypes, labelKey: 'filter.itemType', options: () => ['Tagged', 'Bulk'].map(same), hidden: true },
+    { key: FILTER_KEYS.phases, labelKey: 'filter.phaseLabel', options: () => LINE_PHASE_ORDER.map((p) => ({ value: p, label: LINE_PHASE_LABEL[p] })), hidden: true },
     {
       key: FILTER_KEYS.flags,
       labelKey: 'filter.flagsLabel',
       options: (_, t) => (Object.keys(FLAG_LABEL_KEY) as Flag[]).map((f) => ({ value: f, label: t(FLAG_LABEL_KEY[f]) })),
+      hidden: true,
     },
   ],
   useSearch() {

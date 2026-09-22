@@ -8,11 +8,12 @@ import { MultiSelect } from './MultiSelect';
 // These components render Vietnamese text below; keep the store's default 'en' from masking it.
 beforeEach(() => appStore.setState({ lang: 'vi' }));
 
-function Harness() {
+function Harness({ showValues = false }: { showValues?: boolean }) {
   const [selected, setSelected] = useState<string[]>([]);
   return (
     <>
       <MultiSelect
+        showValues={showValues}
         label="Facility"
         options={[
           { value: 'BF', label: 'BF' },
@@ -39,6 +40,18 @@ describe('MultiSelect', () => {
     expect(screen.getByTestId('selected').textContent).toBe('PS2R,BF');
     fireEvent.click(screen.getByText('Bỏ chọn tất cả'));
     expect(screen.getByTestId('selected').textContent).toBe('');
+  });
+
+  it('shows the chosen values on the button when asked', () => {
+    render(<Harness showValues />);
+    const button = screen.getByRole('button', { name: /Facility/ });
+    expect(button).toHaveTextContent('Facility: Tất cả');
+    fireEvent.click(button);
+    fireEvent.click(screen.getByLabelText('PS2R'));
+    expect(button).toHaveTextContent('Facility: PS2R');
+    fireEvent.click(screen.getByLabelText('BF'));
+    expect(button).toHaveTextContent('Facility: PS2R +1');
+    expect(button).toHaveAttribute('title', 'PS2R, BF');
   });
 
   it('closes on Escape', () => {

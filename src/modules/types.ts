@@ -17,6 +17,10 @@ export interface FacetDef<T> {
   key: string;
   labelKey: MessageKey;
   options(data: T, t: Translate): FacetOption[];
+  /** Name the chosen values on the dropdown button instead of counting them. */
+  showValues?: boolean;
+  /** Not drawn in the filter bar; its URL key still filters, is remembered and is cleared. */
+  hidden?: boolean;
 }
 
 export interface ModuleSearch {

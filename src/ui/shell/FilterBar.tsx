@@ -30,9 +30,18 @@ function Controls({ module, keys, options }: { module: AnyModule; keys: readonly
   const empty = keys.every((k) => values[k].length === 0);
   return (
     <>
-      {module.facets.map((f) => (
-        <MultiSelect key={f.key} label={t(f.labelKey)} options={options[f.key]} selected={values[f.key]} onChange={(next) => setValues(f.key, next)} />
-      ))}
+      {module.facets
+        .filter((f) => !f.hidden)
+        .map((f) => (
+          <MultiSelect
+            key={f.key}
+            label={t(f.labelKey)}
+            options={options[f.key]}
+            selected={values[f.key]}
+            onChange={(next) => setValues(f.key, next)}
+            showValues={f.showValues}
+          />
+        ))}
       {module.useResultCount ? <ResultCount module={module} /> : <span className="ml-auto" />}
       {!empty && (
         <button type="button" onClick={clear} className="text-xs text-ai-1 underline">

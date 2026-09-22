@@ -55,6 +55,9 @@ export function OverviewPage() {
           <InsightsPanel insights={insights} metrics={filtered} onApply={setFilters} onOpenPackage={open} />
         </ErrorBoundary>
       )}
+      <ErrorBoundary label={t('errorBoundary.workloadLabel')}>
+        <WorkloadChart metrics={filtered} cutOff={cutOff} />
+      </ErrorBoundary>
       <div className="grid gap-4 lg:grid-cols-2">
         <ErrorBoundary label="Phase funnel">
           <PhaseFunnel metrics={filtered} onSelectPhase={(p) => setFilters({ phases: [p] })} />
@@ -63,9 +66,6 @@ export function OverviewPage() {
           <DisciplineGrid health={health.filter((h) => h.lines > 0)} />
         </ErrorBoundary>
       </div>
-      <ErrorBoundary label={t('errorBoundary.workloadLabel')}>
-        <WorkloadChart metrics={filtered} cutOff={cutOff} />
-      </ErrorBoundary>
       {SHOW_FACILITY_HEATMAP && (
         <ErrorBoundary label={t('facilityHeatmap.title')}>
           <FacilityHeatmap metrics={filtered} />

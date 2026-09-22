@@ -39,13 +39,13 @@ describe('shared shell per module', () => {
     expect(screen.getAllByText(/\/ 6 tài liệu/).length).toBeGreaterThan(0);
   });
 
-  it('draws the procurement facets with translated labels and the result count', async () => {
-    renderAt('/procurement');
+  it('draws Facility then Discipline with their selection, hides the other facets, and shows the result count', async () => {
+    renderAt('/procurement?facility=BF');
     await screen.findByText('Phase funnel');
-    for (const label of ['Discipline', 'Facility', 'Tagged/Bulk', 'Phase (kế hoạch)', 'Cảnh báo']) {
-      expect(screen.getAllByRole('button', { name: new RegExp(label.replace(/[()]/g, '\\$&')) }).length).toBeGreaterThan(0);
-    }
-    expect(screen.getAllByText((_, el) => el?.textContent === '6 / 6 dòng').length).toBeGreaterThan(0);
+    const facets = screen.getAllByRole('button', { name: /^(Facility|Discipline|Tagged\/Bulk|Phase|Cảnh báo)/ }).map((b) => b.textContent);
+    expect(facets.slice(0, 2)).toEqual(['Facility: BF▾', 'Discipline: Tất cả▾']);
+    expect(screen.queryByRole('button', { name: /Tagged\/Bulk|Phase \(kế hoạch\)|Cảnh báo/ })).not.toBeInTheDocument();
+    expect(screen.getAllByText((_, el) => el?.textContent === '1 / 6 dòng').length).toBeGreaterThan(0);
   });
 
   it('ignores URL facet values that are not among the facet options', async () => {
@@ -53,7 +53,7 @@ describe('shared shell per module', () => {
     await screen.findByText('Phase funnel');
     expect(await screen.findByRole('button', { name: 'Bộ lọc' })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Xóa bộ lọc' })).not.toBeInTheDocument();
-    for (const button of screen.getAllByRole('button', { name: /Tagged\/Bulk|Cảnh báo/ })) expect(button.textContent).not.toMatch(/\d/);
+    for (const button of screen.getAllByRole('button', { name: /^Facility/ })) expect(button).toHaveTextContent('Facility: Tất cả');
     cleanup();
 
     const router = renderAt('/procurement?flag=bad&type=Bulk&pkg=MEC-001');

@@ -208,7 +208,7 @@ export const vi: Dictionary = {
 
   // Overview — workload chart (src/ui/overview/WorkloadChart.tsx).
   'workloadChart.title': 'Khối lượng mốc theo tháng',
-  'workloadChart.subtitle': 'TR · TBE · CBE · LOA · FAT/EXW · Site — theo ngày hiệu lực (Actual → Forecast → Plan)',
+  'workloadChart.subtitle': 'Mốc của từng phase (TR · Bids · CBE · LOA · FAT · Ship · Site) theo ngày hiệu lực (Actual → Forecast → Plan)',
   'workloadChart.noData': 'Không có dữ liệu ngày.',
   'workloadChart.chartAriaLabel': 'Số mốc đến hạn theo tháng',
 
@@ -297,6 +297,7 @@ export const vi: Dictionary = {
   'routeError.reload': 'Tải lại trang',
   'filter.discipline': 'Discipline',
   'filter.facility': 'Facility',
+  'filter.all': 'Tất cả',
   'filter.itemType': 'Tagged/Bulk',
 
   // Engineering (src/ui/engineering, src/modules/engineering).

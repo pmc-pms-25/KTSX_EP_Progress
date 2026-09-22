@@ -101,8 +101,8 @@ export const PHASE_GATE: Record<PhaseKey, MilestoneKey> = {
   arrived: 'received',
 };
 
-/** The six headline milestones used by the monthly workload chart (TR, TBE, CBE, LOA, EXW/FAT, Site). */
-export const KEY_MILESTONES: readonly MilestoneKey[] = ['trApproval', 'tbeApproval', 'cbeApproval', 'loa', 'fat', 'received'];
+/** Headline milestones of the monthly workload chart: each phase's gate in phase order, so series colors match the phases. */
+export const KEY_MILESTONES: readonly MilestoneKey[] = PHASES.map((p) => PHASE_GATE[p.key]);
 
 export function phaseIndex(phase: LinePhase): number {
   return LINE_PHASE_ORDER.indexOf(phase);

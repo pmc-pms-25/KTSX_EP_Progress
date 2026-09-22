@@ -66,7 +66,7 @@ describe('summarizePackages', () => {
 describe('monthlyWorkload', () => {
   it('counts headline milestones per month over a continuous range', () => {
     const w = monthlyWorkload(metrics);
-    expect(w.series.map((s) => s.label)).toEqual(['TR', 'TBE', 'CBE', 'LOA', 'FAT', 'Site']);
+    expect(w.series.map((s) => s.label)).toEqual(['TR', 'Bids', 'CBE', 'LOA', 'FAT', 'Ship', 'Site']);
     expect(w.months[0]).toBe('2025-01');
     expect(w.months).toContain('2025-12');
     const tr = w.series[0];
