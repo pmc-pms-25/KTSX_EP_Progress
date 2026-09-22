@@ -143,7 +143,6 @@ export const vi: Dictionary = {
   'overview.progress.title': 'Tiến độ tổng thể',
   'overview.progress.pending': 'Logic đang được xây dựng',
   'topRisk.title': 'Top 10 rủi ro',
-  'topRisk.titleFacility': 'Top 10 rủi ro · {facility}',
   'topRisk.subtitle': 'Buffer dự báo thấp nhất (ROS − ngày nhận tại công trường) trong các dòng chưa nhận hàng',
   'topRisk.package': 'Gói',
   'topRisk.facility': 'Facility',

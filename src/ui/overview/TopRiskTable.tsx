@@ -5,20 +5,23 @@ import { Card } from '../common/Card';
 
 interface TopRiskTableProps {
   rows: RiskRow[];
-  /** Set when the filters narrow to exactly one facility: named in the title, its column dropped. */
+  /** Set when the filters narrow to exactly one facility: its column is dropped (the filter bar names it). */
   facility?: string;
   onOpen: (code: string) => void;
 }
+
+/** Column headers never wrap; a long one is cut with an ellipsis instead. */
+const ONE_LINE = 'truncate whitespace-nowrap';
 
 const bufferTone = (buffer: number) => (buffer < 0 ? 'text-critical' : 'text-warning');
 
 /** The riskiest Package × Facility lines by forecast Buffer; a row opens its package. */
 export function TopRiskTable({ rows, facility, onOpen }: TopRiskTableProps) {
   const { t } = useT();
-  const title = facility ? t('topRisk.titleFacility', { facility }) : t('topRisk.title');
-  const cols = facility ? 'grid-cols-[1.5rem_minmax(0,1fr)_6rem_4.5rem]' : 'grid-cols-[1.5rem_minmax(0,1fr)_minmax(0,6rem)_6rem_4.5rem]';
+  const title = t('topRisk.title');
+  const cols = facility ? 'grid-cols-[1.5rem_minmax(0,1fr)_6rem_6rem]' : 'grid-cols-[1.5rem_minmax(0,1fr)_minmax(0,6rem)_6rem_6rem]';
   const hideRos = 'max-sm:hidden';
-  const colsSm = facility ? 'max-sm:grid-cols-[1.5rem_minmax(0,1fr)_4.5rem]' : 'max-sm:grid-cols-[1.5rem_minmax(0,1fr)_minmax(0,5rem)_4.5rem]';
+  const colsSm = facility ? 'max-sm:grid-cols-[1.5rem_minmax(0,1fr)_6rem]' : 'max-sm:grid-cols-[1.5rem_minmax(0,1fr)_minmax(0,5rem)_6rem]';
 
   return (
     <div role="region" aria-label={title} className="sm:col-span-2 lg:col-span-3">
@@ -28,11 +31,11 @@ export function TopRiskTable({ rows, facility, onOpen }: TopRiskTableProps) {
         ) : (
           <div className="text-sm">
             <div className={`grid ${cols} ${colsSm} gap-2 border-b border-line px-2 pb-1.5 text-xs text-ink-3`}>
-              <span>#</span>
-              <span>{t('topRisk.package')}</span>
-              {!facility && <span>{t('topRisk.facility')}</span>}
-              <span className={hideRos}>{t('topRisk.ros')}</span>
-              <span className="text-right">{t('topRisk.buffer')}</span>
+              <span className={ONE_LINE}>#</span>
+              <span className={ONE_LINE}>{t('topRisk.package')}</span>
+              {!facility && <span className={ONE_LINE}>{t('topRisk.facility')}</span>}
+              <span className={`${ONE_LINE} ${hideRos}`}>{t('topRisk.ros')}</span>
+              <span className={`${ONE_LINE} text-right`}>{t('topRisk.buffer')}</span>
             </div>
             <ol>
               {rows.map(({ metrics: { line }, buffer }, i) => (

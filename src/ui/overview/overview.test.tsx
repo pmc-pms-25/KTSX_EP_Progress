@@ -38,20 +38,22 @@ describe('OverviewPage', () => {
     expect(rows[0]).toHaveTextContent('PS2R');
     expect(rows[0]).toHaveTextContent('-19');
     expect(within(card).getByText('Facility')).toBeInTheDocument();
+    // Column headers stay on one line.
+    for (const header of ['#', 'Gói', 'Facility', 'ROS', 'Buffer (ngày)']) expect(within(card).getByText(header)).toHaveClass('whitespace-nowrap');
     fireEvent.click(rows[0]);
     expect(router.state.location.search).toContain('pkg=MEC-001');
   });
 
-  it('names the facility and drops its column when exactly one facility is filtered', () => {
+  it('drops the facility column, but keeps the plain title, when exactly one facility is filtered', () => {
     renderOverview('/?facility=PS2R');
-    const card = screen.getByRole('region', { name: 'Top 10 rủi ro · PS2R' });
+    const card = screen.getByRole('region', { name: 'Top 10 rủi ro' });
     expect(within(card).queryByText('Facility')).not.toBeInTheDocument();
     expect(within(card).getByRole('button')).toHaveTextContent('MEC-001');
   });
 
   it('says so when no line is at risk', () => {
     renderOverview('/?facility=BF');
-    expect(within(screen.getByRole('region', { name: 'Top 10 rủi ro · BF' })).getByText('Không có gói rủi ro')).toBeInTheDocument();
+    expect(within(screen.getByRole('region', { name: 'Top 10 rủi ro' })).getByText('Không có gói rủi ro')).toBeInTheDocument();
   });
 
   it('shows the empty state when filters match nothing', () => {

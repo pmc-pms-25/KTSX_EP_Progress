@@ -141,7 +141,6 @@ export const en = {
   'overview.progress.title': 'Overall progress',
   'overview.progress.pending': 'Calculation coming soon',
   'topRisk.title': 'Top 10 risks',
-  'topRisk.titleFacility': 'Top 10 risks · {facility}',
   'topRisk.subtitle': 'Lowest forecast Buffer (ROS − received on site) among lines not yet received',
   'topRisk.package': 'Package',
   'topRisk.facility': 'Facility',
