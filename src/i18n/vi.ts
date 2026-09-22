@@ -181,6 +181,8 @@ export const vi: Dictionary = {
   'phaseTimeline.nodeLabel': '{phase}: đã xong {actual} trên {plan}',
   'phaseTimeline.late': '{count} trễ',
   'phaseTimeline.nothingDue': 'Chưa có mốc đến hạn',
+  'phaseTimeline.readyForConstruction': 'Ready for Construction',
+  'phaseTimeline.awaitingWarehouse': 'Chờ dữ liệu từ module Kho',
 
   // Overview — phase progress drawer (src/ui/overview/PhaseProgressDrawer.tsx).
   'phaseDrawer.summary': 'Đã xong {actual} / {plan} gói tính đến cut-off · {total} gói có kế hoạch trong phase này',

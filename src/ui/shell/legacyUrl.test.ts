@@ -16,4 +16,9 @@ describe('migrateLegacyParams', () => {
   it('leaves new-format params as they are', () => {
     expect(migrate('discipline=A&flag=rosRisk&flag=slipped')).toBe('discipline=A&flag=rosRisk&flag=slipped');
   });
+
+  it('splits the old Logistics phase into On-sailing and Arrived at Site', () => {
+    expect(migrateLegacyParams(new URLSearchParams('phase=logistics&phase=arrived&pkg=A')).toString()).toBe('phase=onSailing&phase=arrived&pkg=A');
+    expect(migrateLegacyParams(new URLSearchParams('p=award,logistics')).toString()).toBe('phase=award&phase=onSailing&phase=arrived');
+  });
 });

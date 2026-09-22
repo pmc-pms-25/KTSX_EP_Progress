@@ -24,7 +24,7 @@ export type MilestoneKey =
   | 'shipped'
   | 'received';
 
-export type PhaseKey = 'tr' | 'rfq' | 'evaluation' | 'award' | 'manufacturing' | 'logistics';
+export type PhaseKey = 'tr' | 'rfq' | 'evaluation' | 'award' | 'manufacturing' | 'onSailing' | 'arrived';
 
 /** A line's current phase; `delivered` once every dated milestone has an actual. */
 export type LinePhase = PhaseKey | 'delivered';

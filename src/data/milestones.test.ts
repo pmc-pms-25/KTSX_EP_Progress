@@ -17,6 +17,7 @@ describe('milestone catalog', () => {
     expect(MILESTONE_BY_KEY.loa.header).toBe('LOA Effective Date');
     expect(KEY_MILESTONES).toHaveLength(6);
     expect(LINE_PHASE_ORDER.at(-1)).toBe('delivered');
-    expect(phaseIndex('award')).toBeLessThan(phaseIndex('logistics'));
+    expect(phaseIndex('award')).toBeLessThan(phaseIndex('onSailing'));
+    expect(phaseIndex('onSailing')).toBeLessThan(phaseIndex('arrived'));
   });
 });

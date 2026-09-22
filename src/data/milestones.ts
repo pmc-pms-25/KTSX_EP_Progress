@@ -23,7 +23,8 @@ export const PHASES: readonly PhaseDef[] = [
   { key: 'evaluation', label: 'Evaluation' },
   { key: 'award', label: 'Award' },
   { key: 'manufacturing', label: 'Manufacturing' },
-  { key: 'logistics', label: 'Logistics' },
+  { key: 'onSailing', label: 'On-sailing' },
+  { key: 'arrived', label: 'Arrived at Site' },
 ];
 
 export const LINE_PHASE_ORDER: readonly LinePhase[] = [...PHASES.map((p) => p.key), 'delivered'];
@@ -72,13 +73,13 @@ export const MILESTONES: readonly MilestoneDef[] = [
   { key: 'spirApproved', label: 'SPIR Approved', short: 'SPIR', header: 'SPIR Approved', phase: 'manufacturing' },
   { key: 'mfg50', label: '50% Manufacturing', short: '50% Mfg', header: '50% Manufacturing Completed', phase: 'manufacturing' },
   { key: 'fat', label: 'FAT / Final Inspection', short: 'FAT', header: 'FAT/ Final Inspection Completed', phase: 'manufacturing' },
-  { key: 'shipped', label: 'Shipped from Port', short: 'Ship', header: 'Shipped from Port', phase: 'logistics' },
+  { key: 'shipped', label: 'Shipped from Port', short: 'Ship', header: 'Shipped from Port', phase: 'onSailing' },
   {
     key: 'received',
     label: 'Received at Worksite',
     short: 'Site',
     header: 'Received and Inspected at Worksite',
-    phase: 'logistics',
+    phase: 'arrived',
   },
 ];
 
@@ -88,7 +89,7 @@ export const MILESTONE_BY_KEY: Record<MilestoneKey, MilestoneDef> = Object.fromE
 
 /**
  * The milestone that marks each phase complete for Phase progress: the hand-over to the next phase
- * that EPCIC procurement reports track (TR approved, bids received, award recommended, LOA, EXW, on site).
+ * that EPCIC procurement reports track (TR approved, bids received, award recommended, LOA, EXW, shipped, on site).
  */
 export const PHASE_GATE: Record<PhaseKey, MilestoneKey> = {
   tr: 'trApproval',
@@ -96,7 +97,8 @@ export const PHASE_GATE: Record<PhaseKey, MilestoneKey> = {
   evaluation: 'cbeApproval',
   award: 'loa',
   manufacturing: 'fat',
-  logistics: 'received',
+  onSailing: 'shipped',
+  arrived: 'received',
 };
 
 /** The six headline milestones used by the monthly workload chart (TR, TBE, CBE, LOA, EXW/FAT, Site). */

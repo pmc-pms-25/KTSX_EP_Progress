@@ -60,6 +60,11 @@ describe('routing', () => {
     await waitFor(() => expect(router.state.location.search).toBe('?discipline=MECHANICAL&discipline=PIPING&pkg=MEC-001'));
   });
 
+  it('rewrites the old Logistics phase inside a module link', async () => {
+    const router = renderAt('/procurement?phase=logistics');
+    await waitFor(() => expect(router.state.location.search).toBe('?phase=onSailing&phase=arrived'));
+  });
+
   it('translates old discipline links', async () => {
     const router = renderAt('/discipline/MECHANICAL?f=BF');
     await waitFor(() => expect(router.state.location.pathname).toBe('/procurement/discipline/MECHANICAL'));

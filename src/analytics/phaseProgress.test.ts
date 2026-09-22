@@ -17,7 +17,8 @@ describe('PHASE_GATE', () => {
       evaluation: 'cbeApproval',
       award: 'loa',
       manufacturing: 'fat',
-      logistics: 'received',
+      onSailing: 'shipped',
+      arrived: 'received',
     });
   });
 });
@@ -41,7 +42,8 @@ describe('phaseProgress', () => {
       ['evaluation', 'cbeApproval'],
       ['award', 'loa'],
       ['manufacturing', 'fat'],
-      ['logistics', 'received'],
+      ['onSailing', 'shipped'],
+      ['arrived', 'received'],
     ]);
   });
 

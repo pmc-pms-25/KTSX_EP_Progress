@@ -179,6 +179,8 @@ export const en = {
   'phaseTimeline.nodeLabel': '{phase}: {actual} of {plan} completed',
   'phaseTimeline.late': '{count} late',
   'phaseTimeline.nothingDue': 'Nothing due yet',
+  'phaseTimeline.readyForConstruction': 'Ready for Construction',
+  'phaseTimeline.awaitingWarehouse': 'Awaiting data from the Warehouse module',
 
   // Overview — phase progress drawer (src/ui/overview/PhaseProgressDrawer.tsx).
   'phaseDrawer.summary': '{actual} / {plan} packages completed by cut-off · {total} {total|package|packages} planned in this phase',

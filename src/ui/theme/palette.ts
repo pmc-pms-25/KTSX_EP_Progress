@@ -9,14 +9,14 @@ import type { Theme } from '../../store/appStore';
  * Light-mode aqua/yellow/magenta sit below 3:1 contrast: charts always ship a legend and tooltips.
  */
 export const CATEGORICAL: Record<Theme, readonly string[]> = {
-  dark: ['#3987e5', '#d95926', '#199e70', '#c98500', '#d55181', '#9085e9'],
-  light: ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#4a3aa7'],
+  dark: ['#3987e5', '#d95926', '#199e70', '#c98500', '#d55181', '#9085e9', '#008300'],
+  light: ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#4a3aa7', '#008300'],
 };
 
 const NEUTRAL: Record<Theme, string> = { dark: '#7c8aa5', light: '#8a94a8' };
 
 export function phaseColor(phase: LinePhase, theme: Theme): string {
-  const order: LinePhase[] = ['tr', 'rfq', 'evaluation', 'award', 'manufacturing', 'logistics'];
+  const order: LinePhase[] = ['tr', 'rfq', 'evaluation', 'award', 'manufacturing', 'onSailing', 'arrived'];
   const i = order.indexOf(phase);
   return i === -1 ? NEUTRAL[theme] : CATEGORICAL[theme][i];
 }

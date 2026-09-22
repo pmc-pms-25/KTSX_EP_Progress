@@ -21,7 +21,7 @@ describe('computeKpis', () => {
 describe('phaseFunnel', () => {
   it('counts lines per current phase in process order', () => {
     const funnel = phaseFunnel(metrics);
-    expect(funnel.map((p) => p.phase)).toEqual(['tr', 'rfq', 'evaluation', 'award', 'manufacturing', 'logistics', 'delivered']);
+    expect(funnel.map((p) => p.phase)).toEqual(['tr', 'rfq', 'evaluation', 'award', 'manufacturing', 'onSailing', 'arrived', 'delivered']);
     expect(funnel.find((p) => p.phase === 'tr')?.count).toBe(4);
     expect(funnel.find((p) => p.phase === 'evaluation')?.count).toBe(1);
     expect(funnel.find((p) => p.phase === 'delivered')).toEqual({ phase: 'delivered', label: 'Delivered', count: 1 });

@@ -23,7 +23,7 @@ const TONE_TEXT: Record<ProgressTone, string> = {
 /** Seconds between one milestone's entrance and the next. */
 const STEP = 0.12;
 
-/** A line through the six phases; each milestone shows packages completed / planned by cut-off. */
+/** A line through the phases; each milestone shows packages completed / planned by cut-off, then Ready for Construction. */
 export function PhaseTimeline({ progress, onSelect }: PhaseTimelineProps) {
   const { t } = useT();
   const reduced = useReducedMotion() ?? false;
@@ -31,9 +31,9 @@ export function PhaseTimeline({ progress, onSelect }: PhaseTimelineProps) {
 
   return (
     <Card title={t('phaseTimeline.title')} subtitle={t('phaseTimeline.subtitle')}>
-      <ol className="relative grid gap-3 lg:grid-cols-6 lg:gap-2">
+      <ol className="relative grid gap-3 lg:grid-cols-8 lg:gap-2">
         {/* The track runs between the first and last ring centers: horizontal on desktop, vertical on phones. */}
-        <div aria-hidden className="absolute top-7 right-[calc(100%/12)] left-[calc(100%/12)] hidden h-0.5 rounded-full bg-line lg:block">
+        <div aria-hidden className="absolute top-7 right-[calc(100%/16)] left-[calc(100%/16)] hidden h-0.5 rounded-full bg-line lg:block">
           <motion.div
             className="h-full origin-left rounded-full bg-gradient-to-r from-ai-1 to-ai-2"
             initial={{ scaleX: reduced ? 1 : 0 }}
@@ -53,6 +53,7 @@ export function PhaseTimeline({ progress, onSelect }: PhaseTimelineProps) {
         {progress.map((p, i) => (
           <PhaseNode key={p.phase} progress={p} index={i} reduced={reduced} onSelect={onSelect} />
         ))}
+        <AwaitingNode index={progress.length} reduced={reduced} />
       </ol>
     </Card>
   );
@@ -133,6 +134,28 @@ function PhaseNode({ progress: p, index, reduced, onSelect }: PhaseNodeProps) {
           </span>
         </span>
       </motion.button>
+    </motion.li>
+  );
+}
+
+/** Ready for Construction: its dates will come from the Warehouse module, so the node only holds its place for now. */
+function AwaitingNode({ index, reduced }: { index: number; reduced: boolean }) {
+  const { t } = useT();
+  return (
+    <motion.li
+      className="relative flex items-center gap-3 lg:flex-col lg:gap-2 lg:text-center"
+      initial={reduced ? false : { opacity: 0, scale: 0.6 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: reduced ? 0 : 0.2 + index * STEP, type: 'spring', stiffness: 260, damping: 18 }}
+    >
+      <span className="relative grid h-14 w-14 shrink-0 place-items-center rounded-full bg-bg">
+        <span aria-hidden className="absolute inset-0 rounded-full border-2 border-dashed border-line bg-surface" />
+        <span className="relative font-mono text-xs text-ink-3">—</span>
+      </span>
+      <span className="min-w-0">
+        <span className="block text-xs font-medium text-ink-3">{t('phaseTimeline.readyForConstruction')}</span>
+        <span className="mt-0.5 block text-[11px] text-ink-3">{t('phaseTimeline.awaitingWarehouse')}</span>
+      </span>
     </motion.li>
   );
 }

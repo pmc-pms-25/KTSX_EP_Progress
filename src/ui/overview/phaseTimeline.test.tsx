@@ -22,7 +22,15 @@ describe('PhaseTimeline', () => {
     const tr = screen.getByRole('button', { name: 'TR / Pre-RFQ: đã xong 2 trên 2' });
     expect(tr).toHaveTextContent('TR');
     expect(screen.getByRole('button', { name: 'RFQ / Bidding: đã xong 1 trên 2' })).toHaveTextContent('Bids');
-    expect(screen.getByRole('button', { name: 'Logistics: đã xong 1 trên 1' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'On-sailing: đã xong 1 trên 1' })).toHaveTextContent('Ship');
+    expect(screen.getByRole('button', { name: 'Arrived at Site: đã xong 1 trên 1' })).toHaveTextContent('Site');
+  });
+
+  it('holds a place for Ready for Construction until the Warehouse module feeds it', () => {
+    renderOverview();
+    const node = screen.getByText('Ready for Construction').closest('li')!;
+    expect(node).toHaveTextContent('Chờ dữ liệu từ module Kho');
+    expect(within(node).queryByRole('button')).not.toBeInTheDocument();
   });
 
   it('opens the phase drawer on click and puts the phase in the URL', () => {

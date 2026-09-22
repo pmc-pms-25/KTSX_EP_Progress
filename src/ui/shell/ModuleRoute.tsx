@@ -4,6 +4,7 @@ import { filterKeys } from '../../modules/registry';
 import type { AnyModule } from '../../modules/types';
 import { appStore } from '../../store/appStore';
 import { FILTER_KEYS } from '../../store/urlFilters';
+import { migrateLegacyParams } from './legacyUrl';
 import { useApp } from '../../store/useApp';
 import { useModule } from '../../store/useModule';
 import { ErrorScreen } from '../states/ErrorScreen';
@@ -35,6 +36,11 @@ export function ModuleRoute({ module, overlay }: { module: AnyModule; overlay?: 
 
   useEffect(() => {
     if (!configReady) return;
+    const migrated = migrateLegacyParams(new URLSearchParams(search)).toString();
+    if (migrated !== new URLSearchParams(search).toString()) {
+      navigate({ pathname, search: migrated ? `?${migrated}` : '' }, { replace: true });
+      return;
+    }
     const keys = filterKeys(module);
     const query = filterQuery(search, keys);
     // First visit this session with no filters: start on the configured facility. Later visits keep the user's choice.

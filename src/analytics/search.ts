@@ -30,7 +30,9 @@ const PHASE_WORDS: Record<string, LinePhase> = {
   evaluation: 'evaluation',
   award: 'award',
   manufacturing: 'manufacturing',
-  logistics: 'logistics',
+  'on-sailing': 'onSailing',
+  sailing: 'onSailing',
+  arrived: 'arrived',
   delivered: 'delivered',
 };
 
