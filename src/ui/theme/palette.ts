@@ -16,7 +16,7 @@ export const CATEGORICAL: Record<Theme, readonly string[]> = {
 const NEUTRAL: Record<Theme, string> = { dark: '#7c8aa5', light: '#8a94a8' };
 
 export function phaseColor(phase: LinePhase, theme: Theme): string {
-  const order: LinePhase[] = ['tr', 'rfq', 'evaluation', 'award', 'manufacturing', 'onSailing', 'arrived'];
+  const order: LinePhase[] = ['tr', 'rfq', 'evaluation', 'award', 'manufacturing', 'exWorks', 'arrived'];
   const i = order.indexOf(phase);
   return i === -1 ? NEUTRAL[theme] : CATEGORICAL[theme][i];
 }

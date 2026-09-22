@@ -23,7 +23,7 @@ describe('computeKpis', () => {
 describe('phaseFunnel', () => {
   it('counts lines per current phase in process order', () => {
     const funnel = phaseFunnel(metrics);
-    expect(funnel.map((p) => p.phase)).toEqual(['tr', 'rfq', 'evaluation', 'award', 'manufacturing', 'onSailing', 'arrived', 'delivered']);
+    expect(funnel.map((p) => p.phase)).toEqual(['tr', 'rfq', 'evaluation', 'award', 'manufacturing', 'exWorks', 'arrived', 'delivered']);
     expect(funnel.find((p) => p.phase === 'tr')?.count).toBe(4);
     expect(funnel.find((p) => p.phase === 'evaluation')?.count).toBe(1);
     expect(funnel.find((p) => p.phase === 'delivered')).toEqual({ phase: 'delivered', label: 'Delivered', count: 1 });
@@ -68,7 +68,7 @@ describe('summarizePackages', () => {
 describe('monthlyWorkload', () => {
   it('counts headline milestones per month over a continuous range', () => {
     const w = monthlyWorkload(metrics);
-    expect(w.series.map((s) => s.label)).toEqual(['TR', 'Bids', 'CBE', 'LOA', 'FAT', 'Ship', 'Site']);
+    expect(w.series.map((s) => s.label)).toEqual(['TR', 'Bids', 'CBE', 'LOA', 'FAT']);
     expect(w.months[0]).toBe('2025-01');
     expect(w.months).toContain('2025-12');
     const tr = w.series[0];

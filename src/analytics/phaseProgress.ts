@@ -87,10 +87,10 @@ function compare(a: PhasePackage, b: PhasePackage): number {
   );
 }
 
-/** Packages planned vs completed at each phase's headline milestone, as of the cut-off. */
+/** Packages planned vs completed at each phase's headline milestone, as of the cut-off (phases with a gate only). */
 export function phaseProgress(metrics: readonly LineMetrics[], cutOff: Day): PhaseProgress[] {
-  return PHASES.map(({ key }) => {
-    const gate = PHASE_GATE[key];
+  return PHASES.filter(({ key }) => PHASE_GATE[key] !== undefined).map(({ key }) => {
+    const gate = PHASE_GATE[key]!;
     const byPackage = new Map<string, PhaseLine[]>();
     for (const m of metrics) {
       const dates = m.line.milestones[gate];

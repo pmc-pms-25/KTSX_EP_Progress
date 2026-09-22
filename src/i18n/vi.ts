@@ -180,8 +180,10 @@ export const vi: Dictionary = {
   'phaseTimeline.nodeLabel': '{phase}: đã xong {actual} trên {plan}',
   'phaseTimeline.late': '{count} trễ',
   'phaseTimeline.nothingDue': 'Chưa có mốc đến hạn',
-  'phaseTimeline.readyForConstruction': 'Ready for Construction',
+  'phaseTimeline.inspectedAtWorksite': 'Inspected at Worksite',
+  'phaseTimeline.issuedToConstruction': 'Issued to Construction',
   'phaseTimeline.awaitingWarehouse': 'Chờ dữ liệu từ module Kho',
+  'phaseTimeline.awaitingExpediting': 'Chờ dữ liệu từ Expediting Report',
   'phaseInfo.label': 'Cách tính {phase}',
   'phaseInfo.date': 'Ngày lấy: cột "{column}" trong sheet',
   'phaseInfo.plan': 'Plan: số gói có ngày PLANNED của mốc này ≤ cut-off ({cutOff})',
@@ -190,6 +192,7 @@ export const vi: Dictionary = {
   'phaseInfo.total': 'Tổng: {total} gói có ngày kế hoạch cho mốc này (bấm vào phase để xem danh sách)',
   'phaseInfo.facilities': 'Gói có nhiều facility: chỉ tính là xong khi mọi facility đã đến hạn đều có ngày Actual.',
   'phaseInfo.warehouse': 'Ngày sẽ lấy từ module Kho khi có dữ liệu.',
+  'phaseInfo.expediting': 'Ngày sẽ lấy từ Expediting Report (Plan / Forecast / Actual EXW và on site) khi được liên kết.',
 
   // Overview — phase progress drawer (src/ui/overview/PhaseProgressDrawer.tsx).
   'phaseDrawer.summary': 'Đã xong {actual} / {plan} gói tính đến cut-off · {total} gói có kế hoạch trong phase này',

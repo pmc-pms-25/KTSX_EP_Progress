@@ -178,8 +178,10 @@ export const en = {
   'phaseTimeline.nodeLabel': '{phase}: {actual} of {plan} completed',
   'phaseTimeline.late': '{count} late',
   'phaseTimeline.nothingDue': 'Nothing due yet',
-  'phaseTimeline.readyForConstruction': 'Ready for Construction',
+  'phaseTimeline.inspectedAtWorksite': 'Inspected at Worksite',
+  'phaseTimeline.issuedToConstruction': 'Issued to Construction',
   'phaseTimeline.awaitingWarehouse': 'Awaiting data from the Warehouse module',
+  'phaseTimeline.awaitingExpediting': 'Awaiting data from the Expediting Report',
   'phaseInfo.label': 'How {phase} is calculated',
   'phaseInfo.date': 'Date: the "{column}" column in the sheet',
   'phaseInfo.plan': 'Plan: packages with a PLANNED date for this milestone ≤ cut-off ({cutOff})',
@@ -188,6 +190,7 @@ export const en = {
   'phaseInfo.total': 'Total: {total} {total|package has|packages have} a planned date for this milestone (click the phase for the list)',
   'phaseInfo.facilities': 'A package over several facilities counts as done only when every facility that is due has an Actual date.',
   'phaseInfo.warehouse': 'Dates will come from the Warehouse module once it has data.',
+  'phaseInfo.expediting': 'Dates will come from the Expediting Report (Plan / Forecast / Actual EXW and on site) once it is linked.',
 
   // Overview — phase progress drawer (src/ui/overview/PhaseProgressDrawer.tsx).
   'phaseDrawer.summary': '{actual} / {plan} packages completed by cut-off · {total} {total|package|packages} planned in this phase',

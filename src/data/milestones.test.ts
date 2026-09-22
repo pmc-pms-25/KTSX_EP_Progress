@@ -16,9 +16,10 @@ describe('milestone catalog', () => {
   it('exposes lookups and the headline milestones', () => {
     expect(MILESTONE_BY_KEY.loa.header).toBe('LOA Effective Date');
     // One per phase, in phase order, so the workload chart lines up with Phase progress.
-    expect(KEY_MILESTONES).toEqual(PHASES.map((p) => PHASE_GATE[p.key]));
+    expect(KEY_MILESTONES).toEqual(PHASES.flatMap((p) => PHASE_GATE[p.key] ?? []));
+    expect(KEY_MILESTONES).toEqual(['trApproval', 'bidsDue', 'cbeApproval', 'loa', 'fat']);
     expect(LINE_PHASE_ORDER.at(-1)).toBe('delivered');
-    expect(phaseIndex('award')).toBeLessThan(phaseIndex('onSailing'));
-    expect(phaseIndex('onSailing')).toBeLessThan(phaseIndex('arrived'));
+    expect(phaseIndex('award')).toBeLessThan(phaseIndex('exWorks'));
+    expect(phaseIndex('exWorks')).toBeLessThan(phaseIndex('arrived'));
   });
 });

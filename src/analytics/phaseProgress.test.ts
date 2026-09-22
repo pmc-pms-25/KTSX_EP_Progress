@@ -17,8 +17,6 @@ describe('PHASE_GATE', () => {
       evaluation: 'cbeApproval',
       award: 'loa',
       manufacturing: 'fat',
-      onSailing: 'shipped',
-      arrived: 'received',
     });
   });
 });
@@ -35,15 +33,13 @@ describe('phaseProgress', () => {
   const progress = phaseProgress(metricsOf(late, lateLess, done, ahead, pending, futureActual, poOnly), cut);
   const award = progress.find((p) => p.phase === 'award')!;
 
-  it('returns every phase in process order with its headline milestone', () => {
+  it('returns every phase with a Plan milestone, in process order (Ready Ex-Works and Arrived at Site await the Expediting Report)', () => {
     expect(progress.map((p) => [p.phase, p.gate])).toEqual([
       ['tr', 'trApproval'],
       ['rfq', 'bidsDue'],
       ['evaluation', 'cbeApproval'],
       ['award', 'loa'],
       ['manufacturing', 'fat'],
-      ['onSailing', 'shipped'],
-      ['arrived', 'received'],
     ]);
   });
 

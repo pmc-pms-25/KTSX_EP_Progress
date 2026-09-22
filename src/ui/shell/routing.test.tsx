@@ -62,7 +62,7 @@ describe('routing', () => {
 
   it('rewrites the old Logistics phase inside a module link', async () => {
     const router = renderAt('/procurement?phase=logistics');
-    await waitFor(() => expect(router.state.location.search).toBe('?phase=onSailing&phase=arrived'));
+    await waitFor(() => expect(router.state.location.search).toBe('?phase=exWorks&phase=arrived'));
   });
 
   it('translates old discipline links', async () => {

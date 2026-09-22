@@ -22,16 +22,33 @@ describe('PhaseTimeline', () => {
     const tr = screen.getByRole('button', { name: 'TR / Pre-RFQ: đã xong 2 trên 2' });
     expect(tr).toHaveTextContent('TR');
     expect(screen.getByRole('button', { name: 'RFQ / Bidding: đã xong 1 trên 2' })).toHaveTextContent('Bids');
-    expect(screen.getByRole('button', { name: 'On-Sailing: đã xong 1 trên 1' })).toHaveTextContent('Ship');
-    expect(screen.getByRole('button', { name: 'Arrived at Site: đã xong 1 trên 1' })).toHaveTextContent('Site');
+    expect(screen.getByRole('button', { name: 'Under-Production: đã xong 1 trên 1' })).toHaveTextContent('FAT');
+    // No Plan milestone drives these any more.
+    expect(screen.queryByRole('button', { name: /^Ready Ex-Works:|^Arrived at Site:/ })).not.toBeInTheDocument();
   });
 
-  it('holds a place for Ready for Construction until the Warehouse module feeds it', () => {
+  it('holds a place for the steps whose dates come from the Expediting Report or the Warehouse module', () => {
     renderOverview();
-    const node = screen.getByText('Ready for Construction').closest('li')!;
-    expect(node).toHaveTextContent('Chờ dữ liệu từ module Kho');
-    fireEvent.focus(within(node).getByRole('button', { name: 'Cách tính Ready for Construction' }));
-    expect(screen.getByRole('tooltip')).toHaveTextContent('Ngày sẽ lấy từ module Kho khi có dữ liệu.');
+    const steps = [
+      ['Ready Ex-Works', 'Chờ dữ liệu từ Expediting Report', 'Expediting Report'],
+      ['Arrived at Site', 'Chờ dữ liệu từ Expediting Report', 'Expediting Report'],
+      ['Inspected at Worksite', 'Chờ dữ liệu từ module Kho', 'module Kho'],
+      ['Issued to Construction', 'Chờ dữ liệu từ module Kho', 'module Kho'],
+    ];
+    for (const [label, note, source] of steps) {
+      const node = screen.getByText(label).closest('li')!;
+      expect(node).toHaveTextContent(note);
+      fireEvent.focus(within(node).getByRole('button', { name: `Cách tính ${label}` }));
+      expect(screen.getByRole('tooltip')).toHaveTextContent(source);
+      fireEvent.blur(within(node).getByRole('button', { name: `Cách tính ${label}` }));
+    }
+    // In process order after Under-Production.
+    const order = screen.getAllByRole('listitem').map((li) => li.textContent ?? '');
+    const at = (label: string) => order.findIndex((text) => text.includes(label));
+    expect(at('Under-Production')).toBeLessThan(at('Ready Ex-Works'));
+    expect(at('Ready Ex-Works')).toBeLessThan(at('Arrived at Site'));
+    expect(at('Arrived at Site')).toBeLessThan(at('Inspected at Worksite'));
+    expect(at('Inspected at Worksite')).toBeLessThan(at('Issued to Construction'));
   });
 
   it('explains on hover or focus which date each phase uses and how it counts', () => {
@@ -46,8 +63,8 @@ describe('PhaseTimeline', () => {
     fireEvent.mouseLeave(help.parentElement!);
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
 
-    fireEvent.focus(screen.getByRole('button', { name: 'Cách tính Arrived at Site' }));
-    expect(screen.getByRole('tooltip')).toHaveTextContent('cột "Received and Inspected at Worksite"');
+    fireEvent.focus(screen.getByRole('button', { name: 'Cách tính Under-Production' }));
+    expect(screen.getByRole('tooltip')).toHaveTextContent('cột "FAT/ Final Inspection Completed"');
   });
 
   it('keeps the help apart from the milestone, which still opens the drawer', () => {

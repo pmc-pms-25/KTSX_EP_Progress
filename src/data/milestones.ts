@@ -22,8 +22,8 @@ export const PHASES: readonly PhaseDef[] = [
   { key: 'rfq', label: 'RFQ / Bidding' },
   { key: 'evaluation', label: 'Evaluation' },
   { key: 'award', label: 'Award' },
-  { key: 'manufacturing', label: 'Manufacturing' },
-  { key: 'onSailing', label: 'On-Sailing' },
+  { key: 'manufacturing', label: 'Under-Production' },
+  { key: 'exWorks', label: 'Ready Ex-Works' },
   { key: 'arrived', label: 'Arrived at Site' },
 ];
 
@@ -73,7 +73,7 @@ export const MILESTONES: readonly MilestoneDef[] = [
   { key: 'spirApproved', label: 'SPIR Approved', short: 'SPIR', header: 'SPIR Approved', phase: 'manufacturing' },
   { key: 'mfg50', label: '50% Manufacturing', short: '50% Mfg', header: '50% Manufacturing Completed', phase: 'manufacturing' },
   { key: 'fat', label: 'FAT / Final Inspection', short: 'FAT', header: 'FAT/ Final Inspection Completed', phase: 'manufacturing' },
-  { key: 'shipped', label: 'Shipped from Port', short: 'Ship', header: 'Shipped from Port', phase: 'onSailing' },
+  { key: 'shipped', label: 'Shipped from Port', short: 'Ship', header: 'Shipped from Port', phase: 'exWorks' },
   {
     key: 'received',
     label: 'Received at Worksite',
@@ -89,20 +89,19 @@ export const MILESTONE_BY_KEY: Record<MilestoneKey, MilestoneDef> = Object.fromE
 
 /**
  * The milestone that marks each phase complete for Phase progress: the hand-over to the next phase
- * that EPCIC procurement reports track (TR approved, bids received, award recommended, LOA, EXW, shipped, on site).
+ * that EPCIC procurement reports track (TR approved, bids received, award recommended, LOA, FAT).
+ * Ready Ex-Works and Arrived at Site have no gate here: their dates will come from the Expediting Report.
  */
-export const PHASE_GATE: Record<PhaseKey, MilestoneKey> = {
+export const PHASE_GATE: Partial<Record<PhaseKey, MilestoneKey>> = {
   tr: 'trApproval',
   rfq: 'bidsDue',
   evaluation: 'cbeApproval',
   award: 'loa',
   manufacturing: 'fat',
-  onSailing: 'shipped',
-  arrived: 'received',
 };
 
 /** Headline milestones of the monthly workload chart: each phase's gate in phase order, so series colors match the phases. */
-export const KEY_MILESTONES: readonly MilestoneKey[] = PHASES.map((p) => PHASE_GATE[p.key]);
+export const KEY_MILESTONES: readonly MilestoneKey[] = PHASES.flatMap((p) => PHASE_GATE[p.key] ?? []);
 
 export function phaseIndex(phase: LinePhase): number {
   return LINE_PHASE_ORDER.indexOf(phase);

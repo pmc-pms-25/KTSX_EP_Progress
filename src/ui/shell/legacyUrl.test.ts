@@ -17,8 +17,9 @@ describe('migrateLegacyParams', () => {
     expect(migrate('discipline=A&flag=rosRisk&flag=slipped')).toBe('discipline=A&flag=rosRisk&flag=slipped');
   });
 
-  it('splits the old Logistics phase into On-Sailing and Arrived at Site', () => {
-    expect(migrateLegacyParams(new URLSearchParams('phase=logistics&phase=arrived&pkg=A')).toString()).toBe('phase=onSailing&phase=arrived&pkg=A');
-    expect(migrateLegacyParams(new URLSearchParams('p=award,logistics')).toString()).toBe('phase=award&phase=onSailing&phase=arrived');
+  it('maps the old Logistics and On-Sailing phases to Ready Ex-Works and Arrived at Site', () => {
+    expect(migrateLegacyParams(new URLSearchParams('phase=logistics&phase=arrived&pkg=A')).toString()).toBe('phase=exWorks&phase=arrived&pkg=A');
+    expect(migrateLegacyParams(new URLSearchParams('p=award,logistics')).toString()).toBe('phase=award&phase=exWorks&phase=arrived');
+    expect(migrateLegacyParams(new URLSearchParams('phase=onSailing')).toString()).toBe('phase=exWorks');
   });
 });
