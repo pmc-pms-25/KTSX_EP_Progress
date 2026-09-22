@@ -9,11 +9,11 @@ import { EChart } from '../charts/EChart';
 import { Card } from '../common/Card';
 import { CATEGORICAL, CHART_INK } from '../theme/palette';
 
-/** Stacked monthly count of the six headline milestones, with a cut-off marker. */
+/** Stacked monthly count of each phase's milestone, with a cut-off marker (the range always reaches the cut-off month). */
 export function WorkloadChart({ metrics, cutOff }: { metrics: readonly LineMetrics[]; cutOff: Day }) {
   const { t } = useT();
   const theme = useApp((s) => s.theme);
-  const data = useMemo(() => monthlyWorkload(metrics), [metrics]);
+  const data = useMemo(() => monthlyWorkload(metrics, undefined, cutOff), [metrics, cutOff]);
   const ink = CHART_INK[theme];
 
   const option = useMemo<EChartsOption>(() => {

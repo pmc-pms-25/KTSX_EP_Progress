@@ -179,13 +179,21 @@ function monthsSpanning(days: Day[]): MonthKey[] {
   return monthRange(monthKey(min), monthKey(max));
 }
 
-/** Count of milestones falling in each month (by effective date), one series per milestone. */
-export function monthlyWorkload(metrics: readonly LineMetrics[], keys: readonly MilestoneKey[] = KEY_MILESTONES): MonthlyWorkload {
+/**
+ * Count of milestones falling in each month (by effective date), one series per milestone.
+ * `include` (the cut-off) stretches a non-empty range to its month, so a marker there always has a place.
+ */
+export function monthlyWorkload(
+  metrics: readonly LineMetrics[],
+  keys: readonly MilestoneKey[] = KEY_MILESTONES,
+  include?: Day,
+): MonthlyWorkload {
   const perKey = keys.map((key) => ({
     key,
     days: metrics.map((m) => effectiveDay(m.line.milestones[key])).filter((d): d is Day => d !== undefined),
   }));
-  const months = monthsSpanning(perKey.flatMap((p) => p.days));
+  const all = perKey.flatMap((p) => p.days);
+  const months = monthsSpanning(all.length > 0 && include !== undefined ? [...all, include] : all);
   const index = new Map(months.map((m, i) => [m, i]));
   return {
     months,

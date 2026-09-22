@@ -1,4 +1,6 @@
-import { sampleMetrics } from '../test/planFixture';
+import { computeAllMetrics } from './lineMetrics';
+import { dayFromISO } from '../lib/day';
+import { makeLine, sampleMetrics, TEST_CTX } from '../test/planFixture';
 import {
   computeKpis,
   disciplineHealth,
@@ -76,6 +78,18 @@ describe('monthlyWorkload', () => {
 
   it('is empty without data', () => {
     expect(monthlyWorkload([])).toEqual({ months: [], series: expect.any(Array) });
+    expect(monthlyWorkload([], undefined, TEST_CTX.cutOff).months).toEqual([]);
+  });
+
+  it('stretches the range to include the cut-off month, so the cut-off can be drawn', () => {
+    const later = computeAllMetrics([makeLine({ milestones: { trApproval: { plan: dayFromISO('2026-12-05')! } } })], TEST_CTX);
+    expect(monthlyWorkload(later).months).toEqual(['2026-12']);
+    // Cut-off is 18-Sep-2026: the months before the data are added, empty.
+    const w = monthlyWorkload(later, undefined, TEST_CTX.cutOff);
+    expect(w.months).toEqual(['2026-09', '2026-10', '2026-11', '2026-12']);
+    expect(w.series[0].counts).toEqual([0, 0, 0, 1]);
+    const earlier = computeAllMetrics([makeLine({ milestones: { trApproval: { plan: dayFromISO('2026-06-10')! } } })], TEST_CTX);
+    expect(monthlyWorkload(earlier, undefined, TEST_CTX.cutOff).months).toEqual(['2026-06', '2026-07', '2026-08', '2026-09']);
   });
 });
 
