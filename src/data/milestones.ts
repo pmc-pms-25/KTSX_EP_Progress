@@ -86,6 +86,19 @@ export const MILESTONE_BY_KEY: Record<MilestoneKey, MilestoneDef> = Object.fromE
   MILESTONES.map((m) => [m.key, m]),
 ) as Record<MilestoneKey, MilestoneDef>;
 
+/**
+ * The milestone that marks each phase complete for Phase progress: the hand-over to the next phase
+ * that EPCIC procurement reports track (TR approved, bids received, award recommended, LOA, EXW, on site).
+ */
+export const PHASE_GATE: Record<PhaseKey, MilestoneKey> = {
+  tr: 'trApproval',
+  rfq: 'bidsDue',
+  evaluation: 'cbeApproval',
+  award: 'loa',
+  manufacturing: 'fat',
+  logistics: 'received',
+};
+
 /** The six headline milestones used by the monthly workload chart (TR, TBE, CBE, LOA, EXW/FAT, Site). */
 export const KEY_MILESTONES: readonly MilestoneKey[] = ['trApproval', 'tbeApproval', 'cbeApproval', 'loa', 'fat', 'received'];
 

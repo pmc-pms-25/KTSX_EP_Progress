@@ -7,6 +7,8 @@ export interface DataSourceConfig {
   type: DataSourceType;
   url: string;
   sheetName?: string;
+  /** Facility selected when the module is first opened without filters (e.g. "MMI06C"). */
+  defaultFacility?: string;
 }
 
 /** Every module that can have its own data source. Order does not matter here. */
@@ -48,6 +50,7 @@ function parseSource(module: ModuleId, ds: unknown): DataSourceConfig {
     type: ds.type,
     url: ds.url.trim(),
     sheetName: typeof ds.sheetName === 'string' && ds.sheetName.trim() ? ds.sheetName.trim() : undefined,
+    ...(typeof ds.defaultFacility === 'string' && ds.defaultFacility.trim() ? { defaultFacility: ds.defaultFacility.trim() } : {}),
   };
 }
 

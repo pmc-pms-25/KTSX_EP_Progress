@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { useState } from 'react';
-import type { PhaseLine, PhaseLineState, PhaseProgress } from '../../analytics/phaseProgress';
+import type { PhasePackage, PhaseProgress, PhaseState } from '../../analytics/phaseProgress';
 import { MILESTONE_BY_KEY } from '../../data/milestones';
 import type { MessageKey } from '../../i18n/en';
 import { useT } from '../../i18n/useT';
@@ -11,20 +11,20 @@ import { usePackageParam, usePhaseParam } from '../hooks/useFilters';
 
 type Tab = 'late' | 'done' | 'all';
 
-const TABS: { key: Tab; labelKey: MessageKey; match: (l: PhaseLine) => boolean }[] = [
-  { key: 'late', labelKey: 'phaseDrawer.tab.late', match: (l) => l.state === 'late' },
-  { key: 'done', labelKey: 'phaseDrawer.tab.done', match: (l) => l.state === 'done' || l.state === 'ahead' },
+const TABS: { key: Tab; labelKey: MessageKey; match: (p: PhasePackage) => boolean }[] = [
+  { key: 'late', labelKey: 'phaseDrawer.tab.late', match: (p) => p.state === 'late' },
+  { key: 'done', labelKey: 'phaseDrawer.tab.done', match: (p) => p.state === 'done' || p.state === 'ahead' },
   { key: 'all', labelKey: 'phaseDrawer.tab.all', match: () => true },
 ];
 
-const STATE_STYLE: Record<PhaseLineState, { labelKey: MessageKey; className: string }> = {
+const STATE_STYLE: Record<PhaseState, { labelKey: MessageKey; className: string }> = {
   late: { labelKey: 'phaseDrawer.state.late', className: 'bg-critical/15 text-critical' },
   done: { labelKey: 'phaseDrawer.state.done', className: 'bg-good/15 text-good' },
   ahead: { labelKey: 'phaseDrawer.state.ahead', className: 'bg-ai-1/15 text-ai-1' },
   pending: { labelKey: 'phaseDrawer.state.pending', className: 'bg-surface-2 text-ink-3' },
 };
 
-/** Lines behind one timeline milestone, opened with `?milestone=<phase>`. */
+/** Packages behind one timeline milestone, opened with `?milestone=<phase>`. */
 export function PhaseProgressDrawer({ progress }: { progress: readonly PhaseProgress[] }) {
   const { t } = useT();
   const { phase, close } = usePhaseParam();
@@ -33,7 +33,7 @@ export function PhaseProgressDrawer({ progress }: { progress: readonly PhaseProg
   const current = progress.find((p) => p.phase === phase);
   const tab = chosen ?? (current && current.late > 0 ? 'late' : 'all');
   const match = TABS.find((x) => x.key === tab)!.match;
-  const rows = current?.lines.filter(match) ?? [];
+  const rows = current?.packages.filter(match) ?? [];
 
   return (
     <Drawer
@@ -48,6 +48,9 @@ export function PhaseProgressDrawer({ progress }: { progress: readonly PhaseProg
             <PhaseChip phase={current.phase} />
             <p className="mt-1 text-xs text-ink-3">
               {t('phaseDrawer.summary', { actual: current.actual, plan: current.plan, total: current.total })}
+            </p>
+            <p className="text-xs text-ink-3">
+              {t('phaseDrawer.gate')}: <span className="text-ink-2">{MILESTONE_BY_KEY[current.gate].label}</span>
             </p>
           </div>
         )
@@ -65,7 +68,7 @@ export function PhaseProgressDrawer({ progress }: { progress: readonly PhaseProg
                 onClick={() => setChosen(x.key)}
                 className={`rounded-md px-3 py-1 ${tab === x.key ? 'bg-ai-1/20 text-ai-1' : 'text-ink-3 hover:text-ink'}`}
               >
-                {t(x.labelKey)} <span className="font-mono">{current.lines.filter(x.match).length}</span>
+                {t(x.labelKey)} <span className="font-mono">{current.packages.filter(x.match).length}</span>
               </button>
             ))}
           </div>
@@ -74,7 +77,7 @@ export function PhaseProgressDrawer({ progress }: { progress: readonly PhaseProg
           ) : (
             <ul key={tab} className="space-y-1.5">
               {rows.map((row, i) => (
-                <PhaseLineRow key={row.metrics.line.id} row={row} index={i} onOpen={openPackage} />
+                <PhasePackageRow key={row.code} row={row} index={i} onOpen={openPackage} />
               ))}
             </ul>
           )}
@@ -84,10 +87,9 @@ export function PhaseProgressDrawer({ progress }: { progress: readonly PhaseProg
   );
 }
 
-function PhaseLineRow({ row, index, onOpen }: { row: PhaseLine; index: number; onOpen: (code: string) => void }) {
+function PhasePackageRow({ row, index, onOpen }: { row: PhasePackage; index: number; onOpen: (code: string) => void }) {
   const { t } = useT();
   const reduced = useReducedMotion();
-  const { line } = row.metrics;
   const style = STATE_STYLE[row.state];
   const delayTone = row.delayDays === undefined ? 'text-ink-3' : row.delayDays > 0 ? 'text-critical' : 'text-good';
 
@@ -99,19 +101,18 @@ function PhaseLineRow({ row, index, onOpen }: { row: PhaseLine; index: number; o
     >
       <button
         type="button"
-        aria-label={`${line.packageCode} @ ${line.facility}`}
-        onClick={() => onOpen(line.packageCode)}
+        aria-label={`${row.code} @ ${row.facilities.join(', ')}`}
+        onClick={() => onOpen(row.code)}
         className="grid w-full cursor-pointer grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 rounded-xl border border-line bg-surface px-3 py-2 text-left text-xs hover:border-ai-1 sm:grid-cols-[minmax(0,1fr)_6rem_6rem_4rem_5.5rem]"
       >
         <span className="min-w-0">
-          <span className="font-mono text-ai-1">{line.packageCode}</span>
-          <span className="text-ink-3"> @ {line.facility}</span>
-          <span className="block truncate text-ink-2">{line.packageName || '—'}</span>
+          <span className={`font-mono ${row.hasValidCode ? 'text-ai-1' : 'text-serious'}`}>{row.code}</span>
+          <span className="text-ink-3"> @ {row.facilities.join(' · ')}</span>
+          <span className="block truncate text-ink-2">{row.name || '—'}</span>
         </span>
-        <span className="text-ink-3 sm:text-ink-2">
-          <span className="sm:hidden">{t('phaseDrawer.gate')}: </span>
-          {MILESTONE_BY_KEY[row.gate].short}
-          <span className="block font-mono">{formatDay(row.plan)}</span>
+        <span className="font-mono text-ink-3 sm:text-ink-2">
+          <span className="font-sans sm:hidden">Plan: </span>
+          {formatDay(row.plan)}
         </span>
         <span className="font-mono text-good">{row.actual !== undefined ? formatDay(row.actual) : ''}</span>
         <span className={`font-mono sm:text-right ${delayTone}`}>

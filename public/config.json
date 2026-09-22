@@ -5,7 +5,8 @@
     "procurement": {
       "type": "google-sheet",
       "url": "https://docs.google.com/spreadsheets/d/1oygbFq6v3j0NThuZ9Zmf8noHm5jwPr_YSvDvXHT8FPQ/export?format=xlsx",
-      "sheetName": "ALL"
+      "sheetName": "ALL",
+      "defaultFacility": "MMI06C"
     },
     "engineering": {
       "type": "google-sheet",

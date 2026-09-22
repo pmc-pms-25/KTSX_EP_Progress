@@ -25,6 +25,13 @@ describe('parseConfig', () => {
     });
   });
 
+  it('reads a default facility for a source', () => {
+    const cfg = parseConfig({ dataSources: { procurement: { type: 'server', url: '/p', defaultFacility: ' MMI06C ' } } });
+    expect(cfg.dataSources.procurement?.defaultFacility).toBe('MMI06C');
+    const blank = parseConfig({ dataSources: { procurement: { type: 'server', url: '/p', defaultFacility: 3 } } });
+    expect(blank.dataSources.procurement?.defaultFacility).toBeUndefined();
+  });
+
   it('reads the legacy single "dataSource" as the procurement source', () => {
     expect(parseConfig({ dataSource: { type: 'server', url: '/api/data' } }).dataSources).toEqual({
       procurement: { type: 'server', url: '/api/data', sheetName: undefined },

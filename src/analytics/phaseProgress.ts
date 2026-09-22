@@ -1,88 +1,118 @@
-import { LINE_PHASE_LABEL, MILESTONES, PHASES } from '../data/milestones';
-import type { Line, MilestoneKey, PhaseKey } from '../data/types';
+import { LINE_PHASE_LABEL, PHASES, PHASE_GATE } from '../data/milestones';
+import type { MilestoneKey, PhaseKey } from '../data/types';
 import type { Day } from '../lib/day';
 import type { LineMetrics } from './lineMetrics';
 
-/** late: due, no Actual · done: due and completed · ahead: completed before it was due · pending: not yet due. */
-export type PhaseLineState = 'late' | 'done' | 'ahead' | 'pending';
+/** late: due, not completed · done: due and completed · ahead: completed before it was due · pending: not yet due. */
+export type PhaseState = 'late' | 'done' | 'ahead' | 'pending';
 
+/** One Package × Facility line of a package, at the phase's headline milestone. */
 export interface PhaseLine {
   metrics: LineMetrics;
-  /** Milestone that marks the phase complete for this line. */
-  gate: MilestoneKey;
   plan: Day;
   /** Actual date, only when on/before the cut-off. */
   actual?: Day;
-  state: PhaseLineState;
-  /** late: cut-off − plan; done/ahead: actual − plan (negative = early); pending: undefined. */
+}
+
+/** One package in a phase; a package spread over several facilities is judged by the facilities that are due. */
+export interface PhasePackage {
+  code: string;
+  name: string;
+  hasValidCode: boolean;
+  /** Distinct facilities with a plan date for the phase's milestone, in sheet order (a facility can repeat in the sheet). */
+  facilities: string[];
+  lines: PhaseLine[];
+  /** late: earliest plan still open · done: earliest due plan · ahead / pending: earliest plan. */
+  plan: Day;
+  /** Latest actual of the facilities that decided completion (done / ahead only). */
+  actual?: Day;
+  state: PhaseState;
+  /** late: cut-off − plan; done/ahead: largest actual − plan (negative = early); pending: undefined. */
   delayDays?: number;
 }
 
 export interface PhaseProgress {
   phase: PhaseKey;
   label: string;
-  /** Lines whose gate plan date is on/before the cut-off. */
+  /** Milestone that marks the phase complete. */
+  gate: MilestoneKey;
+  /** Packages with at least one facility planned on/before the cut-off. */
   plan: number;
-  /** Lines whose gate has an Actual on/before the cut-off (may exceed `plan` when work finishes early). */
+  /** Packages completed on/before the cut-off (may exceed `plan` when work finishes early). */
   actual: number;
-  /** Lines due but not completed. */
+  /** Packages due but not completed. */
   late: number;
-  /** Lines with a planned gate for this phase. */
+  /** Packages with a plan date for the phase's milestone. */
   total: number;
   /** actual / plan; undefined when nothing is due yet. */
   ratio?: number;
   /** Late first (most days late first), then done, ahead and pending. */
-  lines: PhaseLine[];
+  packages: PhasePackage[];
 }
 
 export type ProgressTone = 'good' | 'warning' | 'critical' | 'none';
 
-const STATE_ORDER: Record<PhaseLineState, number> = { late: 0, done: 1, ahead: 2, pending: 3 };
+const STATE_ORDER: Record<PhaseState, number> = { late: 0, done: 1, ahead: 2, pending: 3 };
 
-/** The last milestone of `phase` that the line has a plan date for. */
-export function phaseGate(line: Line, phase: PhaseKey): MilestoneKey | undefined {
-  let gate: MilestoneKey | undefined;
-  for (const def of MILESTONES) {
-    if (def.phase === phase && line.milestones[def.key]?.plan !== undefined) gate = def.key;
+const min = (days: Day[]) => Math.min(...days);
+const max = (days: Day[]) => Math.max(...days);
+
+function judge(code: string, lines: PhaseLine[], cutOff: Day): PhasePackage {
+  const { line } = lines[0].metrics;
+  const base = { code, name: line.packageName, hasValidCode: line.hasValidCode, facilities: [...new Set(lines.map((l) => l.metrics.line.facility))], lines };
+  const due = lines.filter((l) => l.plan <= cutOff);
+  const decisive = due.length > 0 ? due : lines;
+  const open = decisive.filter((l) => l.actual === undefined);
+  if (open.length === 0) {
+    return {
+      ...base,
+      plan: min(decisive.map((l) => l.plan)),
+      actual: max(decisive.map((l) => l.actual!)),
+      state: due.length > 0 ? 'done' : 'ahead',
+      delayDays: max(decisive.map((l) => l.actual! - l.plan)),
+    };
   }
-  return gate;
+  if (due.length > 0) {
+    const plan = min(open.map((l) => l.plan));
+    return { ...base, plan, state: 'late', delayDays: cutOff - plan };
+  }
+  return { ...base, plan: min(lines.map((l) => l.plan)), state: 'pending' };
 }
 
-function classify(metrics: LineMetrics, phase: PhaseKey, cutOff: Day): PhaseLine | undefined {
-  const gate = phaseGate(metrics.line, phase);
-  if (!gate) return undefined;
-  const dates = metrics.line.milestones[gate]!;
-  const plan = dates.plan!;
-  const actual = dates.actual !== undefined && dates.actual <= cutOff ? dates.actual : undefined;
-  const due = plan <= cutOff;
-  if (actual !== undefined) return { metrics, gate, plan, actual, state: due ? 'done' : 'ahead', delayDays: actual - plan };
-  if (due) return { metrics, gate, plan, state: 'late', delayDays: cutOff - plan };
-  return { metrics, gate, plan, state: 'pending' };
-}
-
-function compare(a: PhaseLine, b: PhaseLine): number {
+function compare(a: PhasePackage, b: PhasePackage): number {
   return (
     STATE_ORDER[a.state] - STATE_ORDER[b.state] ||
     (a.state === 'late' ? b.delayDays! - a.delayDays! : a.plan - b.plan) ||
-    a.metrics.line.packageCode.localeCompare(b.metrics.line.packageCode)
+    a.code.localeCompare(b.code)
   );
 }
 
-/** Plan vs Actual completion of each phase as of the cut-off. */
+/** Packages planned vs completed at each phase's headline milestone, as of the cut-off. */
 export function phaseProgress(metrics: readonly LineMetrics[], cutOff: Day): PhaseProgress[] {
   return PHASES.map(({ key }) => {
-    const lines = metrics.flatMap((m) => classify(m, key, cutOff) ?? []).sort(compare);
-    const plan = lines.filter((l) => l.state !== 'pending' && l.state !== 'ahead').length;
-    const actual = lines.filter((l) => l.actual !== undefined).length;
+    const gate = PHASE_GATE[key];
+    const byPackage = new Map<string, PhaseLine[]>();
+    for (const m of metrics) {
+      const dates = m.line.milestones[gate];
+      if (dates?.plan === undefined) continue;
+      const actual = dates.actual !== undefined && dates.actual <= cutOff ? dates.actual : undefined;
+      const list = byPackage.get(m.line.packageCode) ?? [];
+      list.push({ metrics: m, plan: dates.plan, actual });
+      byPackage.set(m.line.packageCode, list);
+    }
+    const packages = [...byPackage].map(([code, lines]) => judge(code, lines, cutOff)).sort(compare);
+    const plan = packages.filter((p) => p.state === 'late' || p.state === 'done').length;
+    const actual = packages.filter((p) => p.state === 'done' || p.state === 'ahead').length;
     return {
       phase: key,
       label: LINE_PHASE_LABEL[key],
+      gate,
       plan,
       actual,
-      late: lines.filter((l) => l.state === 'late').length,
-      total: lines.length,
+      late: packages.filter((p) => p.state === 'late').length,
+      total: packages.length,
       ratio: plan > 0 ? actual / plan : undefined,
-      lines,
+      packages,
     };
   });
 }

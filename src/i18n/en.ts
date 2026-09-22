@@ -175,14 +175,14 @@ export const en = {
 
   // Overview — phase timeline (src/ui/overview/PhaseTimeline.tsx).
   'phaseTimeline.title': 'Phase progress',
-  'phaseTimeline.subtitle': 'Actual / Plan completed as of cut-off · click a milestone for its lines',
+  'phaseTimeline.subtitle': 'Packages completed (Actual) / planned (Plan) by cut-off · click a milestone for its packages',
   'phaseTimeline.nodeLabel': '{phase}: {actual} of {plan} completed',
   'phaseTimeline.late': '{count} late',
   'phaseTimeline.nothingDue': 'Nothing due yet',
 
   // Overview — phase progress drawer (src/ui/overview/PhaseProgressDrawer.tsx).
-  'phaseDrawer.summary': '{actual} / {plan} completed by cut-off · {total} {total|line|lines} planned in this phase',
-  'phaseDrawer.tabsLabel': 'Line status',
+  'phaseDrawer.summary': '{actual} / {plan} packages completed by cut-off · {total} {total|package|packages} planned in this phase',
+  'phaseDrawer.tabsLabel': 'Package status',
   'phaseDrawer.tab.late': 'Late',
   'phaseDrawer.tab.done': 'Completed',
   'phaseDrawer.tab.all': 'All',
@@ -192,7 +192,7 @@ export const en = {
   'phaseDrawer.state.done': 'Done',
   'phaseDrawer.state.ahead': 'Early',
   'phaseDrawer.state.pending': 'Not due',
-  'phaseDrawer.empty': 'No lines in this list.',
+  'phaseDrawer.empty': 'No packages in this list.',
 
   // Overview — facility heatmap (src/ui/overview/FacilityHeatmap.tsx).
   'facilityHeatmap.title': 'Facility × Month',

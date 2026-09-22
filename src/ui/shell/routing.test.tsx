@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider, type RouteObject } from 'react-router-dom';
 import { routes } from '../../App';
 import { engineeringStore } from '../../modules/engineering/store';
@@ -24,6 +24,34 @@ describe('routing', () => {
     const router = renderAt('/');
     await waitFor(() => expect(router.state.location.pathname).toBe('/procurement'));
     expect(await screen.findByText('Phase funnel')).toBeInTheDocument();
+  });
+
+  describe('default facility', () => {
+    beforeEach(() => {
+      const config = appStore.getState().config!;
+      appStore.setState({ config: { ...config, dataSources: { procurement: { type: 'google-sheet', url: 'x', defaultFacility: 'BF' } } } });
+    });
+
+    it('selects it on the first visit without filters', async () => {
+      const router = renderAt('/');
+      await waitFor(() => expect(router.state.location.search).toBe('?facility=BF'));
+      expect(router.state.location.pathname).toBe('/procurement');
+      expect(await screen.findByText('Phase funnel')).toBeInTheDocument();
+    });
+
+    it('keeps the filters of a shared link', async () => {
+      const router = renderAt('/procurement?discipline=PIPING');
+      await screen.findByText('Phase funnel');
+      expect(router.state.location.search).toBe('?discipline=PIPING');
+    });
+
+    it('does not come back after the user clears it', async () => {
+      const router = renderAt('/procurement');
+      await waitFor(() => expect(router.state.location.search).toBe('?facility=BF'));
+      await act(() => router.navigate('/procurement'));
+      await screen.findByText('Phase funnel');
+      expect(router.state.location.search).toBe('');
+    });
   });
 
   it('translates old filter links', async () => {

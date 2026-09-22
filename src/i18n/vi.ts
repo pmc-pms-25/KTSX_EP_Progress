@@ -177,14 +177,14 @@ export const vi: Dictionary = {
 
   // Overview — phase timeline (src/ui/overview/PhaseTimeline.tsx).
   'phaseTimeline.title': 'Tiến độ theo phase',
-  'phaseTimeline.subtitle': 'Actual / Plan hoàn thành tính đến cut-off · bấm vào milestone để xem danh sách',
+  'phaseTimeline.subtitle': 'Số gói đã xong (Actual) / theo kế hoạch (Plan) tính đến cut-off · bấm vào milestone để xem danh sách gói',
   'phaseTimeline.nodeLabel': '{phase}: đã xong {actual} trên {plan}',
   'phaseTimeline.late': '{count} trễ',
   'phaseTimeline.nothingDue': 'Chưa có mốc đến hạn',
 
   // Overview — phase progress drawer (src/ui/overview/PhaseProgressDrawer.tsx).
-  'phaseDrawer.summary': 'Đã xong {actual} / {plan} tính đến cut-off · {total} dòng có kế hoạch trong phase này',
-  'phaseDrawer.tabsLabel': 'Trạng thái dòng',
+  'phaseDrawer.summary': 'Đã xong {actual} / {plan} gói tính đến cut-off · {total} gói có kế hoạch trong phase này',
+  'phaseDrawer.tabsLabel': 'Trạng thái gói',
   'phaseDrawer.tab.late': 'Trễ',
   'phaseDrawer.tab.done': 'Đã xong',
   'phaseDrawer.tab.all': 'Tất cả',
@@ -194,7 +194,7 @@ export const vi: Dictionary = {
   'phaseDrawer.state.done': 'Đã xong',
   'phaseDrawer.state.ahead': 'Xong sớm',
   'phaseDrawer.state.pending': 'Chưa đến hạn',
-  'phaseDrawer.empty': 'Không có dòng nào trong danh sách này.',
+  'phaseDrawer.empty': 'Không có gói nào trong danh sách này.',
 
   // Overview — facility heatmap (src/ui/overview/FacilityHeatmap.tsx).
   'facilityHeatmap.title': 'Facility × Tháng',

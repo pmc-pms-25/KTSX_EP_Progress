@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { progressTone, type PhaseProgress, type ProgressTone } from '../../analytics/phaseProgress';
+import { MILESTONE_BY_KEY } from '../../data/milestones';
 import type { PhaseKey } from '../../data/types';
 import { useT } from '../../i18n/useT';
 import { useApp } from '../../store/useApp';
@@ -22,7 +23,7 @@ const TONE_TEXT: Record<ProgressTone, string> = {
 /** Seconds between one milestone's entrance and the next. */
 const STEP = 0.12;
 
-/** A line through the six phases; each milestone shows Actual / Plan completed by cut-off. */
+/** A line through the six phases; each milestone shows packages completed / planned by cut-off. */
 export function PhaseTimeline({ progress, onSelect }: PhaseTimelineProps) {
   const { t } = useT();
   const reduced = useReducedMotion() ?? false;
@@ -115,6 +116,7 @@ function PhaseNode({ progress: p, index, reduced, onSelect }: PhaseNodeProps) {
             <span aria-hidden className="h-2 w-2 shrink-0 rounded-full" style={{ background: phaseColor(p.phase, theme) }} />
             {p.label}
           </span>
+          <span className="block text-[11px] text-ink-3">{MILESTONE_BY_KEY[p.gate].short}</span>
           <span className="mt-0.5 block text-lg font-semibold text-ink">
             <AnimatedNumber value={p.actual} />
             <span className="font-mono text-ink-3"> / </span>
