@@ -42,12 +42,12 @@ function Controls({ module, keys, options }: { module: AnyModule; keys: readonly
             showValues={f.showValues}
           />
         ))}
-      {module.useResultCount ? <ResultCount module={module} /> : <span className="ml-auto" />}
       {!empty && (
         <button type="button" onClick={clear} className="text-xs text-ai-1 underline">
           {t('filter.clear')}
         </button>
       )}
+      {module.useResultCount && <ResultCount module={module} />}
     </>
   );
 }

@@ -34,12 +34,13 @@ describe('dashboard app', () => {
     await waitFor(() => expect(document.documentElement.dataset.theme).toBe(appStore.getState().theme));
   });
 
-  it('filters through a KPI tile and shows the row count', async () => {
+  it('filters through a KPI tile', async () => {
     const router = renderAt('/procurement/discipline/MECHANICAL');
     await screen.findByRole('table');
     fireEvent.click(screen.getByRole('button', { name: /ROS at risk/ }));
     await waitFor(() => expect(router.state.location.search).toContain('flag=rosRisk'));
-    await waitFor(() => expect(screen.getAllByText((_, el) => el?.textContent === '1 / 6 dòng').length).toBeGreaterThan(0));
+    // Only MEC-001 has cargo arriving after its ROS.
+    await waitFor(() => expect(within(screen.getByRole('table')).getAllByRole('row')).toHaveLength(2));
   });
 
   it('opens a package from the top risks card', async () => {
@@ -68,7 +69,8 @@ describe('dashboard app', () => {
     scrollTo.mockClear();
     fireEvent.click(screen.getByRole('button', { name: /ROS at risk/ }));
     await waitFor(() => expect(router.state.location.search).toContain('flag=rosRisk'));
-    await waitFor(() => expect(screen.getAllByText((_, el) => el?.textContent === '1 / 6 dòng').length).toBeGreaterThan(0));
+    // Only MEC-001 has cargo arriving after its ROS.
+    await waitFor(() => expect(within(screen.getByRole('table')).getAllByRole('row')).toHaveLength(2));
     expect(scrollTo).not.toHaveBeenCalled();
     await act(() => router.navigate('/procurement'));
     await screen.findByText('Phase funnel');

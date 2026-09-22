@@ -39,13 +39,16 @@ describe('shared shell per module', () => {
     expect(screen.getAllByText(/\/ 6 tài liệu/).length).toBeGreaterThan(0);
   });
 
-  it('draws Facility then Discipline with their selection, hides the other facets, and shows the result count', async () => {
+  it('draws Facility then Discipline with their selection, hides the other facets, then Clear filters', async () => {
     renderAt('/procurement?facility=BF');
     await screen.findByText('Phase funnel');
     const facets = screen.getAllByRole('button', { name: /^(Facility|Discipline|Tagged\/Bulk|Phase|Cảnh báo)/ }).map((b) => b.textContent);
     expect(facets.slice(0, 2)).toEqual(['Facility: BF▾', 'Discipline: Tất cả▾']);
     expect(screen.queryByRole('button', { name: /Tagged\/Bulk|Phase \(kế hoạch\)|Cảnh báo/ })).not.toBeInTheDocument();
-    expect(screen.getAllByText((_, el) => el?.textContent === '1 / 6 dòng').length).toBeGreaterThan(0);
+    // No "shown / total" count on Procurement; Clear filters follows the dropdowns.
+    expect(screen.queryByText(/\/ 6 dòng/)).not.toBeInTheDocument();
+    const discipline = screen.getAllByRole('button', { name: /^Discipline/ })[0];
+    expect(discipline.parentElement!.nextElementSibling).toHaveTextContent('Xóa bộ lọc');
   });
 
   it('ignores URL facet values that are not among the facet options', async () => {

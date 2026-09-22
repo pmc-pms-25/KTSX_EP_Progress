@@ -50,8 +50,4 @@ export const procurementModule: ModuleDefinition<Plan> = {
     const { filters, setFilters, vocab } = useDashboard();
     return { value: filters.q, vocab, onChange: (q) => setFilters({ q }) };
   },
-  useResultCount() {
-    const { filtered, metrics } = useDashboard();
-    return { shown: filtered.length, total: metrics.length, unitKey: 'unit.lines' };
-  },
 };
